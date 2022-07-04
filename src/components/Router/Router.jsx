@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import AppDetails from "../AppDetails/appDetails";
 import Home from "../Home/Home";
 import LoginPage from "../Login/loginPage";
+import AppDetails from "../Setup/Setup";
 
 class Routing extends Component {
   render() {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./appDetails.scss";
+import "./setup.scss";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useParams } from "react-router";
 import { Layout, Tooltip } from "antd";
