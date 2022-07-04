@@ -72,6 +72,10 @@
     cursor: pointer;
   }
 
+  .ant-menu-submenu-arrow{
+    display: none !important;
+  }
+
   .ant-input-search-large .ant-input-search-button {
     height: 34px;
   }
