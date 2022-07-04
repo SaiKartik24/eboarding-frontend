@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "../Home/Home";
 import LoginPage from "../Login/loginPage";
-import AppDetails from "../Setup/Setup";
+import Setup from "../Setup/Setup";
 
 class Routing extends Component {
   render() {
@@ -12,7 +12,7 @@ class Routing extends Component {
           <Routes>
             <Route exact path="/" element={<LoginPage key={1} />} />
             <Route exact path="/home" element={<Home key={2} />}>
-              <Route exact path="/home/setup" element={<AppDetails key={3} />} />
+              <Route exact path="/home/setup" element={<Setup key={3} />} />
             </Route>
           </Routes>
         </div>

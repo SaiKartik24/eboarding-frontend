@@ -113,7 +113,7 @@ const Home = (props) => {
   };
 
   return (
-    <div className="listOfBots h-100">
+    <div className="home h-100">
       <Layout className="w-100" style={{ height: "100%", overflow: "hidden" }}>
         {/* <Sidebar apps={sidebarApps} /> */}
         <div className="d-flex flex-column w-100 h-100">
