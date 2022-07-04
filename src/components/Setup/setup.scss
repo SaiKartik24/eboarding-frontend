@@ -1,0 +1,76 @@
+.appDetails {
+  .mainheader {
+    color: #2368a0;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .setupLoaderSty {
+    margin: auto;
+    position: relative;
+    top: 20%;
+    width: 20%;
+  }
+
+  .tile-label {
+    color: grey;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .card-label {
+    color: #2368a0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .notALink {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-sample:hover {
+    border: 1px solid #b7b2b3;
+    box-shadow: inset 6.5em 0 0 0 var(--hover);
+  }
+
+  .cardPointer {
+    cursor: pointer;
+  }
+
+  .iconStyle {
+    font-size: 1.8rem;
+    color: #2368a0;
+  }
+
+  .paragraphStyle {
+    margin-left: 33px;
+    font-size: 1.1rem;
+  }
+
+  .fontStyle {
+    font-size: 1.06rem;
+  }
+
+  .ant-layout-content {
+    position: relative;
+    padding-bottom: 30px;
+  }
+
+  .hrStyle {
+    background: rgba(183, 179, 179, 0.5);
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+  }
+
+  .spinnerTop {
+    margin-top: 11rem !important;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .container {
+      max-width: inherit;
+    }
+  }
+}
