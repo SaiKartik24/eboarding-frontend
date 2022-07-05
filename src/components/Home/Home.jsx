@@ -212,7 +212,7 @@ const Home = (props) => {
                             </div>
                           </div>
                           <Modal
-                            title={<b>Upate Profile</b>}
+                            title={<b>Update Profile</b>}
                             visible={modal}
                             className="modalFont"
                             onCancel={handleClose}
