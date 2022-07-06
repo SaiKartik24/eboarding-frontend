@@ -12,6 +12,17 @@
     width: 20%;
   }
 
+    .buttonStyles {
+    background: #2368a0 !important;
+    color: white !important;
+    width: 100px;
+  }
+
+  .buttonStyles:hover {
+    background-color: #00aae7 !important;
+    color: white !important;
+  }
+
   .tile-label {
     color: grey;
     font-size: 16px;
