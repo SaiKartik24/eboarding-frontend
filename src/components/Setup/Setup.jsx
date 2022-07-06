@@ -1,13 +1,57 @@
 import React, { useEffect, useState } from "react";
 import "./setup.scss";
-import { Button, Form, Input, Popconfirm, Space, Table, Tag, Tooltip, Typography } from 'antd';
+import { Button, Form, Input, Popconfirm, Select, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import * as XLSX from "xlsx";
+import SelectFun from "../common/Select/Select";
+
+const { Option } = Select;
+
 
 const Setup = (props) => {
   const [form] = Form.useForm();
   const [pageLoader, setPageLoader] = useState(true);
   const [items, setItems] = useState([]);
   const [editingKey, setEditingKey] = useState("");
+  const employeeType = ["Full Time", "Contractor", "Vendor"];
+  const employeeRole = ["Team Member", "Administator", "Manager"];
+  const Status = ["Active", "Inactive"];
+  const EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const inputNode = inputType === 'select' ? (
+      <SelectFun field={record} type="EmployeeType" values={employeeType} />
+    ) : (inputType === "roleSelect" ? <SelectFun field={record} type="EmployeeRole" values={employeeRole} /> : (
+        inputType === "statusSelect" ? (<SelectFun field={record} type="EmployeeStatus" values={Status} /> ):<Input />));
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{
+              margin: 0,
+            }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`,
+              },
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
 
   const ExcelDateToJSDate = (date) => {
     let converted_date = new Date(Math.round((date - 25569) * 864e5));
@@ -67,45 +111,21 @@ const Setup = (props) => {
     }, 2000);
   }, [items]);
 
-  const EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    console.log(editing);
-    const inputNode = inputType === 'number' ? null : <Input />;
-    return (
-      <td {...restProps}>
-        {editing ? (
-          console.log(editing),
-          <Form.Item
-            name={dataIndex}
-            style={{
-              margin: 0,
-            }}
-            rules={[
-              {
-                required: true,
-                message: `Please Input ${title}!`,
-              },
-            ]}
-          >
-            {inputNode}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
+
+  const isEditing = (record) => record.Mail === editingKey;
+
+  const edit = (record) => {
+    form.setFieldsValue({
+      name: '',
+      age: '',
+      address: '',
+      ...record,
+    });
+    setEditingKey(record.Mail);
   };
 
   const cancel = () => {
-    setEditingKey("");
+    setEditingKey('');
   };
 
   const columns = [
@@ -113,41 +133,49 @@ const Setup = (props) => {
       title: 'Full Name',
       dataIndex: 'FullName',
       key: 'FullName',
+      editable: true,
     },
     {
       title: 'Mail',
       dataIndex: 'Mail',
       key: 'Mail',
+      editable: true,
     },
     {
       title: 'Status',
       dataIndex: 'Status',
       key: 'status',
+      editable: true,
     },
     {
       title: 'Employee Type',
       dataIndex: 'EmployeeType',
       key: 'EmployeeType',
+      editable: true,
     },
     {
       title: 'Employee Role',
       dataIndex: 'EmployeeRole',
       key: 'EmployeeRole',
+      editable: true,
     },
     {
       title: 'Manager Mail',
       dataIndex: 'ManagerMail',
       key: 'ManagerMail',
+      editable: true,
     },
     {
       title: 'Start Date',
       dataIndex: 'StartDate',
       key: 'StartDate',
+      editable: true,
     },
     {
       title: 'End Date',
       dataIndex: 'EndDate',
       key: 'EndDate',
+      editable: true,
     },
     {
       title: <b>Actions</b>,
@@ -179,18 +207,18 @@ const Setup = (props) => {
             >
               <Tooltip title="Edit">
                 <i
-                    className="fas fa-edit"
-                    style={{ color: "blue" }}
+                  className="fas fa-edit"
+                  style={{ color: "blue" }}
                 ></i>
               </Tooltip>
             </Typography.Link>
             <Typography.Link
-              // disabled={editingKey !== ""}
+            // disabled={editingKey !== ""}
             >
               <Tooltip title="Delete">
                 <i
-                    className="fas fa-trash ml-1 mr-1"
-                    style={{color:"red"}}
+                  className="fas fa-trash ml-1 mr-1"
+                  style={{ color: "red" }}
                 ></i>
               </Tooltip>
             </Typography.Link>
@@ -199,29 +227,23 @@ const Setup = (props) => {
       },
     },
   ];
-  const isEditing = (record) => record.Mail === editingKey;
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
+
     return {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
+        inputType: col.dataIndex === 'EmployeeType' ? 'select' : (col.dataIndex === 'EmployeeRole' ? 'roleSelect' :
+          (col.dataIndex === 'Status' ? 'statusSelect':'text')),
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
       }),
     };
   });
-
-  const edit = (record) => {
-    form.setFieldsValue({
-      ...record,
-    });
-    setEditingKey(record.Mail);
-  };
 
   return (
     <section className="setup h-100">
@@ -234,22 +256,22 @@ const Setup = (props) => {
         ) : (
           <div>
             <div className="float-right mb-4">
-                <Button
-                  type="primary mr-4"
-                  className="buttonStyles"
-                >
-                  Save
-                </Button>
+              <Button
+                type="primary mr-4"
+                className="buttonStyles"
+              >
+                Save
+              </Button>
               <input
                 type="file"
                 onChange={(e) => {
                   const file = e.target.files[0];
                   readExcel(file);
                 }}
-                style={{ width: "250px", fontSize:"1rem" }}
+                style={{ width: "250px", fontSize: "1rem" }}
               />
-              </div>
-              <Form form={form} component={false}>
+            </div>
+            <Form form={form} component={false}>
               <Table
                 components={{
                   body: {
@@ -257,16 +279,16 @@ const Setup = (props) => {
                   },
                 }}
                 bordered
-                 dataSource={items}
+                dataSource={items}
                 columns={mergedColumns}
-                  rowClassName="editable-row"
-                  pagination={false}
-                  scroll={{
-                    x: 200,
-                    y: 500,
-                  }}
-                />
-              </Form>
+                rowClassName="editable-row"
+                pagination={false}
+                scroll={{
+                  x: 200,
+                  y: 500,
+                }}
+              />
+            </Form>
           </div>
         )}
       </div>
