@@ -3,14 +3,14 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "./home.scss";
 import TopBar from "../common/Topbar/Topbar";
 import Sidebar from "../common/Sidebar/Sidebar";
-import {
-  Button,
-  Input,
-  Layout, Modal,
-} from "antd";
+import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
 import { resolveUserData } from "../services/configs";
 import ProfileUpdateNotification from "../common/Notifications/UpdateNotifications";
+import moment from "moment";
+
 const { Header, Content } = Layout;
+const { Option } = Select;
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
 
 const Home = (props) => {
   const path = window.location.pathname.split("/");
@@ -35,7 +35,7 @@ const Home = (props) => {
 
   useEffect(() => {
     appLoaderFunction();
-    if (userData.role == "User") {
+    if (userData.role == "Team Member") {
       setModal(true);
     }
   }, [location]);
@@ -74,7 +74,7 @@ const Home = (props) => {
       managerid: "",
       startdate: startDate,
       enddate: endDate,
-      status: status
+      status: status,
     };
     let userData = JSON.stringify(userDetails);
     localStorage.setItem("userData", userData);
@@ -82,16 +82,38 @@ const Home = (props) => {
       setConfirmBtnLoader(false);
       setModal(false);
       ProfileUpdateNotification();
-    },2000)
-  }
+    }, 2000);
+  };
 
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
   };
 
+  const handleChangeRole = (value) => {
+    setEmpRole(value);
+  };
+
+  const handleChangeType = (value) => {
+    setEmpType(value);
+  };
+
+  const handleChangeStatus = (value) => {
+    setStatus(value);
+  };
+
+  const onChangeStartDate = (date, dateString) => {
+    setStartDate(dateString);
+    // console.log(date, dateString);
+  };
+
+  const onChangeEndDate = (date, dateString) => {
+    setEndDate(dateString);
+    // console.log(date, dateString);
+  };
+
   return (
-    <div className="listOfBots h-100">
+    <div className="home h-100">
       <Layout className="w-100" style={{ height: "100%", overflow: "hidden" }}>
         {/* <Sidebar apps={sidebarApps} /> */}
         <div className="d-flex flex-column w-100 h-100">
@@ -104,18 +126,17 @@ const Home = (props) => {
               <div className="loaderText mt-2">Loading</div>
             </div>
           ) : (
-            <Layout style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}>
+            <Layout
+              style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}
+            >
               <Sidebar />
-              <Layout
-              >
+              <Layout>
                 <div
                   style={{
                     padding: "0 24px 8px",
                   }}
                 >
-                  <div className="pl-3 mt-4">
-                    {/* <BreadCrumbs /> */}
-                  </div>
+                  <div className="pl-3 mt-4">{/* <BreadCrumbs /> */}</div>
                 </div>
                 {appname === "home" && nextname === undefined ? (
                   appLoader ? (
@@ -143,8 +164,7 @@ const Home = (props) => {
                                       top: "2rem",
                                       right: "2rem",
                                     }}
-                                  >
-                                  </div>
+                                  ></div>
                                   <div>Dashboard 1</div>
                                 </div>
                               </div>
@@ -157,8 +177,7 @@ const Home = (props) => {
                                       top: "2rem",
                                       right: "2rem",
                                     }}
-                                  >
-                                  </div>
+                                  ></div>
                                   <div>Dashboard 2</div>
                                 </div>
                               </div>
@@ -173,8 +192,7 @@ const Home = (props) => {
                                       top: "2rem",
                                       right: "2rem",
                                     }}
-                                  >
-                                  </div>
+                                  ></div>
                                   <div>Dashboard 3</div>
                                 </div>
                               </div>
@@ -187,30 +205,34 @@ const Home = (props) => {
                                       top: "2rem",
                                       right: "2rem",
                                     }}
-                                  >
-                                  </div>
+                                  ></div>
                                   <div>Dashboard 4</div>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <Modal
-                            title={<b>Upate Profile</b>}
+                            title={<b>Update Profile</b>}
                             visible={modal}
                             className="modalFont"
                             onCancel={handleClose}
                             footer={null}
-                                keyboard={false}
+                            keyboard={false}
                           >
                             <form>
                               <div className="d-flex">
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4">
                                   <label
                                     htmlFor="name"
                                     className="font-weight-bold fontsize"
                                   >
                                     Full Name
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
                                   <Input
                                     size="large"
@@ -227,13 +249,18 @@ const Home = (props) => {
                                     }}
                                   />
                                 </div>
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4">
                                   <label
                                     htmlFor="email"
                                     className="font-weight-bold fontsize"
                                   >
                                     Email
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
                                   <Input
                                     size="large"
@@ -250,100 +277,112 @@ const Home = (props) => {
                                     }}
                                   />
                                 </div>
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4">
                                   <label
                                     htmlFor="password"
                                     className="font-weight-bold fontsize"
                                   >
                                     Password
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
-                                      </label>
-                                      <div
-                                        className="d-flex bord"
-                                      >
-                                      <Input
-                                        type={passwordShown ? "text" : "password"}
-                                    size="large"
-                                          className="form-control position-static"
-                                    id="password"
-                                    placeholder="Enter password"
-                                    value={password}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setPassword(e.target.value);
-                                      } else {
-                                        setPassword("");
-                                      }
-                                    }}
-                                      />
-                                      {passwordShown ? (
-                                        <i
-                                          className="fas fa-eye-slash password icon-sty"
-                                          onClick={togglePassword}
-                                        ></i>
-                                      ) : (
-                                        <i
-                                          className="fas fa-eye icon-sty password"
-                                          onClick={togglePassword}
-                                        ></i>
-                                        )}
-                                      </div>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
+                                  </label>
+                                  <div className="d-flex bord">
+                                    <Input
+                                      type={passwordShown ? "text" : "password"}
+                                      size="large"
+                                      className="form-control position-static"
+                                      id="password"
+                                      placeholder="Enter password"
+                                      value={password}
+                                      onChange={(e) => {
+                                        if (e.target.value != "") {
+                                          setPassword(e.target.value);
+                                        } else {
+                                          setPassword("");
+                                        }
+                                      }}
+                                    />
+                                    {passwordShown ? (
+                                      <i
+                                        className="fas fa-eye-slash password icon-sty"
+                                        onClick={togglePassword}
+                                      ></i>
+                                    ) : (
+                                      <i
+                                        className="fas fa-eye icon-sty password"
+                                        onClick={togglePassword}
+                                      ></i>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                                  <div className="d-flex">
-                                <div className="form-group col-md-4">
+                              <div className="d-flex">
+                                <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="empType"
                                     className="font-weight-bold fontsize"
                                   >
                                     Employment Type
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
-                                  <Input
-                                    size="large"
-                                    className="form-control"
-                                    id="empType"
-                                    placeholder="Enter Employment Type"
-                                    value={empType}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setEmpType(e.target.value);
-                                      } else {
-                                        setEmpType("");
-                                      }
-                                    }}
-                                  />
+                                  <Select
+                                    defaultValue={empType}
+                                    onChange={handleChangeType}
+                                  >
+                                    <Option value="Full Time">Full Time</Option>
+                                    <Option value="Contractor">
+                                      Contractor
+                                    </Option>
+                                    <Option value="Vendor">Vendor</Option>
+                                  </Select>
                                 </div>
-                                <div className="form-group col-md-4">
+                                <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="empRole"
                                     className="font-weight-bold fontsize"
                                   >
-                                    Employment Type
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    Employment Role
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
-                                  <Input
-                                    size="large"
-                                    className="form-control"
-                                    id="empRole"
-                                    placeholder="Enter Employment Role"
-                                    value={empRole}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setEmpRole(e.target.value);
-                                      } else {
-                                        setEmpRole("");
-                                      }
-                                    }}
-                                  />
+                                  <Select
+                                    defaultValue={empRole}
+                                    onChange={handleChangeRole}
+                                  >
+                                    <Option value="Team Member">
+                                      Team Member
+                                    </Option>
+                                    <Option value="Administrator">
+                                      Administrator
+                                    </Option>
+                                    <Option value="Manager">Manager</Option>
+                                  </Select>
                                 </div>
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4">
                                   <label
                                     htmlFor="managerMail"
                                     className="font-weight-bold fontsize"
                                   >
                                     Manager Mail
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
                                   <Input
                                     size="large"
@@ -361,75 +400,71 @@ const Home = (props) => {
                                   />
                                 </div>
                               </div>
-                                  <div className="d-flex">
-                                    <div className="form-group col-md-4">
+                              <div className="d-flex">
+                                <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="startDate"
                                     className="font-weight-bold fontsize"
                                   >
                                     Start Date
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
-                                  <Input
-                                    size="large"
-                                    className="form-control"
-                                    id="startDate"
-                                    placeholder="Start Date"
-                                    value={startDate}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setStartDate(e.target.value);
-                                      } else {
-                                        setStartDate("");
-                                      }
-                                    }}
+                                  <DatePicker
+                                    defaultValue={moment(
+                                      startDate,
+                                      dateFormatList[0]
+                                    )}
+                                    format={dateFormatList}
+                                    onChange={onChangeStartDate}
                                   />
                                 </div>
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="endDate"
                                     className="font-weight-bold fontsize"
                                   >
                                     End Date
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
-                                  <Input
-                                    size="large"
-                                    className="form-control"
-                                    id="endDate"
-                                    placeholder="End Date"
-                                    value={endDate}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setEndDate(e.target.value);
-                                      } else {
-                                        setEndDate("");
-                                      }
-                                    }}
+                                  <DatePicker
+                                    defaultValue={moment(
+                                      endDate,
+                                      dateFormatList[0]
+                                    )}
+                                    format={dateFormatList}
+                                    onChange={onChangeEndDate}
                                   />
                                 </div>
-                                    <div className="form-group col-md-4">
+                                <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="status"
                                     className="font-weight-bold fontsize"
                                   >
                                     Status
-                                    <span className="ml-1" style={{ color: "red" }}>*</span>
+                                    <span
+                                      className="ml-1"
+                                      style={{ color: "red" }}
+                                    >
+                                      *
+                                    </span>
                                   </label>
-                                  <Input
-                                    size="large"
-                                    className="form-control"
-                                    id="status"
-                                    placeholder="Status"
-                                    value={status}
-                                    onChange={(e) => {
-                                      if (e.target.value != "") {
-                                        setStatus(e.target.value);
-                                      } else {
-                                        setStatus("");
-                                      }
-                                    }}
-                                  />
+                                  <Select
+                                    defaultValue={status}
+                                    onChange={handleChangeStatus}
+                                  >
+                                    <Option value="Active">Active</Option>
+                                    <Option value="Inactive">Inactive</Option>
+                                  </Select>
                                 </div>
                               </div>
                             </form>
@@ -438,7 +473,7 @@ const Home = (props) => {
                                 left: "78%",
                                 fontSize: "1rem",
                                 height: "fit-content",
-                                width:"118px",
+                                width: "118px",
                               }}
                               onClick={handleClose}
                             >
@@ -457,7 +492,7 @@ const Home = (props) => {
                               {confirmBtnLoader ? (
                                 <i
                                   className="fas fa-spinner mr-2 fa-spin"
-                                  style={{ fontSize: "0.9rem", color:"white" }}
+                                  style={{ fontSize: "0.9rem", color: "white" }}
                                 ></i>
                               ) : null}
                               Confirm

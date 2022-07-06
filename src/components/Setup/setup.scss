@@ -1,4 +1,4 @@
-.appDetails {
+.setup {
   .mainheader {
     color: #2368a0;
     font-size: 1.8rem;
@@ -10,6 +10,17 @@
     position: relative;
     top: 20%;
     width: 20%;
+  }
+
+    .buttonStyles {
+    background: #2368a0 !important;
+    color: white !important;
+    width: 100px;
+  }
+
+  .buttonStyles:hover {
+    background-color: #00aae7 !important;
+    color: white !important;
   }
 
   .tile-label {

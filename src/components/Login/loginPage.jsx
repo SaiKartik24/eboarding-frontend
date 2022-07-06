@@ -82,13 +82,13 @@ const Login = () => {
           password: "",
           fullname: "Admin",
           mail: "p1@abc.com",
-          employmenttype: "fulltime",
-          role: "Admin",
+          employmenttype: "Full Time",
+          role: "Administrator",
           managermail: "m1@abc.com",
           managerid: "",
           startdate: "",
           enddate: "",
-          status: "active"
+          status: "Active"
         };
         storeData(userDetails);
       }
@@ -99,13 +99,13 @@ const Login = () => {
           password: "",
           fullname: "User",
           mail: "p1@abc.com",
-          employmenttype: "fulltime",
-          role: "User",
+          employmenttype: "Full Time",
+          role: "Team Member",
           managermail: "m1@abc.com",
           managerid: "",
-          startdate: "",
-          enddate: "",
-          status: "active"
+          startdate: "01/01/2020",
+          enddate: "01/01/2021",
+          status: "Active"
         };
         storeData(userDetails);
       } else {
