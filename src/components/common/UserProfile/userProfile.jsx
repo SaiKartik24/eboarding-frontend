@@ -15,7 +15,7 @@ const userLogo = {
 
 const UserProfile = (props) => {
   const data = props.userData;
-  console.log(data);
+  // console.log(data);
   const navigate = useNavigate();
   const [profileImag, setProfileImg] = useState("");
   const profile = () => {
@@ -27,7 +27,7 @@ const UserProfile = (props) => {
   });
   const ProfileImage = () => {
     let profileName = data.fullname && data.fullname.split(" ");
-    console.log(data)
+    // console.log(data)
     if (profileName.length > 1) {
       profileName = profileName[0].charAt(0) + profileName[1].charAt(0);
     }

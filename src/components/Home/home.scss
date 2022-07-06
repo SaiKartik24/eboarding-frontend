@@ -1,4 +1,4 @@
-.listOfBots {
+.home {
   .nlpApps {
     text-decoration: none;
     color: inherit;
@@ -70,6 +70,10 @@
     overflow: hidden;
     display: grid;
     cursor: pointer;
+  }
+
+  .ant-menu-submenu-arrow{
+    display: none !important;
   }
 
   .ant-input-search-large .ant-input-search-button {
