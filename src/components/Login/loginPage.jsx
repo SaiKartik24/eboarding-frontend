@@ -1,29 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./loginPage.scss";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Radio } from "antd";
 import { Button, Input, Form } from "antd";
 import LoginNotification from "../common/Notifications/LoginNotification";
+import { GetAdmin } from "../services/login.service";
 
 const Login = () => {
   let navigate = useNavigate();
-  // const location = useLocation();
-
-  const [value, setValue] = React.useState(0);
-  const onChange = (e) => {
-    e.preventDefault();
-    let val = e.target.value;
-    setUserName("");
-    setPassword("");
-    setShowError(false);
-    setValidName(true);
-    setValidPass(true);
-  };
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [validName, setValidName] = useState(true);
   const [validPass, setValidPass] = useState(true);
+  const [adminData, setAdminData] = useState([]);
   const handleInput = (e) => {
     let val = e.target.value;
     if (val.length === 0) {
@@ -61,6 +51,21 @@ const Login = () => {
       }
     }
   };
+
+  useEffect(() => {
+    getAdmin();
+  }, []);
+
+  const getAdmin = async() => {
+    try {
+      let response = await GetAdmin();
+      response = await response.json();
+      setAdminData(response.Result);
+      console.log(response);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
 
   const storeData = (userDetails) =>{
     let userData = JSON.stringify(userDetails);
@@ -122,64 +127,6 @@ const Login = () => {
     }
   };
 
-  const [style, setStyle] = useState(false);
-  function loginFunction() {
-    setValue(0);
-    setUserName("");
-    setPassword("");
-    setShowError(false);
-    setValidName(true);
-    setValidPass(true);
-    setStyle(false);
-    setPasswordShown(false);
-  }
-  function hubbleFunction() {
-    setValue(1);
-    setUserName("");
-    setPassword("");
-    setShowError(false);
-    setValidName(true);
-    setValidPass(true);
-    setStyle(true);
-    setPasswordShown(false);
-  }
-
-  const [FirstName, setFirstName] = useState("");
-  const [LastName, setLastName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [Organization, setOrganization] = useState("");
-  const [validFirstName, setValidFirstName] = useState(true);
-  const [validLastName, setValidLastName] = useState(true);
-  const [validEmail, setValidEmail] = useState(true);
-  const [validOrganization, setValidOrganization] = useState(true);
-  const [wrongEmail, setWrongEmail] = useState(false);
-  const [createRequestSpinner, setCreateRequestSpinner] = useState(false);
-
-  const [request, setRequest] = useState(false);
-
-  const validation = () => {
-    if (FirstName.length <= 0) {
-      setValidFirstName(false);
-    }
-    if (LastName.length <= 0) {
-      setValidLastName(false);
-    }
-    if (Email.length <= 0) {
-      setValidEmail(false);
-    }
-    if (Organization.length <= 0) {
-      setValidOrganization(false);
-    }
-  };
-
-  const requestHandler = () => {
-    setRequest(true);
-  };
-
-  const clickHandler = () => {
-    setRequest(false);
-  };
-
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
@@ -201,11 +148,8 @@ const Login = () => {
                     </div>
                     <Form
                       id="login"
-                      className={
-                        style
-                          ? "loginFStyle position-relative"
-                          : "loginTStyle position-relative"
-                      }
+                      className="loginTStyle position-relative"
+                      
                     >
                       <Form.Item
                         name="username"
@@ -293,9 +237,6 @@ const Login = () => {
                         <a href="/">forgot password?</a>
                       </Form.Item>
                     </Form>
-                    {/* <div className="cp-clr w-100 text-center">
-                      © 2022 IT-Access
-                    </div> */}
                   </div>
                   <div className="overlay-container">
                     <div className="overlay h-100">
@@ -305,9 +246,6 @@ const Login = () => {
                           <li className="lstTitle">
                             <b>IT Access</b>
                           </li>
-                          {/* <li>
-                            where everything is for <b>you!</b>
-                          </li> */}
                         </ul>
                         <img
                           className="mt-5 mlogoImage"
