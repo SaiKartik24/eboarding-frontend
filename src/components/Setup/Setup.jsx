@@ -3,6 +3,8 @@ import "./setup.scss";
 import { Button, Form, Input, Popconfirm, Select, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import * as XLSX from "xlsx";
 import SelectFun from "../common/Select/Select";
+import { GetEmployees } from "../services/setup.service";
+import PopUpModal from "../common/Modal/Modal";
 
 const { Option } = Select;
 
@@ -15,6 +17,34 @@ const Setup = (props) => {
   const employeeType = ["Full Time", "Contractor", "Vendor"];
   const employeeRole = ["Team Member", "Administator", "Manager"];
   const Status = ["Active", "Inactive"];
+  const [modal, setModal] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [empType, setEmpType] = useState("Full Time");
+  const [empRole, setEmpRole] = useState("Team Member");
+  const [managerMail, setManagerMail] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState("Active");
+  const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [selectStartDate, setSelectStartDate] = useState(false);
+  const [selectEndDate, setSelectEndDate] = useState(false);
+
+  const handleClose = () => {
+    setModal(false);
+    setStatus("Active");
+    setEndDate(null);
+    setStartDate(null);
+    setManagerMail("");
+    setEmpRole("Team Member");
+    setEmpType("Full Time");
+    setPassword("");
+    setEmail("");
+    setFullName("");
+  };
+
   const EditableCell = ({
     editing,
     dataIndex,
@@ -25,10 +55,10 @@ const Setup = (props) => {
     children,
     ...restProps
   }) => {
-    const inputNode = inputType === 'select' ? (
-      <SelectFun field={record} type="EmployeeType" values={employeeType} />
-    ) : (inputType === "roleSelect" ? <SelectFun field={record} type="EmployeeRole" values={employeeRole} /> : (
-        inputType === "statusSelect" ? (<SelectFun field={record} type="EmployeeStatus" values={Status} /> ):<Input />));
+    const inputNode = inputType === 'employmenttype' ? (
+      <SelectFun field={record} type="employmenttype" values={employeeType} />
+    ) : (inputType === "role" ? <SelectFun field={record} type="role" values={employeeRole} /> : (
+        inputType === "status" ? (<SelectFun field={record} type="status" values={Status} /> ):<Input />));
     return (
       <td {...restProps}>
         {editing ? (
@@ -73,17 +103,10 @@ const Setup = (props) => {
 
       fileReader.onload = (e) => {
         const bufferArray = e.target.result;
-
         const wb = XLSX.read(bufferArray, { type: "buffer" });
-
         const wsname = wb.SheetNames[0];
-
         const ws = wb.Sheets[wsname];
-
-        console.log(ws)
-
         const data = XLSX.utils.sheet_to_json(ws);
-
         resolve(data);
       };
 
@@ -94,10 +117,10 @@ const Setup = (props) => {
 
     promise.then((d) => {
       d.map((item) => {
-        let startDate = ExcelDateToJSDate(item.StartDate)
-        item.StartDate = startDate;
-        let endDate = ExcelDateToJSDate(item.EndDate)
-        item.EndDate = endDate;
+        let startDate = ExcelDateToJSDate(item.startdate)
+        item.startdate = startDate;
+        let endDate = ExcelDateToJSDate(item.enddate)
+        item.enddate = endDate;
       })
       console.log(d);
       setItems([...items, ...d]);
@@ -105,14 +128,23 @@ const Setup = (props) => {
   };
 
   useEffect(() => {
+    getEmployees();
+  }, []);
+
+  const getEmployees = async() => {
     setPageLoader(true);
-    setTimeout(() => {
+    try {
+      let employeeResponse = await GetEmployees();
+      employeeResponse = await employeeResponse.json();
+      setItems(employeeResponse.Result[0].employees);
+      console.log(employeeResponse);
       setPageLoader(false);
-    }, 2000);
-  }, [items]);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
 
-
-  const isEditing = (record) => record.Mail === editingKey;
+  const isEditing = (record) => record._id === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -121,7 +153,7 @@ const Setup = (props) => {
       address: '',
       ...record,
     });
-    setEditingKey(record.Mail);
+    setEditingKey(record._id);
   };
 
   const cancel = () => {
@@ -131,54 +163,57 @@ const Setup = (props) => {
   const columns = [
     {
       title: 'Full Name',
-      dataIndex: 'FullName',
-      key: 'FullName',
+      dataIndex: 'fullname',
+      key: 'fullname',
       editable: true,
     },
     {
       title: 'Mail',
-      dataIndex: 'Mail',
-      key: 'Mail',
+      dataIndex: 'mail',
+      key: 'mail',
       editable: true,
     },
     {
       title: 'Status',
-      dataIndex: 'Status',
+      dataIndex: 'status',
       key: 'status',
       editable: true,
     },
     {
       title: 'Employee Type',
-      dataIndex: 'EmployeeType',
-      key: 'EmployeeType',
+      dataIndex: 'employmenttype',
+      key: 'employmenttype',
       editable: true,
     },
     {
       title: 'Employee Role',
-      dataIndex: 'EmployeeRole',
-      key: 'EmployeeRole',
+      dataIndex: 'role',
+      key: 'role',
       editable: true,
     },
     {
       title: 'Manager Mail',
-      dataIndex: 'ManagerMail',
-      key: 'ManagerMail',
+      dataIndex: 'managermail',
+      key: 'managermail',
       editable: true,
     },
     {
       title: 'Start Date',
-      dataIndex: 'StartDate',
-      key: 'StartDate',
+      dataIndex: 'startdate',
+      key: 'startdate',
       editable: true,
     },
     {
       title: 'End Date',
-      dataIndex: 'EndDate',
-      key: 'EndDate',
+      dataIndex: 'enddate',
+      key: 'enddate',
       editable: true,
     },
     {
-      title: <b>Actions</b>,
+      title: <div className="d-flex justify-content-between"><div><b>Actions</b></div>
+        <div className="material-icons-outlined mr-3" onClick={() => setModal(true)}>
+          person_add
+        </div></div>,
       key: "action",
       render: (_, record) => {
         const editable = isEditing(record);
@@ -199,7 +234,6 @@ const Setup = (props) => {
         ) : (
           <span>
             <Typography.Link
-              // disabled={editingKey !== ""}
               onClick={() => {
                 edit(record);
               }}
@@ -213,7 +247,6 @@ const Setup = (props) => {
               </Tooltip>
             </Typography.Link>
             <Typography.Link
-            // disabled={editingKey !== ""}
             >
               <Tooltip title="Delete">
                 <i
@@ -236,14 +269,83 @@ const Setup = (props) => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === 'EmployeeType' ? 'select' : (col.dataIndex === 'EmployeeRole' ? 'roleSelect' :
-          (col.dataIndex === 'Status' ? 'statusSelect':'text')),
+        inputType: col.dataIndex === 'employmenttype' ? 'employmenttype' : (col.dataIndex === 'role' ? 'role' :
+          (col.dataIndex === 'status' ? 'status':'text')),
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
       }),
     };
   });
+
+  let modalValues = {
+    fullName: fullName,
+    email: email,
+    empType: empType,
+    empRole: empRole,
+    managerMail: managerMail,
+    startDate: startDate,
+    endDate: endDate,
+    status: status,
+  }
+
+  const handleFullname = (val) => {
+    setFullName(val);
+  }
+
+  const handleMail = (val) => {
+    setEmail(val);
+  }
+
+  const handlePassword = (val) => {
+    setPassword(val);
+  }
+
+  const handleEmpType = (val) => {
+    setEmpType(val);
+  }
+
+  const handleEmpyRole = (val) => {
+    setEmpRole(val);
+  }
+
+  const handleManagerMail = (val) => {
+    setManagerMail(val);
+  }
+
+  const handleStartDate = (val) => {
+    setStartDate(val);
+  }
+
+  const handleEndDate = (val) => {
+    setEndDate(val);
+  }
+
+  const handleStatus = (val) => {
+    setStatus(val);
+  }
+
+  const ConfirmHandler = () => {
+    setConfirmBtnLoader(true);
+    let userDetails = {
+      id: "",
+      password: password,
+      fullname: fullName,
+      mail: email,
+      employmenttype: empType,
+      role: empRole,
+      managermail: managerMail,
+      managerid: "",
+      startdate: startDate,
+      enddate: endDate,
+      status: status,
+    };
+    setTimeout(() => {
+      setConfirmBtnLoader(false);
+      setModal(false);
+      // ProfileUpdateNotification();
+    }, 2000);
+  };
 
   return (
     <section className="setup h-100">
@@ -256,12 +358,12 @@ const Setup = (props) => {
         ) : (
           <div>
             <div className="float-right mb-4">
-              <Button
+                {/* <Button
                 type="primary mr-4"
                 className="buttonStyles"
               >
                 Save
-              </Button>
+              </Button> */}
               <input
                 type="file"
                 onChange={(e) => {
@@ -282,13 +384,30 @@ const Setup = (props) => {
                 dataSource={items}
                 columns={mergedColumns}
                 rowClassName="editable-row"
-                pagination={false}
-                scroll={{
-                  x: 200,
-                  y: 500,
-                }}
+                pagination={true}
+                // scroll={{
+                //   x: 200,
+                //   y: 500,
+                // }}
               />
-            </Form>
+              </Form>
+              <PopUpModal visibility={modal} handleClose={handleClose}
+                values={modalValues}
+                handleFullname={handleFullname}
+                handleMail={handleMail}
+                handlePassword={handlePassword}
+                handleEmpType={handleEmpType}
+                handleEmpyRole={handleEmpyRole}
+                handleManagerMail={handleManagerMail}
+                handleStartDate={handleStartDate}
+                handleEndDate={handleEndDate}
+                handleStatus={handleStatus}
+                ConfirmHandler={ConfirmHandler}
+                showPassword={showPassword}
+                selectStartDate={selectStartDate}
+                selectEndDate={selectEndDate}
+                confirmBtnLoader={confirmBtnLoader}
+              />
           </div>
         )}
       </div>

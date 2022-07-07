@@ -3,8 +3,8 @@ import { Select } from 'antd';
 const { Option } = Select;
 
 const SelectFun = (props) => {
-    var defaultVal = props.type === "EmployeeType" ? props.field.EmployeeType :
-        (props.type === "EmployeeRole" ? props.field.EmployeeRole : props.field.Status);
+    var defaultVal = props.type === "employmenttype" ? props.field.employmenttype :
+        (props.type === "role" ? props.field.role : props.field.status);
     const onChange = (e) => {
         defaultVal = e;
     }

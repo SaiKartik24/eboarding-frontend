@@ -10,3 +10,8 @@ export function resolveUserRole() {
     data = JSON.parse(data);
     return data.role;
 }
+
+export function resolveOrigin() {
+    let origin = "http://localhost:5001/api"
+    return origin;
+}
