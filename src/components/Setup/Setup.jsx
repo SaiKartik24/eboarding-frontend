@@ -162,56 +162,56 @@ const Setup = (props) => {
 
   const columns = [
     {
-      title: 'Full Name',
+      title: <b>Full Name</b>,
       dataIndex: 'fullname',
       key: 'fullname',
       editable: true,
     },
     {
-      title: 'Mail',
+      title: <b>Mail</b>,
       dataIndex: 'mail',
       key: 'mail',
       editable: true,
     },
     {
-      title: 'Status',
+      title: <b>Status</b>,
       dataIndex: 'status',
       key: 'status',
       editable: true,
     },
     {
-      title: 'Employee Type',
+      title: <b>Employee Type</b>,
       dataIndex: 'employmenttype',
       key: 'employmenttype',
       editable: true,
     },
     {
-      title: 'Employee Role',
+      title: <b>Employee Role</b>,
       dataIndex: 'role',
       key: 'role',
       editable: true,
     },
     {
-      title: 'Manager Mail',
+      title: <b>Manager Mail</b>,
       dataIndex: 'managermail',
       key: 'managermail',
       editable: true,
     },
     {
-      title: 'Start Date',
+      title: <b>Start Date</b>,
       dataIndex: 'startdate',
       key: 'startdate',
       editable: true,
     },
     {
-      title: 'End Date',
+      title: <b>End Date</b>,
       dataIndex: 'enddate',
       key: 'enddate',
       editable: true,
     },
     {
       title: <div className="d-flex justify-content-between"><div><b>Actions</b></div>
-        <div className="material-icons-outlined mr-3" onClick={() => setModal(true)}>
+        <div className="material-icons-outlined cursorSty mr-3" onClick={() => setModal(true)}>
           person_add
         </div></div>,
       key: "action",
