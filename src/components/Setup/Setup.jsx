@@ -246,7 +246,7 @@ const Setup = (props) => {
     console.log(record);
     setEditingKey("");
     try {
-      let response = await UpdateEmployee(record);
+      let response = await UpdateEmployee(record,record._id);
       response = await response.json();
       setEditingKey("");
     } catch (error) {

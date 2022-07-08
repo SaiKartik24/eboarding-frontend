@@ -8,6 +8,7 @@ import { resolveUserData } from "../services/configs";
 import ProfileUpdateNotification from "../common/Notifications/UpdateNotifications";
 import moment from "moment";
 import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
+import { UpdateEmployee } from "../services/setup.service";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -23,7 +24,9 @@ const Home = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [id, setId] = useState(userData._id);
   const [fullName, setFullName] = useState(userData.fullname);
+  const [userName, setUserName] = useState(userData.username);
   const [email, setEmail] = useState(userData.mail);
   const [password, setPassword] = useState(userData.password);
   const [empType, setEmpType] = useState(userData.employmenttype);
@@ -62,13 +65,14 @@ const Home = (props) => {
     setFullName(userData.fullname);
   };
 
-  const ConfirmHandler = () => {
+  const ConfirmHandler = async() => {
     setConfirmBtnLoader(true);
     if (password != "" && fullName != "" && email != "" && managerMail != "" && startDate != "" && endDate != "") {
       let userDetails = {
-        id: "",
+        id: id,
         password: password,
         fullname: fullName,
+        username: userName,
         mail: email,
         employmenttype: empType,
         role: empRole,
@@ -80,11 +84,17 @@ const Home = (props) => {
       };
       let userData = JSON.stringify(userDetails);
       localStorage.setItem("userData", userData);
-      setTimeout(() => {
-        setConfirmBtnLoader(false);
-        setModal(false);
-        ProfileUpdateNotification();
-      }, 2000);
+      try {
+        let response = await UpdateEmployee(userDetails,id);
+        response = await response.json();
+        setTimeout(() => {
+          setConfirmBtnLoader(false);
+          setModal(false);
+          ProfileUpdateNotification();
+        }, 2000);
+      } catch (error) {
+        console.log(error);
+      }
     }
     else
     {
