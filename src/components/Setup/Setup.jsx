@@ -245,14 +245,13 @@ const Setup = (props) => {
   const save = async (record) => {
     console.log(record);
     setEditingKey("");
-    // try {
-    //   let response = await UpdateEmployee(record);
-    //   response = await response.json();
-    //   console.log(response);
-    //   setEditingKey("");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      let response = await UpdateEmployee(record);
+      response = await response.json();
+      setEditingKey("");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const columns = [

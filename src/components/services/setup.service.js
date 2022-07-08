@@ -23,7 +23,7 @@ export function AddEmployee(reqData) {
     return fetch(host + "/employee", options);
 }
 
-export function UpdateEmployee(record) {
+export function UpdateEmployee(record,_id) {
     var options = {
         method: "PUT",
         headers: {
@@ -31,5 +31,5 @@ export function UpdateEmployee(record) {
         },
         body: JSON.stringify(record),
     };
-    return fetch(host + "/employee", options);
+    return fetch(host + "/employee/:"+ _id, options);
 }

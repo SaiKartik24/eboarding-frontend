@@ -79,7 +79,7 @@ const Login = () => {
       //   .then((response) => response.json())
       //   .then((response) => {
       //     const data = response;
-      //     if (data.message != "Incorrect username or password") {
+      //     if (data.message != "No user found") {
       //       storeDataToLocalStorage(data);
       //       setLoginBtnLoader(false);
       //       navigate("/home");
