@@ -2,25 +2,28 @@ import { resolveOrigin } from "./configs";
 
 const host = resolveOrigin();
 
-export function GetAdmin() {
-  var options = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  return fetch( host+ "/admin", options);
-}
-
-export function LoginService(reqData, tokenn) {
+export function LoginService(username, password) {
+  let data = new Object();
+  data.userName = username;
+  data.password = password;
   var options = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-      body: JSON.stringify(reqData),
+      body: JSON.stringify(data),
   };
 
-  return fetch(host + "/admin", options);
+  return fetch(host + "/login", options); 
+}
+
+export function storeDataToLocalStorage(userData) {
+  userData = JSON.stringify(userData);
+  localStorage.setItem("userData", userData);
+}
+
+export function logout() {
+  localStorage.removeItem("userData");
+  localStorage.removeItem("appData");
+  window.location = "http://localhost:3000/";
 }

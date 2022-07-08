@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Radio } from "antd";
 import { Button, Input, Form } from "antd";
 import LoginNotification from "../common/Notifications/LoginNotification";
-import { GetAdmin } from "../services/login.service";
+import { LoginService, storeDataToLocalStorage } from "../services/login.service";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -19,11 +19,9 @@ const Login = () => {
     if (val.length === 0) {
       setValidName(false);
       setUserName(val);
-      setShowError(false);
     } else {
       setValidName(true);
       setUserName(val);
-      setShowError(false);
     }
   };
   const handlePass = (e) => {
@@ -31,11 +29,9 @@ const Login = () => {
     if (val.length <= 0) {
       setValidPass(false);
       setPassword(val);
-      setShowError(false);
     } else {
       setValidPass(true);
       setPassword(e.target.value);
-      setShowError(false);
     }
   };
 
@@ -52,20 +48,20 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    getAdmin();
-  }, []);
+  // useEffect(() => {
+  //   getAdmin();
+  // }, []);
 
-  const getAdmin = async() => {
-    try {
-      let response = await GetAdmin();
-      response = await response.json();
-      setAdminData(response.Result);
-      console.log(response);
-    } catch (error) {
-      console.log("Error", error);
-    }
-  }
+  // const getAdmin = async() => {
+  //   try {
+  //     let response = await GetAdmin();
+  //     response = await response.json();
+  //     setAdminData(response.Result);
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log("Error", error);
+  //   }
+  // }
 
   const storeData = (userDetails) =>{
     let userData = JSON.stringify(userDetails);
@@ -76,56 +72,72 @@ const Login = () => {
   }
 
   const [loginBtnLoader, setLoginBtnLoader] = useState(false);
-  const [showError, setShowError] = useState(false);
   const loginHandler = () => {
-    // e.preventDefault();
     if (username !== "" && password !== "") {
       setLoginBtnLoader(true);
+      // LoginService(username, password)
+      //   .then((response) => response.json())
+      //   .then((response) => {
+      //     const data = response;
+      //     if (data.message != "Incorrect username or password") {
+      //       storeDataToLocalStorage(data);
+      //       setLoginBtnLoader(false);
+      //       navigate("/home");
+      //     } else {
+      //       LoginNotification();
+      //       setLoginBtnLoader(false);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     setLoginBtnLoader(false);
+      //     console.log("error", error);
+      //   });
       if (username == "admin" && password == "admin@123") {
-        let userDetails = {
-          id: "",
-          password: "",
-          fullname: "Admin",
-          mail: "p1@abc.com",
-          employmenttype: "Full Time",
-          role: "Administrator",
-          managermail: "m1@abc.com",
-          managerid: "",
-          startdate: "",
-          enddate: "",
-          status: "Active"
-        };
-        storeData(userDetails);
+          let userDetails = {
+            id: "",
+            password: "",
+            fullname: "Admin",
+            mail: "p1@abc.com",
+            employmenttype: "Full Time",
+            role: "Administrator",
+            managermail: "m1@abc.com",
+            managerid: "",
+            startdate: "",
+            enddate: "",
+            status: "Active"
+          };
+        storeData(userDetails);      //REmove function also
+        }
+        else if (username == "user" && password == "user@123")
+        { 
+          let userDetails = {
+            id: "",
+            password: "",
+            fullname: "User",
+            mail: "p1@abc.com",
+            employmenttype: "Full Time",
+            role: "Team Member",
+            managermail: "m1@abc.com",
+            managerid: "",
+            startdate: "01/01/2020",
+            enddate: "01/01/2021",
+            status: "Active"
+          };
+          storeData(userDetails);
+        } else {
+          LoginNotification();
+          setTimeout(() => {
+            setLoginBtnLoader(false);
+          }, 3000);
+        }
+      } else if (username === "" && password !== "") setValidName(false);
+      else if (password === "" && username !== "") setValidPass(false);
+      else {
+        setValidName(false);
+        setValidPass(false);
       }
-      else if (username == "user" && password == "user@123")
-      { 
-        let userDetails = {
-          id: "",
-          password: "",
-          fullname: "User",
-          mail: "p1@abc.com",
-          employmenttype: "Full Time",
-          role: "Team Member",
-          managermail: "m1@abc.com",
-          managerid: "",
-          startdate: "01/01/2020",
-          enddate: "01/01/2021",
-          status: "Active"
-        };
-        storeData(userDetails);
-      } else {
-        LoginNotification();
-        setTimeout(() => {
-          setLoginBtnLoader(false);
-        }, 3000);
-      }
-    } else if (username === "" && password !== "") setValidName(false);
-    else if (password === "" && username !== "") setValidPass(false);
-    else {
-      setValidName(false);
-      setValidPass(false);
     }
-  };
+  // };
 
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {

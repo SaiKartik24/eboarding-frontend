@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from "react";
 import "./setup.scss";
-import { Button, DatePicker, Form, Input, Popconfirm, Select, Space, Table, Tag, Tooltip, Typography } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
 import * as XLSX from "xlsx";
 import SelectFun from "../common/Select/Select";
-import { AddEmployee, GetEmployees } from "../services/setup.service";
+import { AddEmployee, GetEmployees, UpdateEmployee } from "../services/setup.service";
 import PopUpModal from "../common/Modal/Modal";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import InputFun from "../common/Input/InputFun";
+import { useParams } from "react-router";
+import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 
 const { Option } = Select;
-
 
 const Setup = (props) => {
   const [form] = Form.useForm();
@@ -47,6 +61,7 @@ const Setup = (props) => {
     setEmail("");
     setFullName("");
     setUserName("");
+    setConfirmBtnLoader(false);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
   const EditableCell = ({
@@ -59,35 +74,54 @@ const Setup = (props) => {
     children,
     ...restProps
   }) => {
-    const inputNode = inputType === 'employmenttype' ? (
-      <SelectFun field={record} type="employmenttype" values={employeeType} />
-    ) : (inputType === "role" ? <SelectFun field={record} type="role" values={employeeRole} /> : (
-      inputType === "status" ? (<SelectFun field={record} type="status" values={Status} />) : (inputType === "startdate" ? (
-          // <DatePicker selected={(record.startdate !== ")?moment(record.startdate, 'DD/MM/YY'):moment()} value={(record.startdate !== ") ?
-          //   moment(record.startdate, 'DD/MM/YY') : ""} dateFormat="DD/MM/YY" onChange={(val) => record.startdate = val} />  
+    // console.log("record", record);
+    const inputNode =
+      inputType === "employmenttype" ? (
+        <SelectFun field={record} type="employmenttype" values={employeeType} />
+      ) : inputType === "role" ? (
+        <SelectFun field={record} type="role" values={employeeRole} />
+      ) : inputType === "status" ? (
+        <SelectFun field={record} type="status" values={Status} />
+      ) : inputType === "startdate" ?
+        // <Input value={record.startdate}
+        // onChange={(e)=> record.startdate(e.target.value)} />
         <DatePicker
-            value={moment(
-              record.startdate,
-              dateFormatList[0]
-            )}
-            format={dateFormatList}
-            onChange={(val) => {
-              console.log(val);
-              record.startdate = val;
-            }}
-          />
-        ) :
-          (inputType === "enddate" ? <DatePicker
+          value={moment(
+            record.startdate,
+            dateFormatList[0]
+          )}
+          allowClear= {false}
+          format={dateFormatList}
+                onChange={(val) => {
+                  console.log(val);
+            record.startdate = val.format("MM/DD/YYYY");
+          }}
+        />
+              : inputType === "enddate" ?
+                // <Input value={record.enddate}
+                //   onChange={(e) => record.enddate(e.target.value)} />
+          <DatePicker
             value={moment(
               record.enddate,
               dateFormatList[0]
-            )}
+                  )}
+                  allowClear={false}
             format={dateFormatList}
             onChange={(val) => {
-              console.log(val);
-              record.enddate = val;
+              record.enddate = val.format("MM/DD/YYYY");
             }}
-          /> : <Input />))));
+          />
+          : inputType === "fullname" ? (
+            <InputFun field={record} type="fullname" />
+          ) : inputType === "mail" ? (
+            <InputFun field={record} type="mail" />
+          ) : inputType === "managermail" ? (
+            <InputFun field={record} type="managermail" />
+          ) : inputType === "username" ? (
+            <InputFun field={record} type="username" />
+          ) : (
+            <Input />
+          );
     return (
       <td {...restProps}>
         {editing ? (
@@ -114,16 +148,15 @@ const Setup = (props) => {
 
   const ExcelDateToJSDate = (date) => {
     let converted_date = new Date(Math.round((date - 25569) * 864e5));
-    converted_date = String(converted_date).slice(4, 15)
-    date = converted_date.split(" ")
+    converted_date = String(converted_date).slice(4, 15);
+    date = converted_date.split(" ");
     let day = date[1];
     let month = date[0];
-    month = "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1
-    if (month.toString().length <= 1)
-      month = '0' + month
+    month = "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1;
+    if (month.toString().length <= 1) month = "0" + month;
     let year = date[2];
-    return String(day + '-' + month + '-' + year)
-  }
+    return String(day + "-" + month + "-" + year);
+  };
 
   const readExcel = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -145,22 +178,25 @@ const Setup = (props) => {
     });
 
     promise.then((d) => {
+      console.log(d);
       d.map((item) => {
-        let startDate = ExcelDateToJSDate(item.startdate)
+        let startDate = ExcelDateToJSDate(item.startdate);
         item.startdate = startDate;
-        let endDate = ExcelDateToJSDate(item.enddate)
+        let endDate = ExcelDateToJSDate(item.enddate);
         item.enddate = endDate;
         item._id = uuidv4();
-      })
+      });
+
+      console.log("items", items);
       setItems([...items, ...d]);
+      console.log(items);
       submitEmployeesData(d);
     });
   };
 
   const submitEmployeesData = async (data) => {
-    let userDetails = {
-      employees: data
-    }
+    let userDetails = data;
+    console.log("userDetails", userDetails);
     try {
       let employeeResponse = await AddEmployee(userDetails);
       employeeResponse = await employeeResponse.json();
@@ -168,7 +204,7 @@ const Setup = (props) => {
     } catch (error) {
       console.log("Error", error);
     }
-  }
+  };
 
   useEffect(() => {
     getEmployees();
@@ -176,104 +212,125 @@ const Setup = (props) => {
 
   const getEmployees = async () => {
     setPageLoader(true);
+    items.splice(0, items.length)
     try {
       let employeeResponse = await GetEmployees();
       employeeResponse = await employeeResponse.json();
       if (employeeResponse.Result.length > 0) {
-        setItems(employeeResponse.Result[0].employees);
-      }
-      else
-        setItems("");
-      console.log(employeeResponse);
-      setPageLoader(false);
+        employeeResponse.Result.map((item) => {
+          item.length > 0 && item.map((data) => {
+            items.push(data);
+          })
+        })
+      } else setItems("");
+      setTimeout(() => {
+        setPageLoader(false);
+      },2000);
     } catch (error) {
       console.log("Error", error);
     }
-  }
+  };
 
   const isEditing = (record) => record._id === editingKey;
 
   const edit = (record) => {
-    form.setFieldsValue({
-      name: '',
-      age: '',
-      address: '',
-      ...record,
-    });
+    console.log("record", record);
     setEditingKey(record._id);
   };
 
   const cancel = () => {
-    setEditingKey('');
+    setEditingKey("");
+  };
+
+  const save = async (record) => {
+    console.log(record);
+    setEditingKey("");
+    // try {
+    //   let response = await UpdateEmployee(record);
+    //   response = await response.json();
+    //   console.log(response);
+    //   setEditingKey("");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const columns = [
     {
       title: <b>Full Name</b>,
-      dataIndex: 'fullname',
-      key: 'fullname',
+      dataIndex: "fullname",
+      key: "fullname",
       editable: true,
     },
     {
       title: <b>User Name</b>,
-      dataIndex: 'username',
-      key: 'username',
+      dataIndex: "username",
+      key: "username",
       editable: true,
     },
     {
       title: <b>Mail</b>,
-      dataIndex: 'mail',
-      key: 'mail',
+      dataIndex: "mail",
+      key: "mail",
       editable: true,
     },
     {
       title: <b>Status</b>,
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: "status",
+      key: "status",
       editable: true,
     },
     {
       title: <b>Employee Type</b>,
-      dataIndex: 'employmenttype',
-      key: 'employmenttype',
+      dataIndex: "employmenttype",
+      key: "employmenttype",
       editable: true,
     },
     {
       title: <b>Employee Role</b>,
-      dataIndex: 'role',
-      key: 'role',
+      dataIndex: "role",
+      key: "role",
       editable: true,
     },
     {
       title: <b>Manager Mail</b>,
-      dataIndex: 'managermail',
-      key: 'managermail',
+      dataIndex: "managermail",
+      key: "managermail",
       editable: true,
     },
     {
       title: <b>Start Date</b>,
-      dataIndex: 'startdate',
-      key: 'startdate',
+      dataIndex: "startdate",
+      key: "startdate",
       editable: true,
     },
     {
       title: <b>End Date</b>,
-      dataIndex: 'enddate',
-      key: 'enddate',
+      dataIndex: "enddate",
+      key: "enddate",
       editable: true,
     },
     {
-      title: <div className="d-flex justify-content-between"><div><b>Actions</b></div>
-        <div className="material-icons-outlined cursorSty mr-3" onClick={() => setModal(true)}>
-          person_add
-        </div></div>,
+      title: (
+        <div className="d-flex justify-content-between">
+          <div>
+            <b>Actions</b>
+          </div>
+          <div
+            className="material-icons-outlined cursorSty mr-3"
+            onClick={() => setModal(true)}
+          >
+            person_add
+          </div>
+        </div>
+      ),
       key: "action",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
             <Typography.Link
-              // onClick={() => save(record.key)}
+              onClick={() => save(record)}
               style={{
                 marginRight: 8,
               }}
@@ -287,20 +344,16 @@ const Setup = (props) => {
         ) : (
           <span>
             <Typography.Link
-              onClick={() => {
+                onClick={() => {
                 edit(record);
               }}
               className="mr-2"
             >
               <Tooltip title="Edit">
-                <i
-                  className="fas fa-edit"
-                  style={{ color: "blue" }}
-                ></i>
+                <i className="fas fa-edit" style={{ color: "blue" }}></i>
               </Tooltip>
             </Typography.Link>
-            <Typography.Link
-            >
+            <Typography.Link>
               <Tooltip title="Delete">
                 <i
                   className="fas fa-trash ml-1 mr-1"
@@ -322,9 +375,26 @@ const Setup = (props) => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === 'employmenttype' ? 'employmenttype' : (col.dataIndex === 'role' ? 'role' :
-          (col.dataIndex === 'status' ? 'status' : (col.dataIndex === 'startdate' ? 'startdate' :
-            (col.dataIndex === 'enddate' ? 'enddate' : 'text')))),
+        inputType:
+          col.dataIndex === "employmenttype"
+            ? "employmenttype"
+            : col.dataIndex === "role"
+              ? "role"
+              : col.dataIndex === "status"
+                ? "status"
+                : col.dataIndex === "startdate"
+                  ? "startdate"
+                  : col.dataIndex === "enddate"
+                    ? "enddate"
+                    : col.dataIndex === "fullname"
+                      ? "fullname"
+                      : col.dataIndex === "username"
+                        ? "username"
+                        : col.dataIndex === "mail"
+                          ? "mail"
+                          : col.dataIndex === "managermail"
+                            ? "managermail"
+                            : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -342,52 +412,52 @@ const Setup = (props) => {
     startDate: startDate,
     endDate: endDate,
     status: status,
-  }
+  };
 
   const handleFullname = (val) => {
     setFullName(val);
-  }
+  };
 
   const handleUserName = (val) => {
     setUserName(val);
-  }
+  };
 
   const handleMail = (val) => {
     setEmail(val);
-  }
+  };
 
   const handlePassword = (val) => {
     setPassword(val);
-  }
+  };
 
   const handleEmpType = (val) => {
     setEmpType(val);
-  }
+  };
 
   const handleEmpyRole = (val) => {
     setEmpRole(val);
-  }
+  };
 
   const handleManagerMail = (val) => {
     setManagerMail(val);
-  }
+  };
 
   const handleStartDate = (val) => {
     setStartDate(val.format("MM/DD/YYYY"));
-  }
+  };
 
   const handleEndDate = (val) => {
     setEndDate(val.format("MM/DD/YYYY"));
-  }
+  };
 
   const handleStatus = (val) => {
     setStatus(val);
-  }
+  };
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    let userDetails = {
-      employees: [
+    if (fullName != "" && userName != "" && email != "" && managerMail != "" && startDate !== "" && endDate != "") {
+      let userDetails = [
         {
           _id: uuidv4(),
           password: password,
@@ -401,19 +471,23 @@ const Setup = (props) => {
           startdate: startDate,
           enddate: endDate,
           status: status,
-        }
-      ]
+        },
+      ];
+      console.log(userDetails);
+      try {
+        let employeeResponse = await AddEmployee(userDetails);
+        employeeResponse = await employeeResponse.json();
+        getEmployees();
+        setConfirmBtnLoader(false);
+        setModal(false);
+        console.log(employeeResponse);
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
-    console.log(userDetails);
-    try {
-      let employeeResponse = await AddEmployee(userDetails);
-      employeeResponse = await employeeResponse.json();
-      getEmployees();
+    else {
+      AddEmployeeRequiredNotification();
       setConfirmBtnLoader(false);
-      setModal(false);
-      console.log(employeeResponse);
-    } catch (error) {
-      console.log("Error", error);
     }
   };
 
@@ -461,7 +535,9 @@ const Setup = (props) => {
               // }}
               />
             </Form>
-            <PopUpModal visibility={modal} handleClose={handleClose}
+            <PopUpModal
+              visibility={modal}
+              handleClose={handleClose}
               values={modalValues}
               handleFullname={handleFullname}
               handleUserName={handleUserName}

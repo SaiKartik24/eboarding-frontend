@@ -20,6 +20,16 @@ export function AddEmployee(reqData) {
         },
         body: JSON.stringify(reqData),
     };
+    return fetch(host + "/employee", options);
+}
 
+export function UpdateEmployee(record) {
+    var options = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(record),
+    };
     return fetch(host + "/employee", options);
 }

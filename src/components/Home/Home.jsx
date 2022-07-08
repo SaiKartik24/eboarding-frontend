@@ -7,6 +7,7 @@ import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
 import { resolveUserData } from "../services/configs";
 import ProfileUpdateNotification from "../common/Notifications/UpdateNotifications";
 import moment from "moment";
+import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -63,26 +64,33 @@ const Home = (props) => {
 
   const ConfirmHandler = () => {
     setConfirmBtnLoader(true);
-    let userDetails = {
-      id: "",
-      password: password,
-      fullname: fullName,
-      mail: email,
-      employmenttype: empType,
-      role: empRole,
-      managermail: managerMail,
-      managerid: "",
-      startdate: startDate,
-      enddate: endDate,
-      status: status,
-    };
-    let userData = JSON.stringify(userDetails);
-    localStorage.setItem("userData", userData);
-    setTimeout(() => {
+    if (password != "" && fullName != "" && email != "" && managerMail != "" && startDate != "" && endDate != "") {
+      let userDetails = {
+        id: "",
+        password: password,
+        fullname: fullName,
+        mail: email,
+        employmenttype: empType,
+        role: empRole,
+        managermail: managerMail,
+        managerid: "",
+        startdate: startDate,
+        enddate: endDate,
+        status: status,
+      };
+      let userData = JSON.stringify(userDetails);
+      localStorage.setItem("userData", userData);
+      setTimeout(() => {
+        setConfirmBtnLoader(false);
+        setModal(false);
+        ProfileUpdateNotification();
+      }, 2000);
+    }
+    else
+    {
+      AddEmployeeRequiredNotification();
       setConfirmBtnLoader(false);
-      setModal(false);
-      ProfileUpdateNotification();
-    }, 2000);
+      }
   };
 
   const [passwordShown, setPasswordShown] = useState(false);
