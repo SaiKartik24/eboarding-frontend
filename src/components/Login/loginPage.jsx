@@ -75,61 +75,23 @@ const Login = () => {
   const loginHandler = () => {
     if (username !== "" && password !== "") {
       setLoginBtnLoader(true);
-      // LoginService(username, password)
-      //   .then((response) => response.json())
-      //   .then((response) => {
-      //     const data = response;
-      //     if (data.message != "No user found") {
-      //       storeDataToLocalStorage(data);
-      //       setLoginBtnLoader(false);
-      //       navigate("/home");
-      //     } else {
-      //       LoginNotification();
-      //       setLoginBtnLoader(false);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setLoginBtnLoader(false);
-      //     console.log("error", error);
-      //   });
-      if (username == "admin" && password == "admin@123") {
-          let userDetails = {
-            id: "",
-            password: "",
-            fullname: "Admin",
-            mail: "p1@abc.com",
-            employmenttype: "Full Time",
-            role: "Administrator",
-            managermail: "m1@abc.com",
-            managerid: "",
-            startdate: "",
-            enddate: "",
-            status: "Active"
-          };
-        storeData(userDetails);      //REmove function also
-        }
-        else if (username == "user" && password == "user@123")
-        { 
-          let userDetails = {
-            id: "",
-            password: "",
-            fullname: "User",
-            mail: "p1@abc.com",
-            employmenttype: "Full Time",
-            role: "Team Member",
-            managermail: "m1@abc.com",
-            managerid: "",
-            startdate: "01/01/2020",
-            enddate: "01/01/2021",
-            status: "Active"
-          };
-          storeData(userDetails);
-        } else {
-          LoginNotification();
-          setTimeout(() => {
+      LoginService(username, password)
+        .then((response) => response.json())
+        .then((response) => {
+          const data = response;
+          if (data.Result != "Login Failed!..") {
+            storeDataToLocalStorage(data.Result[0]);
             setLoginBtnLoader(false);
-          }, 3000);
-        }
+            navigate("/home");
+          } else {
+            LoginNotification();
+            setLoginBtnLoader(false);
+          }
+        })
+        .catch((error) => {
+          setLoginBtnLoader(false);
+          console.log("error", error);
+        });
       } else if (username === "" && password !== "") setValidName(false);
       else if (password === "" && username !== "") setValidPass(false);
       else {

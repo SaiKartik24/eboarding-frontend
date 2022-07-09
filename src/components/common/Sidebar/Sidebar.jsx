@@ -105,7 +105,7 @@ const Sidebar = (props) => {
                 )}
               </div>
             </Link>
-            {userData.role && userData.role == "Administrator" ? (
+            {userData.role && userData.role == "administrator" ? (
               <>
                 <div
                   className={

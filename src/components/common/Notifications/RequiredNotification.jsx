@@ -3,7 +3,7 @@ import React from 'react'
 import './notification.scss'
 const openNotificationForRequiredField = (placement) => {
     notification.open({
-        message: <div className="notificationStyle">Please fill all the fields.</div>,
+        message: <div className="notificationStyle">Please fill all the fields or upload excel file.</div>,
         placement,
     });
 };

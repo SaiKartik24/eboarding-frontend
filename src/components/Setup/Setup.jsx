@@ -15,15 +15,25 @@ import {
 } from "antd";
 import * as XLSX from "xlsx";
 import SelectFun from "../common/Select/Select";
-import { AddEmployee, GetEmployees, UpdateEmployee } from "../services/setup.service";
+import {
+  AddEmployee,
+  DeleteEmployee,
+  GetEmployeeByMail,
+  GetEmployees,
+  UpdateEmployee,
+} from "../services/setup.service";
 import PopUpModal from "../common/Modal/Modal";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import InputFun from "../common/Input/InputFun";
 import { useParams } from "react-router";
 import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
+import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
+import { recordDeleteNotification } from "../common/Notifications/DeleteNotifications";
+import { debounce } from "lodash";
 
 const { Option } = Select;
+const { Search } = Input;
 
 const Setup = (props) => {
   const [form] = Form.useForm();
@@ -48,6 +58,8 @@ const Setup = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [selectStartDate, setSelectStartDate] = useState(false);
   const [selectEndDate, setSelectEndDate] = useState(false);
+  const [submitExcel, setSubmitExcel] = useState(false);
+  const [excelData, setExcelData] = useState([]);
 
   const handleClose = () => {
     setModal(false);
@@ -62,6 +74,8 @@ const Setup = (props) => {
     setFullName("");
     setUserName("");
     setConfirmBtnLoader(false);
+    setExcelData([]);
+    setSubmitExcel(false);
   };
   const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
   const EditableCell = ({
@@ -82,46 +96,40 @@ const Setup = (props) => {
         <SelectFun field={record} type="role" values={employeeRole} />
       ) : inputType === "status" ? (
         <SelectFun field={record} type="status" values={Status} />
-      ) : inputType === "startdate" ?
+      ) : inputType === "startdate" ? (
         // <Input value={record.startdate}
         // onChange={(e)=> record.startdate(e.target.value)} />
         <DatePicker
-          value={moment(
-            record.startdate,
-            dateFormatList[0]
-          )}
-          allowClear= {false}
+          value={moment(record.startdate, dateFormatList[0])}
+          allowClear={false}
           format={dateFormatList}
-                onChange={(val) => {
-                  console.log(val);
+          onChange={(val) => {
+            console.log(val);
             record.startdate = val.format("MM/DD/YYYY");
           }}
         />
-              : inputType === "enddate" ?
-                // <Input value={record.enddate}
-                //   onChange={(e) => record.enddate(e.target.value)} />
-          <DatePicker
-            value={moment(
-              record.enddate,
-              dateFormatList[0]
-                  )}
-                  allowClear={false}
-            format={dateFormatList}
-            onChange={(val) => {
-              record.enddate = val.format("MM/DD/YYYY");
-            }}
-          />
-          : inputType === "fullname" ? (
-            <InputFun field={record} type="fullname" />
-          ) : inputType === "mail" ? (
-            <InputFun field={record} type="mail" />
-          ) : inputType === "managermail" ? (
-            <InputFun field={record} type="managermail" />
-          ) : inputType === "username" ? (
-            <InputFun field={record} type="username" />
-          ) : (
-            <Input />
-          );
+      ) : inputType === "enddate" ? (
+        // <Input value={record.enddate}
+        //   onChange={(e) => record.enddate(e.target.value)} />
+        <DatePicker
+          value={moment(record.enddate, dateFormatList[0])}
+          allowClear={false}
+          format={dateFormatList}
+          onChange={(val) => {
+            record.enddate = val.format("MM/DD/YYYY");
+          }}
+        />
+      ) : inputType === "fullname" ? (
+        <InputFun field={record} type="fullname" />
+      ) : inputType === "mail" ? (
+        <InputFun field={record} type="mail" />
+      ) : inputType === "managermail" ? (
+        <InputFun field={record} type="managermail" />
+      ) : inputType === "username" ? (
+        <InputFun field={record} type="username" />
+      ) : (
+        <Input />
+      );
     return (
       <td {...restProps}>
         {editing ? (
@@ -178,32 +186,16 @@ const Setup = (props) => {
     });
 
     promise.then((d) => {
-      console.log(d);
       d.map((item) => {
         let startDate = ExcelDateToJSDate(item.startdate);
         item.startdate = startDate;
         let endDate = ExcelDateToJSDate(item.enddate);
         item.enddate = endDate;
-        item._id = uuidv4();
       });
-
-      console.log("items", items);
-      setItems([...items, ...d]);
-      console.log(items);
-      submitEmployeesData(d);
+      // setItems([...items, ...d]);
+      setExcelData(d);
+      setSubmitExcel(true);
     });
-  };
-
-  const submitEmployeesData = async (data) => {
-    let userDetails = data;
-    console.log("userDetails", userDetails);
-    try {
-      let employeeResponse = await AddEmployee(userDetails);
-      employeeResponse = await employeeResponse.json();
-      getEmployees();
-    } catch (error) {
-      console.log("Error", error);
-    }
   };
 
   useEffect(() => {
@@ -212,20 +204,16 @@ const Setup = (props) => {
 
   const getEmployees = async () => {
     setPageLoader(true);
-    items.splice(0, items.length)
+    items.splice(0, items.length);
     try {
       let employeeResponse = await GetEmployees();
       employeeResponse = await employeeResponse.json();
       if (employeeResponse.Result.length > 0) {
-        employeeResponse.Result.map((item) => {
-          item.length > 0 && item.map((data) => {
-            items.push(data);
-          })
-        })
+        setItems(employeeResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
-      },2000);
+      }, 2000);
     } catch (error) {
       console.log("Error", error);
     }
@@ -243,12 +231,27 @@ const Setup = (props) => {
   };
 
   const save = async (record) => {
-    console.log(record);
     setEditingKey("");
     try {
-      let response = await UpdateEmployee(record,record._id);
+      let response = await UpdateEmployee(record, record._id);
       response = await response.json();
-      setEditingKey("");
+      recordUpdateNotification();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteFunc = async (record) => {
+    try {
+      let response = await DeleteEmployee(record, record._id);
+      response = await response.json();
+      // getEmployees();
+      let idToRemove = record._id;
+      let myArr = items.filter(function (item) {
+        return item._id != idToRemove;
+      });
+      setItems(myArr);
+      recordDeleteNotification();
     } catch (error) {
       console.log(error);
     }
@@ -310,19 +313,7 @@ const Setup = (props) => {
       editable: true,
     },
     {
-      title: (
-        <div className="d-flex justify-content-between">
-          <div>
-            <b>Actions</b>
-          </div>
-          <div
-            className="material-icons-outlined cursorSty mr-3"
-            onClick={() => setModal(true)}
-          >
-            person_add
-          </div>
-        </div>
-      ),
+      title: <b>Actions</b>,
       key: "action",
       render: (_, record) => {
         const editable = isEditing(record);
@@ -343,7 +334,7 @@ const Setup = (props) => {
         ) : (
           <span>
             <Typography.Link
-                onClick={() => {
+              onClick={() => {
                 edit(record);
               }}
               className="mr-2"
@@ -352,7 +343,11 @@ const Setup = (props) => {
                 <i className="fas fa-edit" style={{ color: "blue" }}></i>
               </Tooltip>
             </Typography.Link>
-            <Typography.Link>
+            <Typography.Link
+              onClick={() => {
+                deleteFunc(record);
+              }}
+            >
               <Tooltip title="Delete">
                 <i
                   className="fas fa-trash ml-1 mr-1"
@@ -378,22 +373,22 @@ const Setup = (props) => {
           col.dataIndex === "employmenttype"
             ? "employmenttype"
             : col.dataIndex === "role"
-              ? "role"
-              : col.dataIndex === "status"
-                ? "status"
-                : col.dataIndex === "startdate"
-                  ? "startdate"
-                  : col.dataIndex === "enddate"
-                    ? "enddate"
-                    : col.dataIndex === "fullname"
-                      ? "fullname"
-                      : col.dataIndex === "username"
-                        ? "username"
-                        : col.dataIndex === "mail"
-                          ? "mail"
-                          : col.dataIndex === "managermail"
-                            ? "managermail"
-                            : "text",
+            ? "role"
+            : col.dataIndex === "status"
+            ? "status"
+            : col.dataIndex === "startdate"
+            ? "startdate"
+            : col.dataIndex === "enddate"
+            ? "enddate"
+            : col.dataIndex === "fullname"
+            ? "fullname"
+            : col.dataIndex === "username"
+            ? "username"
+            : col.dataIndex === "mail"
+            ? "mail"
+            : col.dataIndex === "managermail"
+            ? "managermail"
+            : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -455,40 +450,111 @@ const Setup = (props) => {
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    if (fullName != "" && userName != "" && email != "" && managerMail != "" && startDate !== "" && endDate != "") {
-      let userDetails = [
-        {
-          _id: uuidv4(),
-          password: password,
-          fullname: fullName,
-          username: userName,
-          mail: email,
-          employmenttype: empType,
-          role: empRole,
-          managermail: managerMail,
-          managerid: "",
-          startdate: startDate,
-          enddate: endDate,
-          status: status,
-        },
-      ];
-      console.log(userDetails);
+    if (
+      fullName != "" &&
+      userName != "" &&
+      email != "" &&
+      managerMail != "" &&
+      startDate !== "" &&
+      endDate != "" &&
+      submitExcel != true
+    ) {
+      let empDetails = {
+        username: userName,
+        password: "",
+        fullname: fullName,
+        mail: email,
+        employmenttype: empType,
+        role: empRole,
+        managermail: managerMail,
+        managerid: "",
+        startdate: startDate,
+        enddate: endDate,
+        status: status,
+        lastlogindate: "",
+      };
       try {
-        let employeeResponse = await AddEmployee(userDetails);
+        let employeeResponse = await AddEmployee(empDetails);
         employeeResponse = await employeeResponse.json();
         getEmployees();
         setConfirmBtnLoader(false);
         setModal(false);
-        console.log(employeeResponse);
       } catch (error) {
         console.log("Error", error);
       }
-    }
-    else {
+    } else if (
+      fullName != "" &&
+      userName != "" &&
+      email != "" &&
+      managerMail != "" &&
+      startDate !== "" &&
+      endDate != "" &&
+      submitExcel == true
+    ) {
+      let empDetails = {
+        username: userName,
+        password: "",
+        fullname: fullName,
+        mail: email,
+        employmenttype: empType,
+        role: empRole,
+        managermail: managerMail,
+        managerid: "",
+        startdate: startDate,
+        enddate: endDate,
+        status: status,
+        lastlogindate: "",
+      };
+      try {
+        let employeeResponse = await AddEmployee(empDetails);
+        employeeResponse = await employeeResponse.json();
+        // getEmployees();
+      } catch (error) {
+        console.log("Error", error);
+      }
+      try {
+        let employeeResponse = await AddEmployee(excelData);
+        employeeResponse = await employeeResponse.json();
+        getEmployees();
+        setConfirmBtnLoader(false);
+        setModal(false);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else if (
+      fullName == "" &&
+      userName == "" &&
+      email == "" &&
+      managerMail == "" &&
+      startDate == "" &&
+      endDate == "" &&
+      submitExcel == true
+    ) {
+      try {
+        let employeeResponse = await AddEmployee(excelData);
+        employeeResponse = await employeeResponse.json();
+        getEmployees();
+        setConfirmBtnLoader(false);
+        setModal(false);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else {
       AddEmployeeRequiredNotification();
       setConfirmBtnLoader(false);
     }
   };
+
+  const searchEmployee = debounce(async (e) => {
+    let val = e.target.value;
+    try {
+      let response = await GetEmployeeByMail(val);
+      response = await response.json();
+      setItems(response.Result);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }, 500);
 
   return (
     <section className="setup h-100">
@@ -500,21 +566,28 @@ const Setup = (props) => {
           </div>
         ) : (
           <div>
-            <div className="float-right mb-4">
-              {/* <Button
-                type="primary mr-4"
+              <div className="d-flex float-right mb-4">
+                <Search
+                  allowClear
+                  onChange={(e) => searchEmployee(e)}
+                  placeholder="Search for mail"
+                  className="mr-3"
+                />
+              <Button
+                type="primary"
                 className="buttonStyles"
+                onClick={() => setModal(true)}
               >
-                Save
-              </Button> */}
-              <input
+                Add
+              </Button>
+              {/* <input
                 type="file"
                 onChange={(e) => {
                   const file = e.target.files[0];
                   readExcel(file);
                 }}
                 style={{ width: "250px", fontSize: "1rem" }}
-              />
+              /> */}
             </div>
             <Form form={form} component={false}>
               <Table
@@ -528,10 +601,10 @@ const Setup = (props) => {
                 columns={mergedColumns}
                 rowClassName="editable-row"
                 pagination={true}
-              // scroll={{
-              //   x: 200,
-              //   y: 500,
-              // }}
+                // scroll={{
+                //   x: 200,
+                //   y: 500,
+                // }}
               />
             </Form>
             <PopUpModal
@@ -553,6 +626,7 @@ const Setup = (props) => {
               selectStartDate={selectStartDate}
               selectEndDate={selectEndDate}
               confirmBtnLoader={confirmBtnLoader}
+              readExcel={readExcel}
             />
           </div>
         )}

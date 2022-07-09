@@ -4,7 +4,7 @@ const host = resolveOrigin();
 
 export function LoginService(username, password) {
   let data = new Object();
-  data.userName = username;
+  data.username = username;
   data.password = password;
   var options = {
     method: "POST",

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, DatePicker, Input, Modal, Select } from "antd";
 import moment from "moment";
+import './modal.scss'
 
 const { Option } = Select;
 const PopUpModal = (props) => {
@@ -9,7 +10,7 @@ const PopUpModal = (props) => {
         <Modal
             title={<b>Add Employee</b>}
             visible={props.visibility}
-            className="modalFont"
+            className="modalFont modalSection"
             onCancel={props.handleClose}
             footer={null}
             keyboard={false}
@@ -240,6 +241,18 @@ const PopUpModal = (props) => {
                     ) : null}
                 </div>
             </form>
+            <div className="chooseSty mt-4 mb-4">
+                {/* <hr className="hrStyles" /> */}
+                <div className="mainTitle">OR</div>
+                <input
+                    type="file"
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        props.readExcel(file);
+                    }}
+                    className="chooseInput"
+                />
+            </div>
             <Button
                 style={{
                     left: "78%",

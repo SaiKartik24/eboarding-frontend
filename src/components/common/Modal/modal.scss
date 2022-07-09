@@ -1,0 +1,25 @@
+.modalSection {
+  .chooseSty {
+   height: 8rem;
+    text-align: center;
+    border: thin;
+    border-style: groove;
+  }
+  .chooseInput {
+    width: 250px;
+    font-size: 1rem;
+    margin-left: 10%;
+    margin-top: 3%;
+  }
+  .mainTitle {
+    margin-top: -13px;
+    width: fit-content;
+    padding: 0px 12px;
+    letter-spacing: 3px;
+    background: white;
+    margin-left: 2%;
+  }
+  .hrStyles {
+    margin: 0px 5px;
+  }
+}
