@@ -5,8 +5,10 @@ import TopBar from "../common/Topbar/Topbar";
 import Sidebar from "../common/Sidebar/Sidebar";
 import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
 import { resolveUserData } from "../services/configs";
-import ProfileUpdateNotification from "../common/Notifications/UpdateNotifications";
 import moment from "moment";
+import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
+import { UpdateEmployee } from "../services/setup.service";
+import { ProfileUpdateNotification } from "../common/Notifications/UpdateNotifications";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -22,7 +24,9 @@ const Home = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [id, setId] = useState(userData._id);
   const [fullName, setFullName] = useState(userData.fullname);
+  const [userName, setUserName] = useState(userData.username);
   const [email, setEmail] = useState(userData.mail);
   const [password, setPassword] = useState(userData.password);
   const [empType, setEmpType] = useState(userData.employmenttype);
@@ -31,11 +35,12 @@ const Home = (props) => {
   const [startDate, setStartDate] = useState(userData.startdate);
   const [endDate, setEndDate] = useState(userData.enddate);
   const [status, setStatus] = useState(userData.status);
+  const [lastlogindate, setLastlogindate] = useState(userData.lastlogindate);
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
 
   useEffect(() => {
     appLoaderFunction();
-    if (userData.role == "Team Member") {
+    if (userData.lastlogindate == "") {
       setModal(true);
     }
   }, [location]);
@@ -61,28 +66,48 @@ const Home = (props) => {
     setFullName(userData.fullname);
   };
 
-  const ConfirmHandler = () => {
+  const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    let userDetails = {
-      id: "",
-      password: password,
-      fullname: fullName,
-      mail: email,
-      employmenttype: empType,
-      role: empRole,
-      managermail: managerMail,
-      managerid: "",
-      startdate: startDate,
-      enddate: endDate,
-      status: status,
-    };
-    let userData = JSON.stringify(userDetails);
-    localStorage.setItem("userData", userData);
-    setTimeout(() => {
+    if (
+      password != "" &&
+      fullName != "" &&
+      email != "" &&
+      managerMail != "" &&
+      startDate != "" &&
+      endDate != ""
+    ) {
+      let userDetails = {
+        _id: id,
+        password: password,
+        fullname: fullName,
+        username: userName,
+        mail: email,
+        employmenttype: empType,
+        role: empRole,
+        managermail: managerMail,
+        managerid: "",
+        startdate: startDate,
+        enddate: endDate,
+        status: status,
+        lastlogindate: lastlogindate,
+      };
+      let userData = JSON.stringify(userDetails);
+      localStorage.setItem("userData", userData);
+      try {
+        let response = await UpdateEmployee(userDetails, id);
+        response = await response.json();
+        setTimeout(() => {
+          setConfirmBtnLoader(false);
+          setModal(false);
+          ProfileUpdateNotification();
+        }, 2000);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      AddEmployeeRequiredNotification();
       setConfirmBtnLoader(false);
-      setModal(false);
-      ProfileUpdateNotification();
-    }, 2000);
+    }
   };
 
   const [passwordShown, setPasswordShown] = useState(false);

@@ -1,12 +1,17 @@
 import { notification } from 'antd'
 import React from 'react'
 import './notification.scss'
-const openNotificationForUpdate = (placement) => {
+const openNotificationForUpdate = (placement, msg) => {
     notification.open({
-        message: <div className="notificationStyle">Profile updated</div>,
+        message: <div className="notificationStyle">{msg} updated.</div>,
         placement,
     });
 };
-const ProfileUpdateNotification = () =>
-    openNotificationForUpdate("topRight")
-export default ProfileUpdateNotification
+
+export const ProfileUpdateNotification = () =>{
+    openNotificationForUpdate("topRight","Profile")
+}
+
+export const recordUpdateNotification = () =>{
+    openNotificationForUpdate("topRight","Record")
+}

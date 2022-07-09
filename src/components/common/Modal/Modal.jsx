@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, DatePicker, Input, Modal, Select } from "antd";
 import moment from "moment";
+import './modal.scss'
 
 const { Option } = Select;
 const PopUpModal = (props) => {
@@ -9,7 +10,7 @@ const PopUpModal = (props) => {
         <Modal
             title={<b>Add Employee</b>}
             visible={props.visibility}
-            className="modalFont"
+            className="modalFont modalSection"
             onCancel={props.handleClose}
             footer={null}
             keyboard={false}
@@ -39,6 +40,28 @@ const PopUpModal = (props) => {
                         />
                     </div>
                     <div className="form-group col-md-4">
+                        <label htmlFor="username" className="font-weight-bold fontsize">
+                            User Name
+                            <span className="ml-1" style={{ color: "red" }}>
+                                *
+                            </span>
+                        </label>
+                        <Input
+                            size="large"
+                            className="form-control"
+                            id="username"
+                            placeholder="Enter username"
+                            value={props.values.userName}
+                            onChange={(e) => {
+                                if (e.target.value != "") {
+                                    props.handleUserName(e.target.value);
+                                } else {
+                                    props.handleUserName("");
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className="form-group col-md-4">
                         <label htmlFor="email" className="font-weight-bold fontsize">
                             Email
                             <span className="ml-1" style={{ color: "red" }}>
@@ -60,6 +83,8 @@ const PopUpModal = (props) => {
                             }}
                         />
                     </div>
+                </div>
+                <div className="d-flex">
                     <div className="form-group col-md-4 d-flex flex-column">
                         <label htmlFor="empType" className="font-weight-bold fontsize">
                             Employment Type
@@ -77,8 +102,6 @@ const PopUpModal = (props) => {
                             <Option value="Vendor">Vendor</Option>
                         </Select>
                     </div>
-                </div>
-                <div className="d-flex">
                     <div className="form-group col-md-4 d-flex flex-column">
                         <label htmlFor="empRole" className="font-weight-bold fontsize">
                             Employment Role
@@ -118,6 +141,8 @@ const PopUpModal = (props) => {
                             }}
                         />
                     </div>
+                </div>
+                <div className="d-flex">
                     <div className="form-group col-md-4 d-flex flex-column">
                         <label htmlFor="startDate" className="font-weight-bold fontsize">
                             Start Date
@@ -138,8 +163,6 @@ const PopUpModal = (props) => {
                             />
                         )}
                     </div>
-                </div>
-                <div className="d-flex">
                     <div className="form-group col-md-4 d-flex flex-column">
                         <label htmlFor="endDate" className="font-weight-bold fontsize">
                             End Date
@@ -176,6 +199,8 @@ const PopUpModal = (props) => {
                             <Option value="Inactive">Inactive</Option>
                         </Select>
                     </div>
+                </div>
+                <div className="d-flex">
                     {props.showPassword ? (
                         <div className="form-group col-md-4">
                             <label htmlFor="password" className="font-weight-bold fontsize">
@@ -216,6 +241,18 @@ const PopUpModal = (props) => {
                     ) : null}
                 </div>
             </form>
+            <div className="chooseSty mt-4 mb-4">
+                {/* <hr className="hrStyles" /> */}
+                <div className="mainTitle">OR</div>
+                <input
+                    type="file"
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        props.readExcel(file);
+                    }}
+                    className="chooseInput"
+                />
+            </div>
             <Button
                 style={{
                     left: "78%",
