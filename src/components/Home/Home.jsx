@@ -448,7 +448,7 @@ const Home = (props) => {
                                     onChange={onChangeStartDate}
                                   />
                                 </div>
-                                <div className="form-group col-md-4 d-flex flex-column">
+                                {/* <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="endDate"
                                     className="font-weight-bold fontsize"
@@ -469,7 +469,7 @@ const Home = (props) => {
                                     format={dateFormatList}
                                     onChange={onChangeEndDate}
                                   />
-                                </div>
+                                </div> */}
                                 <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="status"

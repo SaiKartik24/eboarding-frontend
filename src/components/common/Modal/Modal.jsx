@@ -166,9 +166,6 @@ const PopUpModal = (props) => {
                     <div className="form-group col-md-4 d-flex flex-column">
                         <label htmlFor="endDate" className="font-weight-bold fontsize">
                             End Date
-                            <span className="ml-1" style={{ color: "red" }}>
-                                *
-                            </span>
                         </label>
                         {props.selectEndDate ? (
                             <DatePicker

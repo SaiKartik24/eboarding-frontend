@@ -456,7 +456,6 @@ const Setup = (props) => {
       email != "" &&
       managerMail != "" &&
       startDate !== "" &&
-      endDate != "" &&
       submitExcel != true
     ) {
       let empDetails = {
@@ -488,7 +487,6 @@ const Setup = (props) => {
       email != "" &&
       managerMail != "" &&
       startDate !== "" &&
-      endDate != "" &&
       submitExcel == true
     ) {
       let empDetails = {
@@ -527,7 +525,6 @@ const Setup = (props) => {
       email == "" &&
       managerMail == "" &&
       startDate == "" &&
-      endDate == "" &&
       submitExcel == true
     ) {
       try {
