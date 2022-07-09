@@ -7,11 +7,7 @@ import "./userProfile.scss";
 import { Menu, Avatar, Dropdown } from "antd";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
-const customErrorMessage = "Something went wrong, Please refresh the page.";
-const userLogo = {
-  margin: "0 8px 0px 0px",
-  textTransform: "uppercase",
-};
+import { UpdateEmployee } from "../../services/setup.service";
 
 const UserProfile = (props) => {
   const data = props.userData;
@@ -60,20 +56,37 @@ const UserProfile = (props) => {
     );
   };
 
+  const logOut = async () => {
+    console.log(props.userData);
+    let currentTimeSatamp = Date(Date.now().toString);
+    props.userData.lastlogindate = currentTimeSatamp;
+    try {
+      let response = await UpdateEmployee(props.userData, props.userData._id);
+      response = await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const logOutFunc = () => {
+    logOut();
+    localStorage.removeItem("userData");
+    navigate("/")
+  }
+
   const menu = (firstName) => {
     return (
       <Menu className="userProfile">
-          <Menu.Item key="3" onClick={profile}>
-            <span className="topbarStyle">
+        <Menu.Item key="3" onClick={profile}>
+          <span className="topbarStyle">
             <span class="material-icons-outlined profileIcon">
               account_circle
             </span>
             <span>&nbsp; Profile</span>
-            </span>
-          </Menu.Item>
+          </span>
+        </Menu.Item>
         <Menu.Item key="4" onClick={() => {
-          localStorage.removeItem("userData");
-          navigate("/")
+          logOutFunc();
         }}>
           <span className="topbarStyle">
             <i className="fa fa-sign-out"></i>
@@ -99,7 +112,7 @@ const UserProfile = (props) => {
           fontWeight: "600",
         }}
       >
-          <CustomAvatar name={profileImag} />
+        <CustomAvatar name={profileImag} />
       </span>
     </section>
   );

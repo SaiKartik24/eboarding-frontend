@@ -461,7 +461,7 @@ const Setup = (props) => {
     ) {
       let empDetails = {
         username: userName,
-        password: "",
+        password: "itaccess@123",
         fullname: fullName,
         mail: email,
         employmenttype: empType,
@@ -493,7 +493,7 @@ const Setup = (props) => {
     ) {
       let empDetails = {
         username: userName,
-        password: "",
+        password: "itaccess@123",
         fullname: fullName,
         mail: email,
         employmenttype: empType,

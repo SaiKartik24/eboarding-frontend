@@ -77,6 +77,7 @@ const Home = (props) => {
       endDate != ""
     ) {
       let userDetails = {
+        _id: id,
         password: password,
         fullname: fullName,
         username: userName,
