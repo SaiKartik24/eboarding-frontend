@@ -46,11 +46,11 @@ const Home = (props) => {
   }, [location]);
 
   const appLoaderFunction = async () => {
-    if (appname == "home" && nextname == undefined) {
+    if (appname == "itaccess" && nextname == undefined) {
       setAppLoader(true);
       setTimeout(() => {
         setAppLoader(false);
-      }, 2000);
+      }, 1000);
     }
   };
   const handleClose = (e) => {
@@ -100,7 +100,7 @@ const Home = (props) => {
           setConfirmBtnLoader(false);
           setModal(false);
           ProfileUpdateNotification();
-        }, 2000);
+        }, 1000);
       } catch (error) {
         console.log(error);
       }
@@ -163,7 +163,7 @@ const Home = (props) => {
                 >
                   <div className="pl-3 mt-4">{/* <BreadCrumbs /> */}</div>
                 </div>
-                {appname === "home" && nextname === undefined ? (
+                {appname === "itaccess" && nextname === undefined ? (
                   appLoader ? (
                     <div className="text-center dashboardLoaderSty">
                       <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>

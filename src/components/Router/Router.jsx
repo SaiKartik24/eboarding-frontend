@@ -11,8 +11,8 @@ class Routing extends Component {
         <div className="h-100">
           <Routes>
             <Route exact path="/" element={<LoginPage key={1} />} />
-            <Route exact path="/home" element={<Home key={2} />}>
-              <Route exact path="/home/setup" element={<Setup key={3} />} />
+            <Route exact path="/itaccess" element={<Home key={2} />}>
+              <Route exact path="/itaccess/setup" element={<Setup key={3} />} />
             </Route>
           </Routes>
         </div>

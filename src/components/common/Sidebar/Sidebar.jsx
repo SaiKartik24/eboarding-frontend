@@ -95,7 +95,7 @@ const Sidebar = (props) => {
           }
         >
           <div className={collapsed ? "subBlockCollapsed" : "w-100"}>
-            <Link to={"/home"} className="linkSty">
+            <Link to={"/itaccess"} className="linkSty">
               <div className={collapsed ? "subTitle mt-2 d-flex" : "subTitle mt-2 ml-3 d-flex" }>
                 <div className={collapsed ? "fas fa-home ml-2 homeIcon" :"fas fa-home ml-1 homeIcon"}></div>
                 {collapsed ? null : (
@@ -146,7 +146,7 @@ const Sidebar = (props) => {
                         title={"Setup"}
                         icon={<CustomAvatar />}
                         className="text-decoration-none text-capitalize "
-                        onTitleClick={() => navigateToNext("/home/setup")}
+                        onTitleClick={() => navigateToNext("/itaccess/setup")}
                       >
                         <Menu.Item
                           // key={app.Id + "intents"}

@@ -213,7 +213,7 @@ const Setup = (props) => {
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.log("Error", error);
     }
