@@ -16,7 +16,7 @@ const Sidebar = (props) => {
   const [openKeys, setOpenKeys] = React.useState([]);
   const userData = resolveUserData();
 
-  const rootMenuKeys = ["sub0", "sub1", "sub2", "sub3"];
+  const rootMenuKeys = ["sub"];
 
   const onOpenChange = (keys) => {
     if (!collapsed) {
@@ -44,9 +44,6 @@ const Sidebar = (props) => {
   };
 
   const mouseInEventHandler = (e) => {
-    // setTimeout(() => {
-    //   setCollapsed(false);
-    // }, 1000);
     setCollapsed(false);
   };
 
@@ -96,8 +93,20 @@ const Sidebar = (props) => {
         >
           <div className={collapsed ? "subBlockCollapsed" : "w-100"}>
             <Link to={"/itaccess"} className="linkSty">
-              <div className={collapsed ? "subTitle mt-2 d-flex" : "subTitle mt-2 ml-3 d-flex" }>
-                <div className={collapsed ? "fas fa-home ml-2 homeIcon" :"fas fa-home ml-1 homeIcon"}></div>
+              <div
+                className={
+                  collapsed
+                    ? "subTitle mt-2 d-flex"
+                    : "subTitle mt-2 ml-3 d-flex"
+                }
+              >
+                <div
+                  className={
+                    collapsed
+                      ? "fas fa-home ml-2 homeIcon"
+                      : "fas fa-home ml-1 homeIcon"
+                  }
+                ></div>
                 {collapsed ? null : (
                   <div className="ml-3" style={{ marginTop: "1px" }}>
                     Home
@@ -105,7 +114,9 @@ const Sidebar = (props) => {
                 )}
               </div>
             </Link>
-            {userData.role && (userData.role == "administrator" || userData.role == "Administrator") ? (
+            {userData.role &&
+            (userData.role == "administrator" ||
+              userData.role == "Administrator") ? (
               <>
                 <div
                   className={
@@ -114,8 +125,13 @@ const Sidebar = (props) => {
                       : "subTitle mt-3 ml-3 d-flex"
                   }
                 >
-                  <div className={collapsed ? "material-icons-outlined ml-2 accessIcon" :
-                    "material-icons-outlined ml-1 accessIcon"}>
+                  <div
+                    className={
+                      collapsed
+                        ? "material-icons-outlined ml-2 accessIcon"
+                        : "material-icons-outlined ml-1 accessIcon"
+                    }
+                  >
                     accessibility_new
                   </div>
                   {collapsed ? null : <div className="nlpSpacing">Access</div>}
@@ -126,7 +142,13 @@ const Sidebar = (props) => {
                   }
                 >
                   {collapsed ? (
-                    <div className={collapsed ? "material-icons-outlined setupIcon ml-2": "material-icons-outlined"}>
+                    <div
+                      className={
+                        collapsed
+                          ? "material-icons-outlined setupIcon ml-2"
+                          : "material-icons-outlined"
+                      }
+                    >
                       phonelink_setup
                     </div>
                   ) : (
@@ -136,36 +158,48 @@ const Sidebar = (props) => {
                       className=" text-decoration-none searchMenuStyle mt-1"
                       openKeys={openKeys}
                       onOpenChange={onOpenChange}
+                      defaultSelectedKeys={pathId != undefined ? pathId : ""}
                       style={{
                         width: 400,
                       }}
                     >
                       <SubMenu
-                        // key={app.Id}
                         key={"sub"}
                         title={"Setup"}
                         icon={<CustomAvatar />}
                         className="text-decoration-none text-capitalize "
-                        onTitleClick={() => navigateToNext("/itaccess/setup")}
+                        onTitleClick={() =>
+                          navigateToNext("/itaccess/employee")
+                        }
                       >
                         <Menu.Item
-                          // key={app.Id + "intents"}
+                          key={"employee"}
                           className={collapsed ? "d-none" : "submenu-ItemStyle"}
                         >
-                          Employee
+                          <Link
+                            to={"/itaccess/employee"}
+                            className="text-decoration-none"
+                          >
+                            Employee
+                          </Link>
                         </Menu.Item>
                         <Menu.Item
-                          // key={app.Id + "entities"}
+                          key={"application"}
                           className={
                             collapsed
                               ? "d-none"
                               : "text-decoration-none submenu-ItemStyle"
                           }
                         >
-                          Application
+                          <Link
+                            to={"/itaccess/application"}
+                            className="text-decoration-none"
+                          >
+                            Application
+                          </Link>
                         </Menu.Item>
                         <Menu.Item
-                          // key={app.Id + "settings"}
+                          key={"template"}
                           className={
                             collapsed
                               ? "d-none"

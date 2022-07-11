@@ -35,7 +35,7 @@ import { debounce } from "lodash";
 const { Option } = Select;
 const { Search } = Input;
 
-const Setup = (props) => {
+const Employee = (props) => {
   const [form] = Form.useForm();
   const [pageLoader, setPageLoader] = useState(true);
   const [items, setItems] = useState([]);
@@ -559,7 +559,7 @@ const Setup = (props) => {
         {pageLoader ? (
           <div className="text-center setupLoaderSty">
             <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-            <div className="loaderText mt-2">Loading Setup</div>
+            <div className="loaderText mt-2">Loading Employee</div>
           </div>
         ) : (
           <div>
@@ -632,4 +632,4 @@ const Setup = (props) => {
   );
 };
 
-export default Setup;
+export default Employee;
