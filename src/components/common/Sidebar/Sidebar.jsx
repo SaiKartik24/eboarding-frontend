@@ -37,7 +37,7 @@ const Sidebar = (props) => {
     if (pathId == undefined) {
       setOpenKeys([]);
     }
-  }, [location, props]);
+  }, [location, pathId]);
 
   const navigateToNext = (app) => {
     navigate(app);

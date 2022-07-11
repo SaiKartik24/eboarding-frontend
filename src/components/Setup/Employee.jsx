@@ -27,10 +27,10 @@ import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import InputFun from "../common/Input/InputFun";
 import { useParams } from "react-router";
-import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
 import { recordDeleteNotification } from "../common/Notifications/DeleteNotifications";
 import { debounce } from "lodash";
+import { AddEmployeeRequiredNotification } from "../common/Notifications/RequiredNotification";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -563,13 +563,13 @@ const Employee = (props) => {
           </div>
         ) : (
           <div>
-              <div className="d-flex float-right mb-4">
-                <Search
-                  allowClear
-                  onChange={(e) => searchEmployee(e)}
-                  placeholder="Search for mail"
-                  className="mr-3"
-                />
+            <div className="d-flex float-right mb-4">
+              <Search
+                allowClear
+                onChange={(e) => searchEmployee(e)}
+                placeholder="Search for mail"
+                className="mr-3"
+              />
               <Button
                 type="primary"
                 className="buttonStyles"
@@ -577,14 +577,6 @@ const Employee = (props) => {
               >
                 Add
               </Button>
-              {/* <input
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  readExcel(file);
-                }}
-                style={{ width: "250px", fontSize: "1rem" }}
-              /> */}
             </div>
             <Form form={form} component={false}>
               <Table

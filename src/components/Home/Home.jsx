@@ -6,9 +6,9 @@ import Sidebar from "../common/Sidebar/Sidebar";
 import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
 import { resolveUserData } from "../services/configs";
 import moment from "moment";
-import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 import { UpdateEmployee } from "../services/setup.service";
 import { ProfileUpdateNotification } from "../common/Notifications/UpdateNotifications";
+import { AddEmployeeRequiredNotification } from "../common/Notifications/RequiredNotification";
 
 const { Header, Content } = Layout;
 const { Option } = Select;

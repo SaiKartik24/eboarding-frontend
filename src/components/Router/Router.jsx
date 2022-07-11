@@ -14,7 +14,7 @@ class Routing extends Component {
             <Route exact path="/" element={<LoginPage key={1} />} />
             <Route exact path="/itaccess" element={<Home key={2} />}>
               <Route exact path="/itaccess/employee" element={<Employee key={3} />} />
-              <Route exact path="/itaccess/application" element={<Application key={3} />} />
+              <Route exact path="/itaccess/application" element={<Application key={4} />} />
             </Route>
           </Routes>
         </div>

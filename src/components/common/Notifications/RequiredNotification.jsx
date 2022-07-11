@@ -7,6 +7,10 @@ const openNotificationForRequiredField = (placement) => {
         placement,
     });
 };
-const AddEmployeeRequiredNotification = () =>
+export const AddEmployeeRequiredNotification = () =>{
     openNotificationForRequiredField("topRight")
-export default AddEmployeeRequiredNotification
+}
+
+export const AddApplicationRequiredNotification = () => {
+    openNotificationForRequiredField("topRight")
+}
