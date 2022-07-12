@@ -205,8 +205,13 @@ const Sidebar = (props) => {
                               ? "d-none"
                               : "text-decoration-none submenu-ItemStyle"
                           }
-                        >
-                          Template
+                            >
+                              <Link
+                                to={"/itaccess/template"}
+                                className="text-decoration-none"
+                              >
+                                Template
+                              </Link>
                         </Menu.Item>
                       </SubMenu>
                     </Menu>
