@@ -11,3 +11,7 @@ const openNotificationForDelete = (placement, msg) => {
 export const recordDeleteNotification = () => {
     openNotificationForDelete("topRight", "Record")
 }
+
+export const applicationDeleteNotification = () => {
+    openNotificationForDelete("topRight", "Application")
+}

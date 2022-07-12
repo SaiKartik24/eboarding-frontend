@@ -49,8 +49,8 @@ const ApplicationModal = (props) => {
               value={props.values.type}
               onChange={props.handleType}
             >
-              <Option value="IT ticket">IT Ticket</Option>
-              <Option value="rest api">rest api</Option>
+              <Option value="Hardware">Hardware</Option>
+              <Option value="Software">Software</Option>
             </Select>
           </div>
           <div className="form-group col-md-4">
@@ -60,20 +60,16 @@ const ApplicationModal = (props) => {
                 *
               </span>
             </label>
-            <Input
-              size="large"
-              className="form-control"
-              id="env"
-              placeholder="Enter Env"
+            <Select
+              placeholder="Please select Env"
               value={props.values.env}
-              onChange={(e) => {
-                if (e.target.value != "") {
-                  props.handleEnv(e.target.value);
-                } else {
-                  props.handleEnv("");
-                }
-              }}
-            />
+              onChange={props.handleEnv}
+              className="w-100"
+            >
+              <Option value="DEV">DEV</Option>
+              <Option value="QA">QA</Option>
+              <Option value="PROD">PROD</Option>
+            </Select>
           </div>
         </div>
         <div className="d-flex">

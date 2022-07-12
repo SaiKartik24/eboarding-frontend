@@ -155,7 +155,7 @@ const Home = (props) => {
               style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}
             >
               <Sidebar />
-              <Layout>
+                <Layout style={{ overflowY: "auto", overflowX: "hidden" }}>
                 <div
                   style={{
                     padding: "0 24px 8px",
@@ -543,7 +543,7 @@ const Home = (props) => {
                         style={{
                           margin: 0,
                           minHeight: 280,
-                          height: "100%",
+                          // height: "100%",
                         }}
                       >
                         <Outlet />

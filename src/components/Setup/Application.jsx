@@ -22,56 +22,52 @@ import {
   GetApplications,
   UpdateApplication,
 } from "../services/application.service";
-import ApplicationSelect from "../common/Select/ApplicationSelect";
+import {
+  ApplicationEnvSelect,
+  ApplicationSelect,
+} from "../common/Select/ApplicationSelect";
 import ApplicationInput from "../common/Input/ApplicationInput";
 import ApplicationModal from "../common/Modal/ApplicationModal";
 import { AddApplicationRequiredNotification } from "../common/Notifications/RequiredNotification";
 import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
+import { applicationDeleteNotification } from "../common/Notifications/DeleteNotifications";
 
 const { Search } = Input;
 
 const { Content } = Layout;
 
 const Application = () => {
-  const [form] = Form.useForm();
   const [items, setItems] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [pageLoader, setPageLoader] = useState(false);
-  const [createIntentSpinner, setCreateIntentSpinner] = useState(false);
-  const [application, setApplication] = useState("");
-  const [searchText, setSearchText] = useState("");
   const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
-  const [type, setType] = useState("IT ticket");
+  const [type, setType] = useState("Hardware");
   const [env, setEnv] = useState("DEV");
   const [approverMail, setApproverMail] = useState("");
   const [teamMail, setTeamMail] = useState("");
-  const Applicationtype = ["IT ticket", "rest api"];
+  const Applicationtype = ["Hardware","Software"];
   const envType = ["DEV", "QA", "PROD"];
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [submitExcel, setSubmitExcel] = useState(false);
   const [accessType, setAccessType] = useState("");
-  useEffect(() => {
-    getAllApplications();
-  }, []);
-  const cos = () => {
-    console.log("Hi");
-  };
+  const [form] = Form.useForm();
+
   const getAllApplications = async () => {
-      setPageLoader(true);
-      items.splice(0, items.length);
+    setPageLoader(true);
+    items.splice(0, items.length);
     try {
       let applicationResponse = await GetApplications();
       applicationResponse = await applicationResponse.json();
-        if (applicationResponse.Result.length > 0) {
-            console.log(applicationResponse.Result)
-          setItems(applicationResponse.Result);
-        } else setItems("");
-        setTimeout(() => {
-            setPageLoader(false);
-        }, 1000);
+      if (applicationResponse.Result.length > 0) {
+        console.log(applicationResponse.Result);
+        setItems(applicationResponse.Result);
+      } else setItems("");
+      setTimeout(() => {
+        setPageLoader(false);
+      }, 1000);
     } catch (error) {
       console.log("Error", error);
     }
@@ -82,11 +78,17 @@ const Application = () => {
     try {
       let applicationResponse = await GetApplicationByName(val);
       applicationResponse = await applicationResponse.json();
-      setItems(applicationResponse.Result);
+      if (applicationResponse.Result && applicationResponse.Result.length > 0)
+        setItems(applicationResponse.Result);
+      else setItems("");
     } catch (error) {
       console.log("Error", error);
     }
   }, 500);
+
+  useEffect(() => {
+    getAllApplications();
+  }, []);
 
   const readExcel = (file) => {
     const promise = new Promise((resolve, reject) => {
@@ -112,14 +114,6 @@ const Application = () => {
       setExcelData(d);
       setSubmitExcel(true);
     });
-  };
-
-  const ListHeader = () => {
-    return (
-      <div className="listHeader">
-        <span className="listHeader-heading leftStyle">Applications</span>
-      </div>
-    );
   };
 
   const toggleTab = (index) => {
@@ -156,7 +150,7 @@ const Application = () => {
         return item._id != idToRemove;
       });
       setItems(myArr);
-      // recordDeleteNotification();
+      applicationDeleteNotification();
     } catch (error) {
       console.log(error);
     }
@@ -182,7 +176,7 @@ const Application = () => {
       ) : inputType === "name" ? (
         <ApplicationInput field={record} type="name" />
       ) : inputType === "env" ? (
-        <ApplicationSelect field={record} type="type" values={envType} />
+        <ApplicationEnvSelect field={record} type="env" values={envType} />
       ) : inputType === "approverMail" ? (
         <ApplicationInput field={record} type="approverMail" />
       ) : inputType === "teamMail" ? (
@@ -370,7 +364,7 @@ const Application = () => {
     setEnv("DEV");
     setApproverMail("");
     setTeamMail("");
-    setType("IT ticket");
+    setType("Hardware");
     setAccessType("");
     setConfirmBtnLoader(false);
     setExcelData([]);
@@ -492,28 +486,21 @@ const Application = () => {
                     }
                   >
                     <div className="">
-                      <div className="d-flex float-right mb-4">
+                      <div className="d-flex float-right mb-4 w-25">
                         <Search
                           allowClear
+                          size="large"
                           onChange={(e) => searchApplication(e)}
                           placeholder="Search for application"
                           className="mr-3"
                         />
-                        <Button
-                          type="primary"
-                          className="buttonStyles"
-                          //   onClick={() => setModal(true)}
-                        >
-                          Add
-                        </Button>
                       </div>
                     </div>
                     <div className="card">
                       <div className="my-3 px-4">
-                        <div className="row mt-4">
+                        <div className="row">
                           <div className="col-sm">
-                            <div className="mt-2 applicationData">
-                              <ListHeader />
+                            <div className="applicationData">
                               {items.length > 0 ? (
                                 <List
                                   itemLayout="horizontal"
@@ -524,10 +511,11 @@ const Application = () => {
                                       : "listBodyStyle listBodyOverflow"
                                   }
                                   renderItem={(item) => (
-                                    <List.Item>
-                                          <Link className="linkStyle">
-                                        {item.name}
-                                      </Link>
+                                    <List.Item
+                                      className="justify-content-center"
+                                      style={{ fontSize: "1rem" }}
+                                    >
+                                      {item.name}
                                     </List.Item>
                                   )}
                                 />
@@ -552,10 +540,10 @@ const Application = () => {
                     }
                   >
                     <div>
-                      <div className="d-flex float-right mb-4">
+                        <div className="d-flex float-right mb-4 w-25 justify-content-end">
                         <Button
                           type="primary"
-                          className="buttonStyles"
+                          className="btnStyles w-25"
                           onClick={() => setModal(true)}
                         >
                           Add
@@ -572,7 +560,7 @@ const Application = () => {
                           dataSource={items}
                           columns={mergedColumns}
                           rowClassName="editable-row"
-                          pagination={true}
+                            pagination={{ pageSize: 7}}
                           // scroll={{
                           //   x: 200,
                           //   y: 500,
