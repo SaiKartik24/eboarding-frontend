@@ -296,10 +296,26 @@
   .ant-select-selection-item {
     white-space: pre-wrap !important;
     overflow: visible !important;
+    height: 40px !important;
+    border: 1px solid black !important;
+    align-items: center !important;
   }
 
   .ant-select-multiple .ant-select-selection-item-content {
     white-space: initial !important;
     overflow: visible !important;
   }
+  .ant-select-selection-item-remove .anticon {
+    vertical-align: top !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+.ant-select-multiple .ant-select-selection-item-content {
+  display: inline-block !important;
+  margin-right: 20px !important;
+  overflow: hidden !important;
+  white-space: pre !important;
+  text-overflow: ellipsis;
+  margin-left: 20px;
 }

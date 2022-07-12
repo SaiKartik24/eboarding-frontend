@@ -46,6 +46,21 @@ const Template = () => {
       if (response.Result.length > 0) {
         setItems(response.Result);
       } else setItems("");
+      getAllApps();
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const getAllApps = async () => {
+    apps.splice(0, apps.length);
+    try {
+      let applicationResponse = await GetApplications();
+      applicationResponse = await applicationResponse.json();
+      if (applicationResponse.Result.length > 0) {
+        console.log(applicationResponse.Result);
+        setApps(applicationResponse.Result);
+      } else setApps("");
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
@@ -103,14 +118,15 @@ const Template = () => {
 
   const handleClose = () => {
     setModal(false);
-    setChecked(false);
-    setDisabled(true);
-    resultArray.splice(0, items.length);
-    apps.splice(0, items.length);
+    setTemplateApplications(resultArray);
+    // setChecked(false);
+    // setDisabled(true);
+    // resultArray.splice(0, items.length);
+    // apps.splice(0, items.length);
     setConfirmBtnLoader(false);
-    apps.map((appData) => {
-      return (appData.checked = false);
-    });
+    // apps.map((appData) => {
+    //   return (appData.checked = false);
+    // });
   };
 
   const ConfirmHandler = async () => {
@@ -167,20 +183,9 @@ const Template = () => {
   const openModal = async () => {
     setModal(true);
     setRecommendedLoader(true);
-    apps.splice(0, apps.length);
-    try {
-      let applicationResponse = await GetApplications();
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
-        setApps(applicationResponse.Result);
-      } else setApps("");
-      setTimeout(() => {
-        setRecommendedLoader(false);
-      }, 1000);
-    } catch (error) {
-      console.log("Error", error);
-    }
+    setTimeout(() => {
+      setRecommendedLoader(false);
+    }, 1000);
   };
 
   const searchApplication = debounce(async (e) => {
@@ -227,6 +232,21 @@ const Template = () => {
     console.log(resultArray);
     setTemplateApplications(resultArray);
     setModal(false);
+  };
+
+  const handleCrossDelete = (e, app) => {
+    let resultingTemplateApps = templateApplications.filter(
+      (temApp) => temApp._id != app._id
+    );
+    setTemplateApplications(resultingTemplateApps);
+    let resultingApps = apps.map((appData) => {
+      if (appData._id == app._id) {
+        appData.checked = false;
+      }
+      return appData;
+    });
+    setApps(resultingApps);
+    console.log(resultingApps);
   };
 
   return (
@@ -347,28 +367,28 @@ const Template = () => {
                       <div className="tempBody">
                         <div className="ml-4 mt-4 font-weight-bold">
                           Applications
+                          <div className="float-right w-25 mr-5">
+                            <Button
+                              type="primary"
+                              className="float-right w-25"
+                              onClick={openModal}
+                            >
+                              Add
+                            </Button>
+                          </div>
                         </div>
-                        <div className="float-right w-25 mr-5">
-                          <Button
-                            type="primary"
-                            className="float-right w-25"
-                            onClick={openModal}
-                          >
-                            Add
-                          </Button>
+                        <div className="mt-4 ml-5">
+                          {templateApplications.map((app) => (
+                            <Select
+                              className="selectStyle"
+                              mode="tags"
+                              value={app.name}
+                              open={false}
+                              bordered={false}
+                              onDeselect={(e) => handleCrossDelete(e, app)}
+                            ></Select>
+                          ))}
                         </div>
-                        {templateApplications.map((app) => (
-                          <Select
-                            className="selectStyle "
-                            mode="tags"
-                            value={app.name}
-                            open={false}
-                            bordered={false}
-                            //   onDeselect={(e) =>
-                            //       handleCrossDelete(e, synonm, item)
-                            //   }
-                          ></Select>
-                        ))}
                       </div>
                       <div className="float-right w-25 mr-5 mt-4">
                         <Button
