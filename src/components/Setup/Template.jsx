@@ -12,6 +12,11 @@ import {
   GetTemplates,
   UpdateTemplate,
 } from "../services/template.service";
+import TemplateModal from "../common/Modal/TemplateModal";
+import {
+  GetApplicationByName,
+  GetApplications,
+} from "../services/application.service";
 
 const { Search } = Input;
 
@@ -24,6 +29,12 @@ const Template = () => {
   const [modal, setModal] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
+  const [recommendedLoader, setRecommendedLoader] = useState(false);
+  const [apps, setApps] = useState([]);
+  const [resultArray, setResultArray] = useState([]);
+  const [disabled, setDisabled] = useState(true);
+  const [Checked, setChecked] = useState(false);
+  const [templateApplications, setTemplateApplications] = useState([]);
   const [form] = Form.useForm();
 
   const getAllTemplates = async () => {
@@ -33,7 +44,6 @@ const Template = () => {
       let response = await GetTemplates();
       response = await response.json();
       if (response.Result.length > 0) {
-        console.log(response.Result);
         setItems(response.Result);
       } else setItems("");
       setTimeout(() => {
@@ -93,7 +103,14 @@ const Template = () => {
 
   const handleClose = () => {
     setModal(false);
+    setChecked(false);
+    setDisabled(true);
+    resultArray.splice(0, items.length);
+    apps.splice(0, items.length);
     setConfirmBtnLoader(false);
+    apps.map((appData) => {
+      return (appData.checked = false);
+    });
   };
 
   const ConfirmHandler = async () => {
@@ -145,6 +162,71 @@ const Template = () => {
       AddApplicationRequiredNotification();
       setConfirmBtnLoader(false);
     }
+  };
+
+  const openModal = async () => {
+    setModal(true);
+    setRecommendedLoader(true);
+    apps.splice(0, apps.length);
+    try {
+      let applicationResponse = await GetApplications();
+      applicationResponse = await applicationResponse.json();
+      if (applicationResponse.Result.length > 0) {
+        console.log(applicationResponse.Result);
+        setApps(applicationResponse.Result);
+      } else setApps("");
+      setTimeout(() => {
+        setRecommendedLoader(false);
+      }, 1000);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const searchApplication = debounce(async (e) => {
+    let val = e.target.value;
+    try {
+      let applicationResponse = await GetApplicationByName(val);
+      applicationResponse = await applicationResponse.json();
+      if (applicationResponse.Result && applicationResponse.Result.length > 0)
+        setApps(applicationResponse.Result);
+      else setApps("");
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }, 500);
+
+  const onRecommendedItemChecked = (item, e, mode) => {
+    if (mode == "selectOne") {
+      apps.map((appData) => {
+        if (appData._id === item._id)
+          return (appData.checked = e.target.checked);
+      });
+      const result = apps.filter((appData) => {
+        return appData.checked == true;
+      });
+      setResultArray(result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      apps.map((appData) => {
+        return (appData.checked = check);
+      });
+      const result = apps.filter((appData) => {
+        return appData.checked == true;
+      });
+      setResultArray(result);
+      setChecked(check);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    }
+  };
+
+  const handleSubmitRecommendedApplications = () => {
+    console.log(resultArray);
+    setTemplateApplications(resultArray);
+    setModal(false);
   };
 
   return (
@@ -270,41 +352,46 @@ const Template = () => {
                           <Button
                             type="primary"
                             className="float-right w-25"
-                            onClick={() => setModal(true)}
+                            onClick={openModal}
                           >
                             Add
                           </Button>
                         </div>
-                        {/* {items.map((synonm) => (
-                                                          <Select
-                                                              className="selectStyle "
-                                                              mode="tags"
-                                                            //   value={synonm.text}
-                                                              open={false}
-                                                              bordered={false}
-                                                            //   onDeselect={(e) =>
-                                                            //       handleCrossDelete(e, synonm, item)
-                                                            //   }
-                                                          ></Select>
-                                                      ))} */}
+                        {templateApplications.map((app) => (
+                          <Select
+                            className="selectStyle "
+                            mode="tags"
+                            value={app.name}
+                            open={false}
+                            bordered={false}
+                            //   onDeselect={(e) =>
+                            //       handleCrossDelete(e, synonm, item)
+                            //   }
+                          ></Select>
+                        ))}
                       </div>
                       <div className="float-right w-25 mr-5 mt-4">
                         <Button
                           type="primary"
                           className="float-right w-25"
-                          onClick={() => setModal(true)}
+                          //   onClick={() => setModal(true)}
                         >
                           Save
                         </Button>
                       </div>
-                      {/* <ApplicationModal
+                      <TemplateModal
                         visibility={modal}
                         handleClose={handleClose}
-                        values={modalValues}
-                        handleName={handleName}
-                        ConfirmHandler={ConfirmHandler}
+                        apps={apps}
+                        searchApplication={searchApplication}
+                        recommendedLoader={recommendedLoader}
+                        onRecommendedItemChecked={onRecommendedItemChecked}
+                        handleSubmitRecommendedApplications={
+                          handleSubmitRecommendedApplications
+                        }
+                        Checked={Checked}
                         confirmBtnLoader={confirmBtnLoader}
-                      /> */}
+                      />
                     </div>
                   </div>
                 </div>
