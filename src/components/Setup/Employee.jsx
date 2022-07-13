@@ -27,15 +27,15 @@ import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import InputFun from "../common/Input/InputFun";
 import { useParams } from "react-router";
-import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
 import { recordDeleteNotification } from "../common/Notifications/DeleteNotifications";
 import { debounce } from "lodash";
+import { AddEmployeeRequiredNotification } from "../common/Notifications/RequiredNotification";
 
 const { Option } = Select;
 const { Search } = Input;
 
-const Setup = (props) => {
+const Employee = (props) => {
   const [form] = Form.useForm();
   const [pageLoader, setPageLoader] = useState(true);
   const [items, setItems] = useState([]);
@@ -213,7 +213,7 @@ const Setup = (props) => {
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.log("Error", error);
     }
@@ -456,7 +456,6 @@ const Setup = (props) => {
       email != "" &&
       managerMail != "" &&
       startDate !== "" &&
-      endDate != "" &&
       submitExcel != true
     ) {
       let empDetails = {
@@ -488,7 +487,6 @@ const Setup = (props) => {
       email != "" &&
       managerMail != "" &&
       startDate !== "" &&
-      endDate != "" &&
       submitExcel == true
     ) {
       let empDetails = {
@@ -527,7 +525,6 @@ const Setup = (props) => {
       email == "" &&
       managerMail == "" &&
       startDate == "" &&
-      endDate == "" &&
       submitExcel == true
     ) {
       try {
@@ -548,9 +545,17 @@ const Setup = (props) => {
   const searchEmployee = debounce(async (e) => {
     let val = e.target.value;
     try {
-      let response = await GetEmployeeByMail(val);
-      response = await response.json();
-      setItems(response.Result);
+      if (val !== "") {
+        let response = await GetEmployeeByMail(val);
+        response = await response.json();
+        setItems(response.Result);
+      } else {
+        let employeeResponse = await GetEmployees();
+        employeeResponse = await employeeResponse.json();
+        if (employeeResponse.Result.length > 0) {
+          setItems(employeeResponse.Result);
+        } else setItems("");
+      }
     } catch (error) {
       console.log("Error", error);
     }
@@ -562,17 +567,17 @@ const Setup = (props) => {
         {pageLoader ? (
           <div className="text-center setupLoaderSty">
             <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-            <div className="loaderText mt-2">Loading Setup</div>
+            <div className="loaderText mt-2">Loading Employee</div>
           </div>
         ) : (
           <div>
-              <div className="d-flex float-right mb-4">
-                <Search
-                  allowClear
-                  onChange={(e) => searchEmployee(e)}
-                  placeholder="Search for mail"
-                  className="mr-3"
-                />
+            <div className="d-flex float-right mb-4">
+              <Search
+                allowClear
+                onChange={(e) => searchEmployee(e)}
+                placeholder="Search for mail"
+                className="mr-3"
+              />
               <Button
                 type="primary"
                 className="buttonStyles"
@@ -580,14 +585,6 @@ const Setup = (props) => {
               >
                 Add
               </Button>
-              {/* <input
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  readExcel(file);
-                }}
-                style={{ width: "250px", fontSize: "1rem" }}
-              /> */}
             </div>
             <Form form={form} component={false}>
               <Table
@@ -635,4 +632,4 @@ const Setup = (props) => {
   );
 };
 
-export default Setup;
+export default Employee;

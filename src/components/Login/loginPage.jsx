@@ -48,29 +48,6 @@ const Login = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getAdmin();
-  // }, []);
-
-  // const getAdmin = async() => {
-  //   try {
-  //     let response = await GetAdmin();
-  //     response = await response.json();
-  //     setAdminData(response.Result);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log("Error", error);
-  //   }
-  // }
-
-  const storeData = (userDetails) =>{
-    let userData = JSON.stringify(userDetails);
-    localStorage.setItem("userData", userData);
-    setTimeout(() => {
-      navigate("/home");
-    }, 3000);
-  }
-
   const [loginBtnLoader, setLoginBtnLoader] = useState(false);
   const loginHandler = () => {
     if (username !== "" && password !== "") {
@@ -82,7 +59,7 @@ const Login = () => {
           if (data.Result != "Login Failed!..") {
             storeDataToLocalStorage(data.Result[0]);
             setLoginBtnLoader(false);
-            navigate("/home");
+            navigate("/itaccess");
           } else {
             LoginNotification();
             setLoginBtnLoader(false);

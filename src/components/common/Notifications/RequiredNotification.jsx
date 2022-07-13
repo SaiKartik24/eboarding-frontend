@@ -1,12 +1,31 @@
-import { notification } from 'antd'
-import React from 'react'
-import './notification.scss'
+import { notification } from "antd";
+import React from "react";
+import "./notification.scss";
 const openNotificationForRequiredField = (placement) => {
-    notification.open({
-        message: <div className="notificationStyle">Please fill all the fields or upload excel file.</div>,
-        placement,
-    });
+  notification.open({
+    message: (
+      <div className="notificationStyle">
+        Please fill all the fields or upload excel file.
+      </div>
+    ),
+    placement,
+  });
 };
-const AddEmployeeRequiredNotification = () =>
-    openNotificationForRequiredField("topRight")
-export default AddEmployeeRequiredNotification
+
+const openNotificationForTemplate = (placement) => {
+  notification.open({
+    message: <div className="notificationStyle">Template name required.</div>,
+    placement,
+  });
+};
+export const AddEmployeeRequiredNotification = () => {
+  openNotificationForRequiredField("topRight");
+};
+
+export const AddApplicationRequiredNotification = () => {
+  openNotificationForRequiredField("topRight");
+};
+
+export const AddTemplateRequiredNotification = () => {
+  openNotificationForTemplate("topRight");
+};

@@ -6,9 +6,9 @@ import Sidebar from "../common/Sidebar/Sidebar";
 import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
 import { resolveUserData } from "../services/configs";
 import moment from "moment";
-import AddEmployeeRequiredNotification from "../common/Notifications/RequiredNotification";
 import { UpdateEmployee } from "../services/setup.service";
 import { ProfileUpdateNotification } from "../common/Notifications/UpdateNotifications";
+import { AddEmployeeRequiredNotification } from "../common/Notifications/RequiredNotification";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -46,11 +46,11 @@ const Home = (props) => {
   }, [location]);
 
   const appLoaderFunction = async () => {
-    if (appname == "home" && nextname == undefined) {
+    if (appname == "itaccess" && nextname == undefined) {
       setAppLoader(true);
       setTimeout(() => {
         setAppLoader(false);
-      }, 2000);
+      }, 1000);
     }
   };
   const handleClose = (e) => {
@@ -100,7 +100,7 @@ const Home = (props) => {
           setConfirmBtnLoader(false);
           setModal(false);
           ProfileUpdateNotification();
-        }, 2000);
+        }, 1000);
       } catch (error) {
         console.log(error);
       }
@@ -155,7 +155,7 @@ const Home = (props) => {
               style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}
             >
               <Sidebar />
-              <Layout>
+                <Layout style={{ overflowY: "auto", overflowX: "hidden" }}>
                 <div
                   style={{
                     padding: "0 24px 8px",
@@ -163,7 +163,7 @@ const Home = (props) => {
                 >
                   <div className="pl-3 mt-4">{/* <BreadCrumbs /> */}</div>
                 </div>
-                {appname === "home" && nextname === undefined ? (
+                {appname === "itaccess" && nextname === undefined ? (
                   appLoader ? (
                     <div className="text-center dashboardLoaderSty">
                       <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
@@ -448,7 +448,7 @@ const Home = (props) => {
                                     onChange={onChangeStartDate}
                                   />
                                 </div>
-                                <div className="form-group col-md-4 d-flex flex-column">
+                                {/* <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="endDate"
                                     className="font-weight-bold fontsize"
@@ -469,7 +469,7 @@ const Home = (props) => {
                                     format={dateFormatList}
                                     onChange={onChangeEndDate}
                                   />
-                                </div>
+                                </div> */}
                                 <div className="form-group col-md-4 d-flex flex-column">
                                   <label
                                     htmlFor="status"
@@ -543,7 +543,7 @@ const Home = (props) => {
                         style={{
                           margin: 0,
                           minHeight: 280,
-                          height: "100%",
+                          // height: "100%",
                         }}
                       >
                         <Outlet />
