@@ -545,9 +545,17 @@ const Employee = (props) => {
   const searchEmployee = debounce(async (e) => {
     let val = e.target.value;
     try {
-      let response = await GetEmployeeByMail(val);
-      response = await response.json();
-      setItems(response.Result);
+      if (val !== "") {
+        let response = await GetEmployeeByMail(val);
+        response = await response.json();
+        setItems(response.Result);
+      } else {
+        let employeeResponse = await GetEmployees();
+        employeeResponse = await employeeResponse.json();
+        if (employeeResponse.Result.length > 0) {
+          setItems(employeeResponse.Result);
+        } else setItems("");
+      }
     } catch (error) {
       console.log("Error", error);
     }

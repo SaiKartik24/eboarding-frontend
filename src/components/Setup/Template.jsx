@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./setup.scss";
 import { Button, Input, List, Layout, Empty, Form, Select } from "antd";
 import { debounce } from "lodash";
-import { AddApplicationRequiredNotification } from "../common/Notifications/RequiredNotification";
+import { AddTemplateRequiredNotification } from "../common/Notifications/RequiredNotification";
 import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
 import { applicationDeleteNotification } from "../common/Notifications/DeleteNotifications";
 import {
@@ -17,6 +17,7 @@ import {
   GetApplicationByName,
   GetApplications,
 } from "../services/application.service";
+import { SaveTemplateNotification } from "../common/Notifications/SaveNotifications";
 
 const { Search } = Input;
 
@@ -119,63 +120,34 @@ const Template = () => {
   const handleClose = () => {
     setModal(false);
     setTemplateApplications(resultArray);
-    // setChecked(false);
-    // setDisabled(true);
-    // resultArray.splice(0, items.length);
-    // apps.splice(0, items.length);
     setConfirmBtnLoader(false);
-    // apps.map((appData) => {
-    //   return (appData.checked = false);
-    // });
   };
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
     if (templateName != "") {
       let applicationDetails = {
-        templateName: templateName,
+        name: templateName,
+        applications: templateApplications,
       };
       try {
         let applicationResponse = await AddTemplate(applicationDetails);
         applicationResponse = await applicationResponse.json();
-        getAllTemplates();
+        SaveTemplateNotification();
         setConfirmBtnLoader(false);
-        setModal(false);
-      } catch (error) {
-        console.log("Error", error);
-      }
-    } else if (templateName != "") {
-      let applicationDetails = {
-        templateName: templateName,
-      };
-      try {
-        let applicationResponse = await AddTemplate(applicationDetails);
-        applicationResponse = await applicationResponse.json();
-        //   getAllTemplates();
-      } catch (error) {
-        console.log("Error", error);
-      }
-      try {
-        let response = await AddTemplate();
-        response = await response.json();
+        apps.map((appData) => {
+          return (appData.checked = false);
+        });
+        setChecked(false);
+        resultArray.splice(0, resultArray.length);
+        templateApplications.splice(0, templateApplications.length);
+        setTemplateName("");
         getAllTemplates();
-        setConfirmBtnLoader(false);
-        setModal(false);
-      } catch (error) {
-        console.log("Error", error);
-      }
-    } else if (templateName == "") {
-      try {
-        let response = await AddTemplate();
-        response = await response.json();
-        getAllTemplates();
-        setConfirmBtnLoader(false);
-        setModal(false);
       } catch (error) {
         console.log("Error", error);
       }
     } else {
-      AddApplicationRequiredNotification();
+      AddTemplateRequiredNotification();
       setConfirmBtnLoader(false);
     }
   };
@@ -187,19 +159,6 @@ const Template = () => {
       setRecommendedLoader(false);
     }, 1000);
   };
-
-  const searchApplication = debounce(async (e) => {
-    let val = e.target.value;
-    try {
-      let applicationResponse = await GetApplicationByName(val);
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result && applicationResponse.Result.length > 0)
-        setApps(applicationResponse.Result);
-      else setApps("");
-    } catch (error) {
-      console.log("Error", error);
-    }
-  }, 500);
 
   const onRecommendedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
@@ -246,7 +205,6 @@ const Template = () => {
       return appData;
     });
     setApps(resultingApps);
-    console.log(resultingApps);
   };
 
   return (
@@ -394,8 +352,11 @@ const Template = () => {
                         <Button
                           type="primary"
                           className="float-right w-25"
-                          //   onClick={() => setModal(true)}
+                          onClick={ConfirmHandler}
                         >
+                          {confirmBtnLoader ? (
+                            <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
+                          ) : null}
                           Save
                         </Button>
                       </div>
@@ -403,14 +364,12 @@ const Template = () => {
                         visibility={modal}
                         handleClose={handleClose}
                         apps={apps}
-                        searchApplication={searchApplication}
                         recommendedLoader={recommendedLoader}
                         onRecommendedItemChecked={onRecommendedItemChecked}
                         handleSubmitRecommendedApplications={
                           handleSubmitRecommendedApplications
                         }
                         Checked={Checked}
-                        confirmBtnLoader={confirmBtnLoader}
                       />
                     </div>
                   </div>

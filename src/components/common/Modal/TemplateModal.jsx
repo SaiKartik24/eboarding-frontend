@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Checkbox, DatePicker, Input, List, Modal, Select } from "antd";
 import "./modal.scss";
 
 const { Search } = Input;
 const { Option } = Select;
 const TemplateModal = (props) => {
+  let apps = props.apps;
+  const [searchApps, setSearchApps] = useState(props.apps);
+  const searchFilter = (searchText) => {
+    let filteredApps = apps.filter((val) => {
+      if (searchText == "") {
+        return val;
+      } else if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+        return val;
+      }
+    });
+    setSearchApps(filteredApps);
+  };
   return (
     <Modal
       title={<b>Add Applications</b>}
@@ -19,7 +31,7 @@ const TemplateModal = (props) => {
           <Search
             allowClear
             // size="large"
-            onChange={(e) => props.searchApplication(e)}
+            onChange={(e) => searchFilter(e.target.value)}
             placeholder="Search for application"
             className="mr-3"
           />
@@ -48,7 +60,7 @@ const TemplateModal = (props) => {
               </div>
               <List
                 itemLayout="horizontal"
-                dataSource={props.apps}
+                dataSource={searchApps}
                 className="modalListStyle"
                 renderItem={(item) => (
                   <List.Item className="ml-0 d-inline-flex w-100 justify-content-lg-start">
@@ -67,20 +79,22 @@ const TemplateModal = (props) => {
           )}
         </div>
       </form>
-      <Button
-        type="primary"
-        className="float-right buttonStyle addStyle"
-        onClick={props.handleSubmitRecommendedApplications}
-        disabled={props.disabled}
-      >
-        {props.addSpinner ? (
-          <i className="fas fa-spinner fa-2x fa-spin spinner spinnerColor"></i>
-        ) : null}
-        Add
-      </Button>
-      <Button className="cancelSty" onClick={props.handleClose}>
-        Cancel
-      </Button>
+      <div style={{ textAlign: "right" }}>
+        <Button className="btnWidth mr-4" onClick={props.handleClose}>
+          Cancel
+        </Button>
+        <Button
+          type="primary"
+          className="float-right buttonStyle btnWidth"
+          onClick={props.handleSubmitRecommendedApplications}
+          disabled={props.disabled}
+        >
+          {props.addSpinner ? (
+            <i className="fas fa-spinner fa-2x fa-spin spinner spinnerColor"></i>
+          ) : null}
+          Add
+        </Button>
+      </div>
     </Modal>
   );
 };
