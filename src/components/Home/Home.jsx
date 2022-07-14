@@ -14,7 +14,7 @@ const { Header, Content } = Layout;
 const { Option } = Select;
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
 
-const Home = (props) => {
+const Home = () => {
   const path = window.location.pathname.split("/");
   const appname = path[1];
   const nextname = path[2];
@@ -39,6 +39,7 @@ const Home = (props) => {
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
 
   useEffect(() => {
+    console.log("entered");
     appLoaderFunction();
     if (userData.lastlogindate == "") {
       setModal(true);
@@ -155,7 +156,7 @@ const Home = (props) => {
               style={{ height: "100%", overflowY: "auto", overflowX: "hidden" }}
             >
               <Sidebar />
-                <Layout style={{ overflowY: "auto", overflowX: "hidden" }}>
+              <Layout style={{ overflowY: "auto", overflowX: "hidden" }}>
                 <div
                   style={{
                     padding: "0 24px 8px",

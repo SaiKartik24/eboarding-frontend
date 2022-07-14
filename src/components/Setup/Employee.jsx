@@ -567,7 +567,7 @@ const Employee = (props) => {
         {pageLoader ? (
           <div className="text-center setupLoaderSty">
             <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-            <div className="loaderText mt-2">Loading Employee</div>
+            <div className="loaderText mt-2">Fetching Employees</div>
           </div>
         ) : (
           <div>

@@ -1,90 +1,4 @@
-.setup {
-  .mainheader {
-    color: #2368a0;
-    font-size: 1.8rem;
-    font-weight: 700;
-  }
-
-  .setupLoaderSty {
-    margin: auto;
-    position: relative;
-    top: 20%;
-    width: 20%;
-  }
-
-  .cursorSty {
-    cursor: pointer;
-  }
-
-  .buttonStyles {
-    background: #2368a0 !important;
-    color: white !important;
-    width: 100px;
-  }
-
-  .buttonStyles:hover {
-    background-color: #00aae7 !important;
-    color: white !important;
-  }
-
-  .tile-label {
-    color: grey;
-    font-size: 16px;
-    font-weight: 800;
-  }
-
-  .card-label {
-    color: #2368a0;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-
-  .notALink {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .card-sample:hover {
-    border: 1px solid #b7b2b3;
-    box-shadow: inset 6.5em 0 0 0 var(--hover);
-  }
-
-  .cardPointer {
-    cursor: pointer;
-  }
-
-  .iconStyle {
-    font-size: 1.8rem;
-    color: #2368a0;
-  }
-
-  .paragraphStyle {
-    margin-left: 33px;
-    font-size: 1.1rem;
-  }
-
-  .fontStyle {
-    font-size: 1.06rem;
-  }
-
-  .ant-layout-content {
-    position: relative;
-    padding-bottom: 30px;
-  }
-
-  .hrStyle {
-    background: rgba(183, 179, 179, 0.5);
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-  }
-
-  .spinnerTop {
-    margin-top: 11rem !important;
-  }
-}
-
-.application {
+.newEmployee {
   .ant-list-item-meta-title {
     margin-bottom: 0;
   }
@@ -110,6 +24,16 @@
   .listBodyOverflow {
     overflow: auto;
     overflow-x: hidden;
+  }
+
+  .linkStyle {
+    color: black;
+    font-size: 1.1rem;
+  }
+
+  .linkStyle:hover {
+    text-decoration: none;
+    color: #00aae7;
   }
 
   .buttonSty {
@@ -258,55 +182,24 @@
     height: 40vh;
     border: ridge;
   }
-}
-
-.selectStyle {
-  font-size: 1rem !important;
-
-  .ant-select-selection-search {
-    display: none;
+  .orSty {
+    font-size: 1rem;
+    align-self: center;
   }
-
-  .ant-select-selector {
-    cursor: default !important;
-    float: left !important;
-    padding: 0;
-    margin: 0;
-    overflow-wrap: anywhere;
-    flex-flow: nowrap !important;
+  .chooseSty {
+    height: 8rem;
+    text-align: center;
+    border: thin lightskyblue;
+    border-style: ridge;
   }
-
-  .selectColorStyle {
-    color: #00aae7;
+  .mainTitle {
+    margin-top: -13px;
+    width: fit-content;
+    padding: 0px 12px;
+    background: white;
+    margin-left: 2%;
+    font-weight: 600;
+    font-size: 0.9em;
+    letter-spacing: 2px;
   }
-
-  .ant-select-selection-overflow-item {
-    display: block !important;
-  }
-
-  .ant-select-selection-item {
-    white-space: pre-wrap !important;
-    overflow: visible !important;
-    height: 40px !important;
-    border: 1px solid black !important;
-    align-items: center !important;
-  }
-
-  .ant-select-multiple .ant-select-selection-item-content {
-    white-space: initial !important;
-    overflow: visible !important;
-  }
-  .ant-select-selection-item-remove .anticon {
-    vertical-align: top !important;
-    font-size: 0.8rem !important;
-  }
-}
-
-.ant-select-multiple .ant-select-selection-item-content {
-  display: inline-block !important;
-  margin-right: 20px !important;
-  overflow: hidden !important;
-  white-space: pre !important;
-  text-overflow: ellipsis;
-  margin-left: 20px;
 }

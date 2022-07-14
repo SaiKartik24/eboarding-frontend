@@ -26,8 +26,7 @@ const UserProfile = (props) => {
     // console.log(data)
     if (profileName.length > 1) {
       profileName = profileName[0].charAt(0) + profileName[1].charAt(0);
-    }
-    else {
+    } else {
       profileName = profileName[0].charAt(0) + profileName[0].charAt(1);
     }
     setProfileImg(profileName);
@@ -41,9 +40,7 @@ const UserProfile = (props) => {
             {profileImag.toUpperCase()}
           </span>
         </div>
-        <span className="white text-capitalize userName">
-          {data.fullname}
-        </span>
+        <span className="white text-capitalize userName">{data.fullname}</span>
         <Dropdown
           overlay={() => menu(resolveFirstName(data.fullname))}
           trigger={["click"]}
@@ -66,13 +63,13 @@ const UserProfile = (props) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const logOutFunc = () => {
     logOut();
     localStorage.removeItem("userData");
-    navigate("/")
-  }
+    navigate("/");
+  };
 
   const menu = (firstName) => {
     return (
@@ -85,9 +82,12 @@ const UserProfile = (props) => {
             <span>&nbsp; Profile</span>
           </span>
         </Menu.Item>
-        <Menu.Item key="4" onClick={() => {
-          logOutFunc();
-        }}>
+        <Menu.Item
+          key="4"
+          onClick={() => {
+            logOutFunc();
+          }}
+        >
           <span className="topbarStyle">
             <i className="fa fa-sign-out"></i>
             &nbsp; Logout

@@ -47,7 +47,7 @@ const Application = () => {
   const [env, setEnv] = useState("DEV");
   const [approverMail, setApproverMail] = useState("");
   const [teamMail, setTeamMail] = useState("");
-  const Applicationtype = ["Hardware","Software"];
+  const Applicationtype = ["Hardware", "Software"];
   const envType = ["DEV", "QA", "PROD"];
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [excelData, setExcelData] = useState([]);
@@ -75,14 +75,26 @@ const Application = () => {
 
   const searchApplication = debounce(async (e) => {
     let val = e.target.value;
-    try {
-      let applicationResponse = await GetApplicationByName(val);
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result && applicationResponse.Result.length > 0)
-        setItems(applicationResponse.Result);
-      else setItems("");
-    } catch (error) {
-      console.log("Error", error);
+    if (val !== "") {
+      try {
+        let applicationResponse = await GetApplicationByName(val);
+        applicationResponse = await applicationResponse.json();
+        if (applicationResponse.Result && applicationResponse.Result.length > 0)
+          setItems(applicationResponse.Result);
+        else setItems("");
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else {
+      try {
+        let applicationResponse = await GetApplications();
+        applicationResponse = await applicationResponse.json();
+        if (applicationResponse.Result && applicationResponse.Result.length > 0)
+          setItems(applicationResponse.Result);
+        else setItems("");
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
   }, 500);
 
@@ -540,7 +552,7 @@ const Application = () => {
                     }
                   >
                     <div>
-                        <div className="d-flex float-right mb-4 w-25 justify-content-end">
+                      <div className="d-flex float-right mb-4 w-25 justify-content-end">
                         <Button
                           type="primary"
                           className="btnStyles w-25"
@@ -560,7 +572,7 @@ const Application = () => {
                           dataSource={items}
                           columns={mergedColumns}
                           rowClassName="editable-row"
-                            pagination={{ pageSize: 7}}
+                          pagination={{ pageSize: 7 }}
                           // scroll={{
                           //   x: 200,
                           //   y: 500,

@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from "react";
-import "./setup.scss";
+import "../access.scss";
 import { Button, Input, List, Layout, Empty, Form, Select } from "antd";
 import { debounce } from "lodash";
-import { AddTemplateRequiredNotification } from "../common/Notifications/RequiredNotification";
-import { recordUpdateNotification } from "../common/Notifications/UpdateNotifications";
-import { applicationDeleteNotification } from "../common/Notifications/DeleteNotifications";
+import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
+import { GetApplications } from "../../services/application.service";
+import TemplateModal from "../../common/Modal/TemplateModal";
 import {
   AddTemplate,
   DeleteTemplate,
   GetTemplateByName,
   GetTemplates,
   UpdateTemplate,
-} from "../services/template.service";
-import TemplateModal from "../common/Modal/TemplateModal";
-import {
-  GetApplicationByName,
-  GetApplications,
-} from "../services/application.service";
-import { SaveTemplateNotification } from "../common/Notifications/SaveNotifications";
+} from "../../services/template.service";
+import { applicationDeleteNotification } from "../../common/Notifications/DeleteNotifications";
+import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
+import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
+import { Link, Outlet, useParams } from "react-router-dom";
 
 const { Search } = Input;
 
 const { Content } = Layout;
 
-const Template = () => {
+const NewEmployee = () => {
+  const path = window.location.pathname.split("/");
+  const template = path[3];
+  const nextName = path[4];
+  const { templateId } = useParams();
   const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [toggleState, setToggleState] = useState(1);
@@ -69,6 +71,7 @@ const Template = () => {
       console.log("Error", error);
     }
   };
+
   const searchTemplate = debounce(async (e) => {
     let val = e.target.value;
     console.log(val);
@@ -221,52 +224,44 @@ const Template = () => {
 
   return (
     <div>
-      <section className="application h-100">
-        <div className="pl-3 my-4 mb-4">
-          {pageLoader ? (
-            <div className="text-center my-4 py-4">
-              <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-              <div className="loaderText mt-2">Fetching Templates</div>
-            </div>
-          ) : (
-            <>
-              <div className="container">
-                <div className="bloc-tabs">
-                  <button
-                    className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
-                    onClick={() => toggleTab(1)}
-                  >
-                    Search
-                  </button>
-                  <button
-                    className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
-                    onClick={() => toggleTab(2)}
-                  >
-                    Add
-                  </button>
-                </div>
-
-                <div className="content-tabs">
-                  <div
-                    className={
-                      toggleState === 1
-                        ? "content  active-content d-flex flex-column"
-                        : "content"
-                    }
-                  >
-                    <div className="">
-                      <div className="d-flex float-right mb-4 w-25">
-                        <Search
-                          allowClear
-                          size="large"
-                          onChange={(e) => searchTemplate(e)}
-                          placeholder="Search for template"
-                          className="mr-3"
-                        />
+      {template === "new-employee" && nextName === undefined ? (
+        <section className="newEmployee h-100">
+          <div className="pl-3 my-4 mb-4">
+            {pageLoader ? (
+              <div className="text-center my-4 py-4">
+                <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
+                <div className="loaderText mt-2">Fetching Templates</div>
+              </div>
+            ) : (
+              <>
+                <div className="container">
+                  <div className="content-tabs">
+                    <div className="content  active-content d-flex flex-column">
+                      <div className="chooseSty mt-4 mb-4">
+                        <div className="mainTitle">Search</div>
+                        <div
+                          className="d-flex justify-content-center"
+                          style={{ marginTop: "2%" }}
+                        >
+                          <Search
+                            allowClear
+                            size="large"
+                            onChange={(e) => searchTemplate(e)}
+                            placeholder="Existing employee email"
+                            className="mr-5 w-25"
+                          />
+                          <div className="orSty">(OR)</div>
+                          <Search
+                            allowClear
+                            size="large"
+                            onChange={(e) => searchTemplate(e)}
+                            placeholder="Template Name"
+                            className="ml-5 w-25"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="card">
-                      <div className="my-3 px-4">
+                      <div className="chooseSty mt-4 mb-4">
+                        <div className="mainTitle">Templates</div>
                         <div className="row">
                           <div className="col-sm">
                             <div className="applicationData">
@@ -284,7 +279,17 @@ const Template = () => {
                                       className="justify-content-center"
                                       style={{ fontSize: "1rem" }}
                                     >
-                                      {item.name}
+                                      <Link
+                                        className="linkStyle"
+                                        to={{
+                                          pathname:
+                                            "/itaccess/access/new-employee/" +
+                                            item._id,
+                                          state: { item },
+                                        }}
+                                      >
+                                        {item.name}
+                                      </Link>
                                     </List.Item>
                                   )}
                                 />
@@ -299,100 +304,29 @@ const Template = () => {
                             </div>
                           </div>
                         </div>
+                        {/* </div> */}
                       </div>
-                    </div>
-                  </div>
-                  <div
-                    className={
-                      toggleState === 2 ? "content  active-content" : "content"
-                    }
-                  >
-                    <div>
-                      <div className="d-flex mb-4">
-                        <div className="form-group w-25">
-                          <label
-                            htmlFor="name"
-                            className="font-weight-bold fontsize"
-                          >
-                            Template Name
-                            <span className="ml-1" style={{ color: "red" }}>
-                              *
-                            </span>
-                          </label>
-                          <Input
-                            size="large"
-                            className="form-control"
-                            id="name"
-                            placeholder="Enter template name"
-                            onChange={(e) => {
-                              if (e.target.value != "") {
-                                setTemplateName(e.target.value);
-                              } else {
-                                setTemplateName("");
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="tempBody">
-                        <div className="ml-4 mt-4 font-weight-bold">
-                          Applications
-                          <div className="float-right w-25 mr-5">
-                            <Button
-                              type="primary"
-                              className="float-right w-25"
-                              onClick={openModal}
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="mt-4 ml-5">
-                          {templateApplications.map((app) => (
-                            <Select
-                              className="selectStyle"
-                              mode="tags"
-                              value={app.name}
-                              open={false}
-                              bordered={false}
-                              onDeselect={(e) => handleCrossDelete(e, app)}
-                            ></Select>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="float-right w-25 mr-5 mt-4">
-                        <Button
-                          type="primary"
-                          className="float-right w-25"
-                          onClick={ConfirmHandler}
-                        >
-                          {confirmBtnLoader ? (
-                            <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
-                          ) : null}
-                          Save
-                        </Button>
-                      </div>
-                      <TemplateModal
-                        visibility={modal}
-                        handleClose={handleClose}
-                        apps={apps}
-                        recommendedLoader={recommendedLoader}
-                        onRecommendedItemChecked={onRecommendedItemChecked}
-                        handleSubmitRecommendedApplications={
-                          handleSubmitRecommendedApplications
-                        }
-                        Checked={Checked}
-                      />
                     </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
+              </>
+            )}
+          </div>
+        </section>
+      ) : (
+        <Content
+          className="site-layout-background"
+          style={{
+            margin: 0,
+            height: "auto",
+            // overflowY: "auto",
+          }}
+        >
+          <Outlet />
+        </Content>
+      )}
     </div>
   );
 };
 
-export default Template;
+export default NewEmployee;

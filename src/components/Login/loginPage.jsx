@@ -4,7 +4,10 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Radio } from "antd";
 import { Button, Input, Form } from "antd";
 import LoginNotification from "../common/Notifications/LoginNotification";
-import { LoginService, storeDataToLocalStorage } from "../services/login.service";
+import {
+  LoginService,
+  storeDataToLocalStorage,
+} from "../services/login.service";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -55,9 +58,9 @@ const Login = () => {
       LoginService(username, password)
         .then((response) => response.json())
         .then((response) => {
-          const data = response;
-          if (data.Result != "Login Failed!..") {
-            storeDataToLocalStorage(data.Result[0]);
+          // const data = response;
+          if (response.Result != "Login Failed!..") {
+            storeDataToLocalStorage(response.Result[0]);
             setLoginBtnLoader(false);
             navigate("/itaccess");
           } else {
@@ -69,13 +72,13 @@ const Login = () => {
           setLoginBtnLoader(false);
           console.log("error", error);
         });
-      } else if (username === "" && password !== "") setValidName(false);
-      else if (password === "" && username !== "") setValidPass(false);
-      else {
-        setValidName(false);
-        setValidPass(false);
-      }
+    } else if (username === "" && password !== "") setValidName(false);
+    else if (password === "" && username !== "") setValidPass(false);
+    else {
+      setValidName(false);
+      setValidPass(false);
     }
+  };
   // };
 
   const [passwordShown, setPasswordShown] = useState(false);
@@ -97,11 +100,7 @@ const Login = () => {
                       Welcome back, please put your login credentials below to
                       start using the app
                     </div>
-                    <Form
-                      id="login"
-                      className="loginTStyle position-relative"
-                      
-                    >
+                    <Form id="login" className="loginTStyle position-relative">
                       <Form.Item
                         name="username"
                         className="mt-5 mb-5 topmargin"
