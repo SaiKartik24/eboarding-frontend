@@ -37,6 +37,20 @@ const Template = () => {
   const [Checked, setChecked] = useState(false);
   const [templateApplications, setTemplateApplications] = useState([]);
   const [form] = Form.useForm();
+  const [searchApps, setSearchApps] = useState();
+  const searchFilter = (searchText) => {
+    if (searchText != "") {
+      let filteredApps = apps.filter((val) => {
+        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+          console.log(val);
+          return val;
+        }
+      });
+      setSearchApps(filteredApps);
+    } else {
+      setSearchApps([]);
+    }
+  };
 
   const getAllTemplates = async () => {
     setPageLoader(true);
@@ -181,19 +195,8 @@ const Template = () => {
       const result = apps.filter((appData) => {
         return appData.checked == true;
       });
-      setResultArray(result);
-      if (result.length > 0) setDisabled(false);
-      else setDisabled(true);
-    } else if (mode == "selectAll") {
-      let check = e.target.checked;
-      apps.map((appData) => {
-        return (appData.checked = check);
-      });
-      const result = apps.filter((appData) => {
-        return appData.checked == true;
-      });
-      setResultArray(result);
-      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
@@ -209,6 +212,7 @@ const Template = () => {
     let resultingTemplateApps = templateApplications.filter(
       (temApp) => temApp._id != app._id
     );
+    setResultArray(resultingTemplateApps);
     setTemplateApplications(resultingTemplateApps);
     let resultingApps = apps.map((appData) => {
       if (appData._id == app._id) {
@@ -381,6 +385,8 @@ const Template = () => {
                         handleSubmitRecommendedApplications={
                           handleSubmitRecommendedApplications
                         }
+                        searchApps={searchApps}
+                        searchFilter={searchFilter}
                         Checked={Checked}
                       />
                     </div>

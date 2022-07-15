@@ -11,3 +11,14 @@ export function GetTemplateById(id) {
   };
   return fetch(host + "/template/" + id, options);
 }
+
+export function ShareApp(reqData) {
+  var options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqData),
+  };
+  return fetch(host + "/access", options);
+}

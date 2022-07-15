@@ -9,8 +9,9 @@ import {
   Form,
   Select,
   Tooltip,
+  Table,
 } from "antd";
-import { debounce } from "lodash";
+import { debounce, indexOf } from "lodash";
 import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
 import { GetApplications } from "../../services/application.service";
 import TemplateModal from "../../common/Modal/TemplateModal";
@@ -25,7 +26,10 @@ import { applicationDeleteNotification } from "../../common/Notifications/Delete
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
 import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { Link, useParams } from "react-router-dom";
-import { GetTemplateById } from "../../services/newEmployee.services";
+import { GetTemplateById, ShareApp } from "../../services/newEmployee.services";
+import UsersDropdown from "./UsersDropdown";
+import { GetEmployeeByMail } from "../../services/setup.service";
+import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
 
 const { Search } = Input;
 
@@ -45,7 +49,23 @@ const ShareApplications = () => {
   const [disabled, setDisabled] = useState(true);
   const [Checked, setChecked] = useState(false);
   const [templateApplications, setTemplateApplications] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [value, setValue] = useState();
   const [form] = Form.useForm();
+  const [searchApps, setSearchApps] = useState();
+  const searchFilter = (searchText) => {
+    if (searchText != "") {
+      let filteredApps = apps.filter((val) => {
+        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+          console.log(val);
+          return val;
+        }
+      });
+      setSearchApps(filteredApps);
+    } else {
+      setSearchApps([]);
+    }
+  };
 
   const getTemplateById = async () => {
     setPageLoader(true);
@@ -56,20 +76,28 @@ const ShareApplications = () => {
       if (response.Result[0].applications.length > 0) {
         setTemplateApplications(response.Result[0].applications);
       } else setTemplateApplications("");
-      getAllApps();
+      getAllApps(response.Result[0].applications);
     } catch (error) {
       console.log("Error", error);
     }
   };
 
-  const getAllApps = async () => {
+  const getAllApps = async (tempApps) => {
     apps.splice(0, apps.length);
     try {
       let applicationResponse = await GetApplications();
       applicationResponse = await applicationResponse.json();
       if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
-        setApps(applicationResponse.Result);
+        let res = applicationResponse.Result;
+        for (let i = 0; i < res.length; i++) {
+          for (let j = 0; j < tempApps.length; j++) {
+            if (res[i]._id === tempApps[j]._id) {
+              res[i].checked = true;
+              resultArray.push(res[i]);
+            }
+          }
+        }
+        setApps(res);
       } else setApps("");
       setTimeout(() => {
         setPageLoader(false);
@@ -95,32 +123,43 @@ const ShareApplications = () => {
 
   const handleClose = () => {
     setModal(false);
+    console.log(resultArray);
     setTemplateApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    // let applicationDetails = {
-    //   name: templateName,
-    //   applications: templateApplications,
-    // };
-    // try {
-    //   let applicationResponse = await AddTemplate(applicationDetails);
-    //   applicationResponse = await applicationResponse.json();
-    //   SaveTemplateNotification();
-    //   setConfirmBtnLoader(false);
-    //   apps.map((appData) => {
-    //     return (appData.checked = false);
-    //   });
-    //   setChecked(false);
-    //   resultArray.splice(0, resultArray.length);
-    //   templateApplications.splice(0, templateApplications.length);
-    //   setTemplateName("");
-    //   getTemplateById();
-    // } catch (error) {
-    //   console.log("Error", error);
-    // }
+    let applicationDetails = {
+      empMail: tableData.map((val) => {
+        return val.mail;
+      }),
+      applications: templateApplications.map((temp) => {
+        return {
+          appName: temp.name,
+          status: "requested",
+          requestedDate: "",
+          approvedDate: "",
+          grantedDate: "",
+          revokedDate: "",
+        };
+      }),
+    };
+    console.log(applicationDetails);
+    try {
+      let applicationResponse = await ShareApp(applicationDetails);
+      applicationResponse = await applicationResponse.json();
+      ShareTemplateNotification();
+      setConfirmBtnLoader(false);
+      apps.map((appData) => {
+        return (appData.checked = false);
+      });
+      setChecked(false);
+      setTableData([]);
+      setValue([]);
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   const openModal = async () => {
@@ -140,19 +179,8 @@ const ShareApplications = () => {
       const result = apps.filter((appData) => {
         return appData.checked == true;
       });
-      setResultArray(result);
-      if (result.length > 0) setDisabled(false);
-      else setDisabled(true);
-    } else if (mode == "selectAll") {
-      let check = e.target.checked;
-      apps.map((appData) => {
-        return (appData.checked = check);
-      });
-      const result = apps.filter((appData) => {
-        return appData.checked == true;
-      });
-      setResultArray(result);
-      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
@@ -168,6 +196,7 @@ const ShareApplications = () => {
     let resultingTemplateApps = templateApplications.filter(
       (temApp) => temApp._id != app._id
     );
+    setResultArray(resultingTemplateApps);
     setTemplateApplications(resultingTemplateApps);
     let resultingApps = apps.map((appData) => {
       if (appData._id == app._id) {
@@ -176,6 +205,41 @@ const ShareApplications = () => {
       return appData;
     });
     setApps(resultingApps);
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "username",
+    },
+    {
+      title: "Email",
+      dataIndex: "mail",
+    },
+  ];
+
+  async function getUsers(email) {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (email.match(mailformat)) {
+      let userResponse = await GetEmployeeByMail(email);
+      userResponse = await userResponse.json();
+      let usersData = userResponse.Result.map((user) => ({
+        label: user.username,
+        value: user.mail,
+      }));
+      return usersData;
+    }
+  }
+  var userEmails = [];
+  const handleShare = async () => {
+    value.map((val) => {
+      userEmails = [...userEmails, { username: val.label, mail: val.value }];
+    });
+    setTableData(userEmails);
+  };
+
+  const handleSetValue = (values) => {
+    setValue(values);
   };
 
   return (
@@ -211,20 +275,44 @@ const ShareApplications = () => {
                           </Tooltip>
                         </Link>
                       </div>
-                      <div className="tempBody mt-3">
-                        <div className="ml-4 mt-4 font-weight-bold">
-                          Applications
-                          <div className="float-right w-25 mr-5">
-                            <Button
-                              type="primary"
-                              className="float-right w-25"
-                              onClick={openModal}
-                            >
-                              Add
-                            </Button>
-                          </div>
+                      <div className="mt-3 chooseStyEmp mb-4">
+                        <div className="mainTitle">Employee Information</div>
+                        <div className="d-flex justify-content-around mb-4 mt-3">
+                          <UsersDropdown
+                            getUsers={getUsers}
+                            value={value}
+                            setValues={handleSetValue}
+                          />
+                          <Button
+                            type="primary"
+                            onClick={handleShare}
+                            style={{ width: "6%", placeSelf: "center" }}
+                          >
+                            Add
+                          </Button>
+                          <Form form={form} component={false}>
+                            <Table
+                              columns={columns}
+                              dataSource={tableData}
+                              size="middle"
+                              style={{ width: "50%" }}
+                              bordered={true}
+                            />
+                          </Form>
                         </div>
-                        <div className="mt-4 ml-5">
+                      </div>
+                      <div className="mt-3 chooseStyEmpApp mb-4">
+                        <div className="mainTitle">Applications</div>
+                        <div className="float-right w-25 mr-5">
+                          <Button
+                            type="primary"
+                            className="float-right w-25"
+                            onClick={openModal}
+                          >
+                            Add
+                          </Button>
+                        </div>
+                        <div className="float-left mt-4 ml-4">
                           {templateApplications.map((app) => (
                             <Select
                               className="selectStyle"
@@ -237,30 +325,32 @@ const ShareApplications = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="float-right w-25 mr-5 mt-4">
-                        <Button
-                          type="primary"
-                          className="float-right w-25"
-                          onClick={ConfirmHandler}
-                        >
-                          {confirmBtnLoader ? (
-                            <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
-                          ) : null}
-                          Share
-                        </Button>
-                      </div>
-                      <TemplateModal
-                        visibility={modal}
-                        handleClose={handleClose}
-                        apps={apps}
-                        recommendedLoader={recommendedLoader}
-                        onRecommendedItemChecked={onRecommendedItemChecked}
-                        handleSubmitRecommendedApplications={
-                          handleSubmitRecommendedApplications
-                        }
-                        Checked={Checked}
-                      />
                     </div>
+                    <div className="float-right w-25 mr-5 mt-4">
+                      <Button
+                        type="primary"
+                        className="float-right w-25"
+                        onClick={ConfirmHandler}
+                      >
+                        {confirmBtnLoader ? (
+                          <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
+                        ) : null}
+                        Request
+                      </Button>
+                    </div>
+                    <TemplateModal
+                      visibility={modal}
+                      handleClose={handleClose}
+                      apps={apps}
+                      recommendedLoader={recommendedLoader}
+                      onRecommendedItemChecked={onRecommendedItemChecked}
+                      handleSubmitRecommendedApplications={
+                        handleSubmitRecommendedApplications
+                      }
+                      searchApps={searchApps}
+                      searchFilter={searchFilter}
+                      Checked={Checked}
+                    />
                   </div>
                 </div>
               </div>

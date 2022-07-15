@@ -76,7 +76,7 @@
   }
 
   .saveSpinner {
-    margin-right: 10px;
+    margin-right: 5px;
     font-size: 1rem;
   }
 
@@ -179,7 +179,13 @@
     display: block;
   }
   .tempBody {
-    height: 40vh;
+    height: 30vh;
+    border: ridge;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .tempEmpBody {
+    height: 30vh;
     border: ridge;
   }
   .orSty {
@@ -187,7 +193,19 @@
     align-self: center;
   }
   .chooseSty {
-    height: 8rem;
+    height: fit-content;
+    text-align: center;
+    border: thin lightskyblue;
+    border-style: ridge;
+  }
+  .chooseStyEmp {
+    height: fit-content;
+    text-align: center;
+    border: thin lightskyblue;
+    border-style: ridge;
+  }
+  .chooseStyEmpApp {
+    height: 27vh;
     text-align: center;
     border: thin lightskyblue;
     border-style: ridge;

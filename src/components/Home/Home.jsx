@@ -537,6 +537,7 @@ const Home = () => {
                       className="h-100"
                       style={{
                         padding: "0 24px 8px",
+                        overflowY: "auto",
                       }}
                     >
                       <Content

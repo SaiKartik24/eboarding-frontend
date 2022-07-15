@@ -36,7 +36,7 @@ const { Search } = Input;
 
 const { Content } = Layout;
 
-const Application = () => {
+const ApplicationTabView = () => {
   const [items, setItems] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [pageLoader, setPageLoader] = useState(false);
@@ -465,63 +465,139 @@ const Application = () => {
   return (
     <div>
       <section className="application h-100">
-        <div className="h-100">
+        <div className="pl-3 my-4 mb-4">
           {pageLoader ? (
             <div className="text-center my-4 py-4">
               <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
               <div className="loaderText mt-2">Fetching Applications</div>
             </div>
           ) : (
-            <div>
-              <div className="d-flex float-right mb-4">
-                <Search
-                  allowClear
-                  // size="large"
-                  onChange={(e) => searchApplication(e)}
-                  placeholder="Search for application"
-                  className="mr-3"
-                />
-                <Button
-                  type="primary"
-                  className="buttonStyles"
-                  onClick={() => setModal(true)}
-                >
-                  Add
-                </Button>
+            <>
+              <div className="container">
+                <div className="bloc-tabs">
+                  <button
+                    className={toggleState === 1 ? "tabs active-tabs" : "tabs"}
+                    onClick={() => toggleTab(1)}
+                  >
+                    Existing
+                  </button>
+                  <button
+                    className={toggleState === 2 ? "tabs active-tabs" : "tabs"}
+                    onClick={() => toggleTab(2)}
+                  >
+                    New
+                  </button>
+                </div>
+
+                <div className="content-tabs">
+                  <div
+                    className={
+                      toggleState === 1
+                        ? "content  active-content d-flex flex-column"
+                        : "content"
+                    }
+                  >
+                    <div className="">
+                      <div className="d-flex float-right mb-4 w-25">
+                        <Search
+                          allowClear
+                          size="large"
+                          onChange={(e) => searchApplication(e)}
+                          placeholder="Search for application"
+                          className="mr-3"
+                        />
+                      </div>
+                    </div>
+                    <div className="card">
+                      <div className="my-3 px-4">
+                        <div className="row">
+                          <div className="col-sm">
+                            <div className="applicationData">
+                              {items.length > 0 ? (
+                                <List
+                                  itemLayout="horizontal"
+                                  dataSource={items}
+                                  className={
+                                    items.length == 0
+                                      ? "listBodyStyle"
+                                      : "listBodyStyle listBodyOverflow"
+                                  }
+                                  renderItem={(item) => (
+                                    <List.Item
+                                      className="justify-content-center"
+                                      style={{ fontSize: "1rem" }}
+                                    >
+                                      {item.name}
+                                    </List.Item>
+                                  )}
+                                />
+                              ) : (
+                                <div className="col-12">
+                                  <Empty
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                    description="No Applications"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className={
+                      toggleState === 2 ? "content  active-content" : "content"
+                    }
+                  >
+                    <div>
+                      <div className="d-flex float-right mb-4 w-25 justify-content-end">
+                        <Button
+                          type="primary"
+                          className="btnStyles w-25"
+                          onClick={() => setModal(true)}
+                        >
+                          Add
+                        </Button>
+                      </div>
+                      <Form form={form} component={false}>
+                        <Table
+                          components={{
+                            body: {
+                              cell: EditableCell,
+                            },
+                          }}
+                          bordered
+                          dataSource={items}
+                          columns={mergedColumns}
+                          rowClassName="editable-row"
+                          pagination={{ pageSize: 7 }}
+                          // scroll={{
+                          //   x: 200,
+                          //   y: 500,
+                          // }}
+                        />
+                      </Form>
+                      <ApplicationModal
+                        visibility={modal}
+                        handleClose={handleClose}
+                        values={modalValues}
+                        handleName={handleName}
+                        handleEnv={handleEnv}
+                        handleApproveMail={handleApproveMail}
+                        handleTeamMail={handleTeamMail}
+                        handleType={handleType}
+                        handleAccessType={handleAccessType}
+                        ConfirmHandler={ConfirmHandler}
+                        confirmBtnLoader={confirmBtnLoader}
+                        readExcel={readExcel}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Form form={form} component={false}>
-                <Table
-                  components={{
-                    body: {
-                      cell: EditableCell,
-                    },
-                  }}
-                  bordered
-                  dataSource={items}
-                  columns={mergedColumns}
-                  rowClassName="editable-row"
-                  pagination={{ pageSize: 7 }}
-                  // scroll={{
-                  //   x: 200,
-                  //   y: 500,
-                  // }}
-                />
-              </Form>
-              <ApplicationModal
-                visibility={modal}
-                handleClose={handleClose}
-                values={modalValues}
-                handleName={handleName}
-                handleEnv={handleEnv}
-                handleApproveMail={handleApproveMail}
-                handleTeamMail={handleTeamMail}
-                handleType={handleType}
-                handleAccessType={handleAccessType}
-                ConfirmHandler={ConfirmHandler}
-                confirmBtnLoader={confirmBtnLoader}
-                readExcel={readExcel}
-              />
-            </div>
+            </>
           )}
         </div>
       </section>
@@ -529,4 +605,4 @@ const Application = () => {
   );
 };
 
-export default Application;
+export default ApplicationTabView;

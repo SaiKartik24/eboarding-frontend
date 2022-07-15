@@ -40,22 +40,22 @@ const NewEmployee = () => {
   const [templateApplications, setTemplateApplications] = useState([]);
   const [form] = Form.useForm();
 
-  const getAllTemplates = async () => {
-    setPageLoader(true);
-    items.splice(0, items.length);
-    try {
-      let response = await GetTemplates();
-      response = await response.json();
-      if (response.Result.length > 0) {
-        setItems(response.Result);
-      } else setItems("");
-      getAllApps();
-    } catch (error) {
-      console.log("Error", error);
-    }
-  };
+  // const getAllTemplates = async () => {
+  //   setPageLoader(true);
+  //   items.splice(0, items.length);
+  //   try {
+  //     let response = await GetTemplates();
+  //     response = await response.json();
+  //     if (response.Result.length > 0) {
+  //       setItems(response.Result);
+  //     } else setItems("");
+  //   } catch (error) {
+  //     console.log("Error", error);
+  //   }
+  // };
 
   const getAllApps = async () => {
+    setPageLoader(true);
     apps.splice(0, apps.length);
     try {
       let applicationResponse = await GetApplications();
@@ -86,20 +86,13 @@ const NewEmployee = () => {
         console.log("Error", error);
       }
     } else {
-      try {
-        let response = await GetTemplates();
-        response = await response.json();
-        if (response.Result.length > 0) {
-          setItems(response.Result);
-        } else setItems("");
-      } catch (error) {
-        console.log("Error", error);
-      }
+      setItems("");
     }
   }, 500);
 
   useEffect(() => {
-    getAllTemplates();
+    // getAllTemplates();
+    getAllApps();
   }, []);
 
   const toggleTab = (index) => {
@@ -157,7 +150,7 @@ const NewEmployee = () => {
         resultArray.splice(0, resultArray.length);
         templateApplications.splice(0, templateApplications.length);
         setTemplateName("");
-        getAllTemplates();
+        // getAllTemplates();
       } catch (error) {
         console.log("Error", error);
       }
@@ -230,7 +223,7 @@ const NewEmployee = () => {
             {pageLoader ? (
               <div className="text-center my-4 py-4">
                 <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-                <div className="loaderText mt-2">Fetching Templates</div>
+                <div className="loaderText mt-2">Fetching</div>
               </div>
             ) : (
               <>
@@ -241,7 +234,7 @@ const NewEmployee = () => {
                         <div className="mainTitle">Search</div>
                         <div
                           className="d-flex justify-content-center"
-                          style={{ marginTop: "2%" }}
+                          style={{ marginTop: "2%", marginBottom: "3%" }}
                         >
                           <Search
                             allowClear
@@ -260,52 +253,54 @@ const NewEmployee = () => {
                           />
                         </div>
                       </div>
-                      <div className="chooseSty mt-4 mb-4">
-                        <div className="mainTitle">Templates</div>
-                        <div className="row">
-                          <div className="col-sm">
-                            <div className="applicationData">
-                              {items.length > 0 ? (
-                                <List
-                                  itemLayout="horizontal"
-                                  dataSource={items}
-                                  className={
-                                    items.length == 0
-                                      ? "listBodyStyle"
-                                      : "listBodyStyle listBodyOverflow"
-                                  }
-                                  renderItem={(item) => (
-                                    <List.Item
-                                      className="justify-content-center"
-                                      style={{ fontSize: "1rem" }}
-                                    >
-                                      <Link
-                                        className="linkStyle"
-                                        to={{
-                                          pathname:
-                                            "/itaccess/access/new-employee/" +
-                                            item._id,
-                                          state: { item },
-                                        }}
+                      {items.length > 0 ? (
+                        <div className="chooseSty mt-4 mb-4">
+                          <div className="mainTitle">Results</div>
+                          <div className="row">
+                            <div className="col-sm">
+                              <div className="applicationData">
+                                {items.length > 0 ? (
+                                  <List
+                                    itemLayout="horizontal"
+                                    dataSource={items}
+                                    className={
+                                      items.length == 0
+                                        ? "listBodyStyle"
+                                        : "listBodyStyle listBodyOverflow"
+                                    }
+                                    renderItem={(item) => (
+                                      <List.Item
+                                        className="justify-content-center"
+                                        style={{ fontSize: "1rem" }}
                                       >
-                                        {item.name}
-                                      </Link>
-                                    </List.Item>
-                                  )}
-                                />
-                              ) : (
-                                <div className="col-12">
-                                  <Empty
-                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                    description="No Applications"
+                                        <Link
+                                          className="linkStyle"
+                                          to={{
+                                            pathname:
+                                              "/itaccess/access/new-employee/" +
+                                              item._id,
+                                            state: { item },
+                                          }}
+                                        >
+                                          {item.name}
+                                        </Link>
+                                      </List.Item>
+                                    )}
                                   />
-                                </div>
-                              )}
+                                ) : (
+                                  <div className="col-12">
+                                    <Empty
+                                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                      description="No Applications"
+                                    />
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          {/* </div> */}
                         </div>
-                        {/* </div> */}
-                      </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
