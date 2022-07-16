@@ -469,7 +469,7 @@ const Application = () => {
           {pageLoader ? (
             <div className="text-center my-4 py-4">
               <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-              <div className="loaderText mt-2">Fetching Applications</div>
+              <div className="loaderText mt-2">Fetching All Applications</div>
             </div>
           ) : (
             <div>
