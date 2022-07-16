@@ -12,7 +12,7 @@ import { AddEmployeeRequiredNotification } from "../common/Notifications/Require
 
 const { Header, Content } = Layout;
 const { Option } = Select;
-const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
+const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
 
 const Home = () => {
   const path = window.location.pathname.split("/");
@@ -130,7 +130,6 @@ const Home = () => {
 
   const onChangeStartDate = (date, dateString) => {
     setStartDate(dateString);
-    // console.log(date, dateString);
   };
 
   const onChangeEndDate = (date, dateString) => {

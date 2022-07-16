@@ -5,7 +5,7 @@ import "./modal.scss";
 
 const { Option } = Select;
 const PopUpModal = (props) => {
-  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
+  const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
   return (
     <Modal
       title={<b>Add Employee</b>}

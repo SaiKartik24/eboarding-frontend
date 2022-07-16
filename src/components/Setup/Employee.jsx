@@ -77,7 +77,7 @@ const Employee = (props) => {
     setExcelData([]);
     setSubmitExcel(false);
   };
-  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
+  const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
   const EditableCell = ({
     editing,
     dataIndex,
@@ -100,7 +100,7 @@ const Employee = (props) => {
         // <Input value={record.startdate}
         // onChange={(e)=> record.startdate(e.target.value)} />
         <DatePicker
-          value={moment(record.startdate, dateFormatList[0])}
+          defaultValue={moment(record.startdate, dateFormatList[0])}
           allowClear={false}
           format={dateFormatList}
           onChange={(val) => {
@@ -112,7 +112,7 @@ const Employee = (props) => {
         // <Input value={record.enddate}
         //   onChange={(e) => record.enddate(e.target.value)} />
         <DatePicker
-          value={moment(record.enddate, dateFormatList[0])}
+          defaultValue={moment(record.enddate, dateFormatList[0])}
           allowClear={false}
           format={dateFormatList}
           onChange={(val) => {
