@@ -258,6 +258,16 @@
     height: 40vh;
     border: ridge;
   }
+
+  .linkStyle {
+    color: black;
+    font-size: 1.1rem;
+  }
+
+  .linkStyle:hover {
+    text-decoration: none;
+    color: #00aae7;
+  }
 }
 
 .selectStyle {

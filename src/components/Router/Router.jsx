@@ -6,7 +6,8 @@ import Home from "../Home/Home";
 import LoginPage from "../Login/loginPage";
 import Application from "../Setup/Application";
 import Employee from "../Setup/Employee";
-import Template from "../Setup/Template";
+import Template from "../Setup/Template/Template";
+import TemplateDetails from "../Setup/Template/TemplateDetails";
 
 class Routing extends Component {
   render() {
@@ -51,7 +52,13 @@ class Routing extends Component {
                 exact
                 path="/itaccess/setup/template"
                 element={<Template key={9} />}
-              />
+              >
+                <Route
+                  exact
+                  path=":tempId"
+                  element={<TemplateDetails key={10} />}
+                />
+              </Route>
             </Route>
           </Routes>
         </div>
