@@ -315,6 +315,7 @@ const Employee = (props) => {
     {
       title: <b>Actions</b>,
       key: "action",
+      with: "3%",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
@@ -332,7 +333,7 @@ const Employee = (props) => {
             </Popconfirm>
           </span>
         ) : (
-          <span>
+          <div style={{ textAlign: "center" }}>
             <Typography.Link
               onClick={() => {
                 edit(record);
@@ -343,7 +344,7 @@ const Employee = (props) => {
                 <i className="fas fa-edit" style={{ color: "blue" }}></i>
               </Tooltip>
             </Typography.Link>
-            <Typography.Link
+            {/* <Typography.Link
               onClick={() => {
                 deleteFunc(record);
               }}
@@ -354,8 +355,8 @@ const Employee = (props) => {
                   style={{ color: "red" }}
                 ></i>
               </Tooltip>
-            </Typography.Link>
-          </span>
+            </Typography.Link> */}
+          </div>
         );
       },
     },
@@ -476,6 +477,7 @@ const Employee = (props) => {
         let employeeResponse = await AddEmployee(empDetails);
         employeeResponse = await employeeResponse.json();
         getEmployees();
+        handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
@@ -514,6 +516,7 @@ const Employee = (props) => {
         let employeeResponse = await AddEmployee(excelData);
         employeeResponse = await employeeResponse.json();
         getEmployees();
+        handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
@@ -532,6 +535,7 @@ const Employee = (props) => {
         employeeResponse = await employeeResponse.json();
         getEmployees();
         setConfirmBtnLoader(false);
+        handleClose();
         setModal(false);
       } catch (error) {
         console.log("Error", error);

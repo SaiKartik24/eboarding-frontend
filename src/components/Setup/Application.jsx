@@ -404,6 +404,7 @@ const Application = () => {
         let applicationResponse = await AddApplication(applicationDetails);
         applicationResponse = await applicationResponse.json();
         getAllApplications();
+        handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
@@ -435,6 +436,7 @@ const Application = () => {
         let response = await AddApplication(excelData);
         response = await response.json();
         getAllApplications();
+        handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
@@ -451,6 +453,7 @@ const Application = () => {
         let response = await AddApplication(excelData);
         response = await response.json();
         getAllApplications();
+        handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {

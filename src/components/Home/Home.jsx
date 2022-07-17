@@ -322,7 +322,7 @@ const Home = () => {
                                       className="form-control position-static"
                                       id="password"
                                       placeholder="Enter password"
-                                      value={password}
+                                      // value={password}
                                       onChange={(e) => {
                                         if (e.target.value != "") {
                                           setPassword(e.target.value);

@@ -8,38 +8,15 @@ import { Menu, Avatar, Dropdown } from "antd";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { UpdateEmployee } from "../../services/setup.service";
-import ProfileModal from "../Modal/ProfileModal";
+import Profile from "../Profile/Profile";
 
 const UserProfile = (props) => {
   const data = props.userData;
-  console.log(data);
   const navigate = useNavigate();
   const [profileImag, setProfileImg] = useState("");
-  const [modal, setModal] = useState(false);
-
-  const handleClose = () => {
-    setModal(false);
-  };
-
-  let values = {
-    visibility: modal,
-    handleClose: handleClose,
-    empType: data.employmenttype,
-    enddate: data.enddate,
-    fullName: data.fullname,
-    lastlogindate: data.lastlogindate,
-    email: data.mail,
-    managerid: data.managerid,
-    managerMail: data.managermail,
-    empRole: data.role,
-    startDate: data.startdate,
-    status: data.status,
-    username: data.username,
-    _id: data._id,
-  };
 
   const profile = () => {
-    setModal(true);
+    navigate("/itaccess/profile");
   };
 
   useEffect(() => {
@@ -138,7 +115,6 @@ const UserProfile = (props) => {
       >
         <CustomAvatar name={profileImag} />
       </span>
-      <ProfileModal values={values} />
     </section>
   );
 };

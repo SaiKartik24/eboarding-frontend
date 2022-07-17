@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import NewEmployee from "../Access/NewEmployee/NewEmployee";
 import ShareApplications from "../Access/NewEmployee/ShareApplications";
+import Profile from "../common/Profile/Profile";
 import Home from "../Home/Home";
 import LoginPage from "../Login/loginPage";
 import Application from "../Setup/Application";
@@ -17,6 +18,11 @@ class Routing extends Component {
           <Routes>
             <Route exact path="/" element={<LoginPage key={1} />} />
             <Route exact path="/itaccess" element={<Home key={2} />}>
+              <Route
+                exact
+                path="/itaccess/profile"
+                element={<Profile key={11} />}
+              />
               <Route
                 exact
                 path="/itaccess/access/new-employee"
