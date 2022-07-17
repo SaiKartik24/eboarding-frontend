@@ -10,6 +10,7 @@ import {
   Select,
   Tooltip,
   Table,
+  Typography,
 } from "antd";
 import { debounce, indexOf } from "lodash";
 import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
@@ -51,6 +52,7 @@ const ShareApplications = () => {
   const [templateApplications, setTemplateApplications] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [value, setValue] = useState();
+  const [tableValues, setTableValues] = useState([]);
   const [form] = Form.useForm();
   const [searchApps, setSearchApps] = useState();
   const searchFilter = (searchText) => {
@@ -156,6 +158,7 @@ const ShareApplications = () => {
       setChecked(false);
       setTableData([]);
       setValue([]);
+      setTableValues([]);
     } catch (error) {
       console.log("Error", error);
     }
@@ -206,6 +209,17 @@ const ShareApplications = () => {
     setApps(resultingApps);
   };
 
+  const deleteFunc = (record) => {
+    const res = tableData.filter((y) => {
+      return y.mail != record.mail;
+    });
+    const tableRes = tableValues.filter((y) => {
+      return y.value != record.mail;
+    });
+    setTableValues(tableRes);
+    setTableData(res);
+  };
+
   const columns = [
     {
       title: "Name",
@@ -214,6 +228,28 @@ const ShareApplications = () => {
     {
       title: "Email",
       dataIndex: "mail",
+    },
+    {
+      title: <b>Actions</b>,
+      key: "action",
+      render: (_, record) => {
+        return (
+          <div>
+            <Typography.Link
+              onClick={() => {
+                deleteFunc(record);
+              }}
+            >
+              <Tooltip title="Delete">
+                <i
+                  className="fas fa-trash ml-1 mr-1"
+                  style={{ color: "red" }}
+                ></i>
+              </Tooltip>
+            </Typography.Link>
+          </div>
+        );
+      },
     },
   ];
 
@@ -231,14 +267,22 @@ const ShareApplications = () => {
   }
   var userEmails = [];
   const handleShare = async () => {
-    value.map((val) => {
+    tableValues.map((val) => {
       userEmails = [...userEmails, { username: val.label, mail: val.value }];
     });
     setTableData(userEmails);
+    setValue([]);
   };
 
   const handleSetValue = (values) => {
+    console.log(values);
     setValue(values);
+    values.map((val) => {
+      var item = tableValues.find((item) => item.value === val.value);
+      if (item == undefined) {
+        tableValues.push(val);
+      }
+    });
   };
 
   return (
