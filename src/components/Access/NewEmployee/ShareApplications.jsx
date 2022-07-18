@@ -121,7 +121,7 @@ const ShareApplications = () => {
       }),
       applications: templateApplications.map((temp) => {
         return {
-          appName: temp.name,
+          appId: temp._id,
           status: "requested",
           requestedDate: "",
           approvedDate: "",

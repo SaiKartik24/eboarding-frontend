@@ -69,14 +69,7 @@ const Home = () => {
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    if (
-      password != "" &&
-      fullName != "" &&
-      email != "" &&
-      managerMail != "" &&
-      startDate != "" &&
-      endDate != ""
-    ) {
+    if (fullName != "" && email != "" && managerMail != "" && startDate != "") {
       let userDetails = {
         _id: id,
         password: password,
