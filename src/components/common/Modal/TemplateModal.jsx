@@ -20,6 +20,7 @@ const TemplateModal = (props) => {
           <Search
             allowClear
             // size="large"
+            value={props.searchText}
             onChange={(e) => props.searchFilter(e.target.value)}
             placeholder="Search for application"
             className="mr-3"

@@ -41,10 +41,12 @@ const TemplateDetails = () => {
   const [Checked, setChecked] = useState(false);
   const [templateApplications, setTemplateApplications] = useState([]);
   const [searchApps, setSearchApps] = useState();
-  const searchFilter = (searchText) => {
-    if (searchText != "") {
+  const [searchText, setSearchText] = useState("");
+  const searchFilter = (searchTxt) => {
+    setSearchText(searchTxt);
+    if (searchTxt != "") {
       let filteredApps = apps.filter((val) => {
-        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+        if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -97,24 +99,13 @@ const TemplateDetails = () => {
   };
 
   useEffect(() => {
-    console.log("hi");
     getTemplateById();
   }, []);
 
-  const save = async (record) => {
-    try {
-      let response = await UpdateTemplate(record, record._id);
-      response = await response.json();
-      recordUpdateNotification();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleClose = () => {
     setModal(false);
-    console.log(resultArray);
-    setTemplateApplications(resultArray);
+    // console.log(resultArray);
+    // setTemplateApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
@@ -122,11 +113,14 @@ const TemplateDetails = () => {
     setConfirmBtnLoader(true);
     console.log(templateApplications);
     let applicationDetails = {
-      templateId: tempId,
+      _id: tempId,
       applications: templateApplications,
     };
     try {
-      let applicationResponse = await UpdateTemplate(applicationDetails);
+      let applicationResponse = await UpdateTemplate(
+        applicationDetails,
+        tempId
+      );
       applicationResponse = await applicationResponse.json();
       setConfirmBtnLoader(false);
       try {
@@ -144,6 +138,8 @@ const TemplateDetails = () => {
   };
 
   const openModal = async () => {
+    setSearchApps([]);
+    setSearchText("");
     setModal(true);
     setRecommendedLoader(true);
     setTimeout(() => {
@@ -160,16 +156,29 @@ const TemplateDetails = () => {
       const result = apps.filter((appData) => {
         return appData.checked == true;
       });
-      resultArray.splice(0, resultArray.length);
-      resultArray.push(...result);
+      const filterResult = result.map((val) => {
+        var item = resultArray.find((item) => item._id === val._id);
+        if (item == undefined) {
+          resultArray.push(val);
+        }
+      });
+      // console.log(result);
+      // resultArray.splice(0, resultArray.length);
+      // resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
   };
 
   const handleSubmitRecommendedApplications = () => {
-    console.log(resultArray);
-    setTemplateApplications(resultArray);
+    // setTemplateApplications(resultArray);
+    // console.log(resultArray);
+    resultArray.map((val) => {
+      var item = templateApplications.find((item) => item._id === val._id);
+      if (item == undefined) {
+        templateApplications.push(val);
+      }
+    });
     setModal(false);
   };
 
@@ -272,6 +281,7 @@ const TemplateDetails = () => {
                       }
                       searchApps={searchApps}
                       searchFilter={searchFilter}
+                      searchText={searchText}
                       Checked={Checked}
                     />
                   </div>

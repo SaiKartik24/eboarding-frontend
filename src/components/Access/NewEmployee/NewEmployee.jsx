@@ -2,20 +2,9 @@ import React, { useState, useEffect } from "react";
 import "../access.scss";
 import { Button, Input, List, Layout, Empty, Form, Select } from "antd";
 import { debounce } from "lodash";
-import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
 import { GetApplications } from "../../services/application.service";
-import TemplateModal from "../../common/Modal/TemplateModal";
-import {
-  AddTemplate,
-  DeleteTemplate,
-  GetTemplateByName,
-  GetTemplates,
-  UpdateTemplate,
-} from "../../services/template.service";
-import { applicationDeleteNotification } from "../../common/Notifications/DeleteNotifications";
-import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
-import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { GetTemplateByName } from "../../services/template.service";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 
 const { Search } = Input;
 
@@ -28,18 +17,9 @@ const NewEmployee = () => {
   const { templateId } = useParams();
   const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
-  const [toggleState, setToggleState] = useState(1);
-  const [modal, setModal] = useState(false);
-  const [templateName, setTemplateName] = useState("");
-  const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
-  const [recommendedLoader, setRecommendedLoader] = useState(false);
   const [apps, setApps] = useState([]);
-  const [resultArray, setResultArray] = useState([]);
-  const [disabled, setDisabled] = useState(true);
-  const [Checked, setChecked] = useState(false);
-  const [templateApplications, setTemplateApplications] = useState([]);
   const [form] = Form.useForm();
-
+  const location = useLocation();
   // const getAllTemplates = async () => {
   //   setPageLoader(true);
   //   items.splice(0, items.length);
@@ -57,18 +37,22 @@ const NewEmployee = () => {
   const getAllApps = async () => {
     setPageLoader(true);
     apps.splice(0, apps.length);
-    try {
-      let applicationResponse = await GetApplications();
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
-        setApps(applicationResponse.Result);
-      } else setApps("");
-      setTimeout(() => {
-        setPageLoader(false);
-      }, 1000);
-    } catch (error) {
-      console.log("Error", error);
+    items.splice(0, apps.length);
+    setItems([]);
+    if (template === "new-employee" && nextName === undefined) {
+      try {
+        let applicationResponse = await GetApplications();
+        applicationResponse = await applicationResponse.json();
+        if (applicationResponse.Result.length > 0) {
+          console.log(applicationResponse.Result);
+          setApps(applicationResponse.Result);
+        } else setApps("");
+        setTimeout(() => {
+          setPageLoader(false);
+        }, 1000);
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
   };
 
@@ -81,139 +65,23 @@ const NewEmployee = () => {
         response = await response.json();
         if (response.Result && response.Result.length > 0)
           setItems(response.Result);
-        else setItems("");
+        else setItems([]);
       } catch (error) {
         console.log("Error", error);
       }
     } else {
-      setItems("");
+      setItems([]);
     }
   }, 500);
 
   useEffect(() => {
     // getAllTemplates();
     getAllApps();
-  }, []);
+  }, [location]);
 
-  const toggleTab = (index) => {
-    setToggleState(index);
-  };
-
-  const save = async (record) => {
-    try {
-      let response = await UpdateTemplate(record, record._id);
-      response = await response.json();
-      recordUpdateNotification();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteFunc = async (record) => {
-    try {
-      let response = await DeleteTemplate(record, record._id);
-      response = await response.json();
-      // getAllTemplates();
-      let idToRemove = record._id;
-      let myArr = items.filter(function (item) {
-        return item._id != idToRemove;
-      });
-      setItems(myArr);
-      applicationDeleteNotification();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleClose = () => {
-    setModal(false);
-    setTemplateApplications(resultArray);
-    setConfirmBtnLoader(false);
-  };
-
-  const ConfirmHandler = async () => {
-    setConfirmBtnLoader(true);
-    if (templateName != "") {
-      let applicationDetails = {
-        name: templateName,
-        applications: templateApplications,
-      };
-      try {
-        let applicationResponse = await AddTemplate(applicationDetails);
-        applicationResponse = await applicationResponse.json();
-        SaveTemplateNotification();
-        setConfirmBtnLoader(false);
-        apps.map((appData) => {
-          return (appData.checked = false);
-        });
-        setChecked(false);
-        resultArray.splice(0, resultArray.length);
-        templateApplications.splice(0, templateApplications.length);
-        setTemplateName("");
-        // getAllTemplates();
-      } catch (error) {
-        console.log("Error", error);
-      }
-    } else {
-      AddTemplateRequiredNotification();
-      setConfirmBtnLoader(false);
-    }
-  };
-
-  const openModal = async () => {
-    setModal(true);
-    setRecommendedLoader(true);
-    setTimeout(() => {
-      setRecommendedLoader(false);
-    }, 1000);
-  };
-
-  const onRecommendedItemChecked = (item, e, mode) => {
-    if (mode == "selectOne") {
-      apps.map((appData) => {
-        if (appData._id === item._id)
-          return (appData.checked = e.target.checked);
-      });
-      const result = apps.filter((appData) => {
-        return appData.checked == true;
-      });
-      setResultArray(result);
-      if (result.length > 0) setDisabled(false);
-      else setDisabled(true);
-    } else if (mode == "selectAll") {
-      let check = e.target.checked;
-      apps.map((appData) => {
-        return (appData.checked = check);
-      });
-      const result = apps.filter((appData) => {
-        return appData.checked == true;
-      });
-      setResultArray(result);
-      setChecked(check);
-      if (result.length > 0) setDisabled(false);
-      else setDisabled(true);
-    }
-  };
-
-  const handleSubmitRecommendedApplications = () => {
-    console.log(resultArray);
-    setTemplateApplications(resultArray);
-    setModal(false);
-  };
-
-  const handleCrossDelete = (e, app) => {
-    let resultingTemplateApps = templateApplications.filter(
-      (temApp) => temApp._id != app._id
-    );
-    setTemplateApplications(resultingTemplateApps);
-    let resultingApps = apps.map((appData) => {
-      if (appData._id == app._id) {
-        appData.checked = false;
-      }
-      return appData;
-    });
-    setApps(resultingApps);
-  };
+  // const toggleTab = (index) => {
+  //   setToggleState(index);
+  // };
 
   return (
     <div>

@@ -11,26 +11,37 @@ import {
   Tooltip,
   Table,
   Typography,
+  DatePicker,
 } from "antd";
+import { debounce, indexOf } from "lodash";
+import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
 import { GetApplications } from "../../services/application.service";
 import TemplateModal from "../../common/Modal/TemplateModal";
-import { UpdateTemplate } from "../../services/template.service";
+import {
+  AddTemplate,
+  DeleteTemplate,
+  GetTemplateByName,
+  GetTemplates,
+  UpdateTemplate,
+} from "../../services/template.service";
+import { applicationDeleteNotification } from "../../common/Notifications/DeleteNotifications";
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
+import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { Link, useParams } from "react-router-dom";
 import { GetTemplateById, ShareApp } from "../../services/newEmployee.services";
-import UsersDropdown from "./UsersDropdown";
 import { GetEmployeeByMail } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
+import moment from "moment";
 
 const { Search } = Input;
-
 const { Content } = Layout;
+const { Option } = Select;
 
-const ShareApplications = () => {
-  const { templateId } = useParams();
-  // const [items, setItems] = useState([]);
+const EmployeeDetails = () => {
+  const { empId } = useParams();
+  const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
-  // const [toggleState, setToggleState] = useState(1);
+  const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
@@ -45,12 +56,12 @@ const ShareApplications = () => {
   const [tableValues, setTableValues] = useState([]);
   const [form] = Form.useForm();
   const [searchApps, setSearchApps] = useState();
-  const [searchText, setSearchText] = useState("");
-  const searchFilter = (searchTxt) => {
-    setSearchText(searchTxt);
-    if (searchTxt != "") {
+  const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
+
+  const searchFilter = (searchText) => {
+    if (searchText != "") {
       let filteredApps = apps.filter((val) => {
-        if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
+        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -65,7 +76,7 @@ const ShareApplications = () => {
     setPageLoader(true);
     templateApplications.splice(0, templateApplications.length);
     try {
-      let response = await GetTemplateById(templateId);
+      let response = await GetTemplateById(empId);
       response = await response.json();
       if (response.Result[0].applications.length > 0) {
         setTemplateName(response.Result[0].name);
@@ -106,10 +117,20 @@ const ShareApplications = () => {
     getTemplateById();
   }, []);
 
+  const save = async (record) => {
+    try {
+      let response = await UpdateTemplate(record, record._id);
+      response = await response.json();
+      recordUpdateNotification();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleClose = () => {
     setModal(false);
-    // console.log(resultArray);
-    // setTemplateApplications(resultArray);
+    console.log(resultArray);
+    setTemplateApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
@@ -148,8 +169,6 @@ const ShareApplications = () => {
   };
 
   const openModal = async () => {
-    setSearchApps([]);
-    setSearchText("");
     setModal(true);
     setRecommendedLoader(true);
     setTimeout(() => {
@@ -166,26 +185,16 @@ const ShareApplications = () => {
       const result = apps.filter((appData) => {
         return appData.checked == true;
       });
-      const filterResult = result.map((val) => {
-        var item = resultArray.find((item) => item._id === val._id);
-        if (item == undefined) {
-          resultArray.push(val);
-        }
-      });
-      // resultArray.splice(0, resultArray.length);
-      // resultArray.push(...result);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
   };
 
   const handleSubmitRecommendedApplications = () => {
-    resultArray.map((val) => {
-      var item = templateApplications.find((item) => item._id === val._id);
-      if (item == undefined) {
-        templateApplications.push(val);
-      }
-    });
+    console.log(resultArray);
+    setTemplateApplications(resultArray);
     setModal(false);
   };
 
@@ -279,6 +288,14 @@ const ShareApplications = () => {
       }
     });
   };
+  let empDetails = {
+    name: "",
+    mail: "",
+    status: "",
+    type: "",
+    role: "",
+    startDate: "",
+  };
 
   return (
     <div>
@@ -287,7 +304,7 @@ const ShareApplications = () => {
           {pageLoader ? (
             <div className="text-center my-4 py-4">
               <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-              <div className="loaderText mt-2">Fetching Template</div>
+              <div className="loaderText mt-2">Fetching Employee Details</div>
             </div>
           ) : (
             <>
@@ -298,7 +315,7 @@ const ShareApplications = () => {
                       <div className="d-flex mb-4">
                         <Link
                           className="mt-2 w text-decoration-none"
-                          to={"/itaccess/access/new-employee"}
+                          to={"/itaccess/access/by-employee"}
                         >
                           <Tooltip
                             placement="leftTop"
@@ -318,28 +335,113 @@ const ShareApplications = () => {
                       </div>
                       <div className="mt-3 chooseStyEmp mb-4">
                         <div className="mainTitle">Employee Information</div>
-                        <div className="d-flex justify-content-around mb-4 mt-3">
-                          <UsersDropdown
-                            getUsers={getUsers}
-                            value={value}
-                            setValues={handleSetValue}
-                          />
-                          <Button
-                            type="primary"
-                            onClick={handleShare}
-                            style={{ width: "6%", placeSelf: "center" }}
-                          >
-                            Add
-                          </Button>
-                          <Form form={form} component={false}>
-                            <Table
-                              columns={columns}
-                              dataSource={tableData}
-                              size="middle"
-                              style={{ width: "50%" }}
-                              bordered={true}
-                            />
-                          </Form>
+                        <div className="mb-4 mt-3">
+                          <form>
+                            <div className="d-flex">
+                              <div className="d-flex form-group col-md-4">
+                                <label
+                                  htmlFor="name"
+                                  className="font-weight-bold fontsize w-50"
+                                >
+                                  Name
+                                </label>
+                                <Input
+                                  size="large"
+                                  className="form-control"
+                                  id="name"
+                                  value={empDetails.name}
+                                  disabled={disabled}
+                                />
+                              </div>
+                              <div className="d-flex form-group col-md-4">
+                                <label
+                                  htmlFor="email"
+                                  className="font-weight-bold w-50 fontsize"
+                                >
+                                  email
+                                </label>
+                                <Input
+                                  size="large"
+                                  className="form-control"
+                                  id="email"
+                                  value={empDetails.mail}
+                                  disabled={true}
+                                />
+                              </div>
+                              <div className="d-flex form-group col-md-4">
+                                <label
+                                  htmlFor="status"
+                                  className="font-weight-bold w-50 fontsize"
+                                >
+                                  status
+                                </label>
+                                <Input
+                                  size="large"
+                                  className="form-control"
+                                  id="status"
+                                  value={empDetails.status}
+                                  disabled={true}
+                                />
+                              </div>
+                            </div>
+                            <div className="d-flex">
+                              <div className="form-group col-md-4 d-flex">
+                                <label
+                                  htmlFor="type"
+                                  className="font-weight-bold w-50 fontsize"
+                                >
+                                  Type
+                                </label>
+                                <Select
+                                  placeholder="Please select Type"
+                                  value={empDetails.type}
+                                  disabled={disabled}
+                                  className="w-100"
+                                >
+                                  <Option value="Hardware">Hardware</Option>
+                                  <Option value="Software">Software</Option>
+                                </Select>
+                              </div>
+                              <div className="form-group col-md-4 d-flex">
+                                <label
+                                  htmlFor="role"
+                                  className="font-weight-bold w-50 fontsize"
+                                >
+                                  Role
+                                </label>
+                                <Select
+                                  value={empDetails.role}
+                                  disabled={disabled}
+                                  className="w-100"
+                                >
+                                  <Option value="Team Member">
+                                    Team Member
+                                  </Option>
+                                  <Option value="Administrator">
+                                    Administrator
+                                  </Option>
+                                  <Option value="Manager">Manager</Option>
+                                </Select>
+                              </div>
+                              <div className="form-group col-md-4 d-flex">
+                                <label
+                                  htmlFor="startDate"
+                                  className="font-weight-bold w-50 fontsize"
+                                >
+                                  Start Date
+                                </label>
+                                <DatePicker
+                                  defaultValue={moment(
+                                    empDetails.startDate,
+                                    dateFormatList[0]
+                                  )}
+                                  format={dateFormatList}
+                                  disabled={true}
+                                  className="w-100"
+                                />
+                              </div>
+                            </div>
+                          </form>
                         </div>
                       </div>
                       <div className="mt-3 chooseStyEmpApp mb-4">
@@ -390,7 +492,6 @@ const ShareApplications = () => {
                       }
                       searchApps={searchApps}
                       searchFilter={searchFilter}
-                      searchText={searchText}
                       Checked={Checked}
                     />
                   </div>
@@ -404,4 +505,4 @@ const ShareApplications = () => {
   );
 };
 
-export default ShareApplications;
+export default EmployeeDetails;
