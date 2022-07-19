@@ -60,6 +60,7 @@ const Employee = (props) => {
   const [selectEndDate, setSelectEndDate] = useState(false);
   const [submitExcel, setSubmitExcel] = useState(false);
   const [excelData, setExcelData] = useState([]);
+  const [updateEndDate, setUpdateEndDate] = useState(false);
 
   const handleClose = () => {
     setModal(false);
@@ -95,30 +96,56 @@ const Employee = (props) => {
       ) : inputType === "role" ? (
         <SelectFun field={record} type="role" values={employeeRole} />
       ) : inputType === "status" ? (
-        <SelectFun field={record} type="status" values={Status} />
+        <SelectFun
+          field={record}
+          type="status"
+          values={Status}
+          setUpdateEndDate={setUpdateEndDate}
+        />
       ) : inputType === "startdate" ? (
         // <Input value={record.startdate}
         // onChange={(e)=> record.startdate(e.target.value)} />
-        <DatePicker
-          defaultValue={moment(record.startdate, dateFormatList[0])}
-          allowClear={false}
-          format={dateFormatList}
-          onChange={(val) => {
-            console.log(val);
-            record.startdate = val.format("MM/DD/YYYY");
-          }}
-        />
+        record.startdate !== "" ? (
+          <DatePicker
+            defaultValue={moment(record.startdate, dateFormatList[0])}
+            allowClear={false}
+            format={dateFormatList}
+            onChange={(val) => {
+              console.log(val);
+              record.startdate = val.format("MM/DD/YYYY");
+            }}
+          />
+        ) : (
+          <DatePicker
+            allowClear={false}
+            format={dateFormatList}
+            onChange={(val) => {
+              console.log(val);
+              record.startdate = val.format("MM/DD/YYYY");
+            }}
+          />
+        )
       ) : inputType === "enddate" ? (
         // <Input value={record.enddate}
         //   onChange={(e) => record.enddate(e.target.value)} />
-        <DatePicker
-          defaultValue={moment(record.enddate, dateFormatList[0])}
-          allowClear={false}
-          format={dateFormatList}
-          onChange={(val) => {
-            record.enddate = val.format("MM/DD/YYYY");
-          }}
-        />
+        record.enddate !== "" ? (
+          <DatePicker
+            defaultValue={moment(record.enddate, dateFormatList[0])}
+            allowClear={false}
+            format={dateFormatList}
+            onChange={(val) => {
+              record.enddate = val.format("MM/DD/YYYY");
+            }}
+          />
+        ) : (
+          <DatePicker
+            allowClear={false}
+            format={dateFormatList}
+            onChange={(val) => {
+              record.enddate = val.format("MM/DD/YYYY");
+            }}
+          />
+        )
       ) : inputType === "fullname" ? (
         <InputFun field={record} type="fullname" />
       ) : inputType === "mail" ? (
@@ -232,6 +259,10 @@ const Employee = (props) => {
 
   const save = async (record) => {
     setEditingKey("");
+    if (updateEndDate) {
+      const formatDate = moment().format("MM-DD-YYYY");
+      record.enddate = formatDate;
+    }
     try {
       let response = await UpdateEmployee(record, record._id);
       response = await response.json();
@@ -277,12 +308,6 @@ const Employee = (props) => {
       editable: true,
     },
     {
-      title: <b>Status</b>,
-      dataIndex: "status",
-      key: "status",
-      editable: true,
-    },
-    {
       title: <b>Employee Type</b>,
       dataIndex: "employmenttype",
       key: "employmenttype",
@@ -310,6 +335,12 @@ const Employee = (props) => {
       title: <b>End Date</b>,
       dataIndex: "enddate",
       key: "enddate",
+      editable: true,
+    },
+    {
+      title: <b>Status</b>,
+      dataIndex: "status",
+      key: "status",
       editable: true,
     },
     {

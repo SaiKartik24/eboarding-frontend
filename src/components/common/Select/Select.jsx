@@ -17,6 +17,8 @@ const SelectFun = (props) => {
       props.field.role = e;
     } else {
       props.field.status = e;
+      if (e == "Inactive") props.setUpdateEndDate(true);
+      else props.setUpdateEndDate(false);
     }
     console.log(props.field);
   };

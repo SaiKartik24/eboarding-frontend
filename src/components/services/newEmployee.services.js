@@ -22,3 +22,13 @@ export function ShareApp(reqData) {
   };
   return fetch(host + "/access", options);
 }
+
+export function GetTemplateByEmail(mail) {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/access/search/" + mail, options);
+}

@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 import { GetApplications } from "../../services/application.service";
 import { GetTemplateByName } from "../../services/template.service";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { GetTemplateByEmail } from "../../services/newEmployee.services";
 
 const { Search } = Input;
 
@@ -58,10 +59,26 @@ const NewEmployee = () => {
 
   const searchTemplate = debounce(async (e) => {
     let val = e.target.value;
-    console.log(val);
     if (val !== "") {
       try {
         let response = await GetTemplateByName(val);
+        response = await response.json();
+        if (response.Result && response.Result.length > 0)
+          setItems(response.Result);
+        else setItems([]);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else {
+      setItems([]);
+    }
+  }, 500);
+
+  const searchExistingEmail = debounce(async (e) => {
+    let val = e.target.value;
+    if (val !== "") {
+      try {
+        let response = await GetTemplateByEmail(val);
         response = await response.json();
         if (response.Result && response.Result.length > 0)
           setItems(response.Result);
@@ -107,7 +124,7 @@ const NewEmployee = () => {
                           <Search
                             allowClear
                             size="large"
-                            onChange={(e) => searchTemplate(e)}
+                            onChange={(e) => searchExistingEmail(e)}
                             placeholder="Existing employee email"
                             className="mr-5 w-25"
                           />

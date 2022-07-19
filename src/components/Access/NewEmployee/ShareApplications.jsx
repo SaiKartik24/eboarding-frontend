@@ -115,6 +115,7 @@ const ShareApplications = () => {
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
+    let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       empMail: tableData.map((val) => {
         return val.mail;
@@ -123,9 +124,13 @@ const ShareApplications = () => {
         return {
           appId: temp._id,
           status: "requested",
-          requestedDate: "",
+          requestState: true,
+          requestedDate: currentTimeSatamp,
+          approveState: false,
           approvedDate: "",
+          grantState: false,
           grantedDate: "",
+          revokeState: false,
           revokedDate: "",
         };
       }),
