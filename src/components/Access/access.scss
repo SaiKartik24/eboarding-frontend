@@ -52,11 +52,9 @@
     color: #2368a0;
   }
 
-  .hrStyle {
-    background: rgba(183, 179, 179, 0.5);
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
+  .hrStyles {
+    background: white;
+    margin: 0px 5px;
   }
 
   .spinnerTop {
@@ -170,7 +168,7 @@
   }
   .content {
     background: white;
-    padding: 30px 60px 85px 60px;
+    padding: 30px 60px 50px 60px;
     width: 100%;
     height: 100%;
     display: none;
@@ -212,6 +210,11 @@
   }
   .chooseStyEmpApp {
     height: 27vh;
+    text-align: center;
+    border: thin lightskyblue;
+    border-style: ridge;
+  }
+  .empDetailsSty {
     text-align: center;
     border: thin lightskyblue;
     border-style: ridge;

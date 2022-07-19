@@ -239,7 +239,6 @@ const PopUpModal = (props) => {
         </div>
       </form>
       <div className="chooseSty mt-4 mb-4">
-        {/* <hr className="hrStyles" /> */}
         <div className="mainTitle">OR</div>
         <input
           type="file"

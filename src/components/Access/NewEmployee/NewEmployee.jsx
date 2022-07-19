@@ -76,7 +76,8 @@ const NewEmployee = () => {
 
   const searchExistingEmail = debounce(async (e) => {
     let val = e.target.value;
-    if (val !== "") {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (val !== "" && val.match(mailformat)) {
       try {
         let response = await GetTemplateByEmail(val);
         response = await response.json();
@@ -167,7 +168,7 @@ const NewEmployee = () => {
                                             state: { item },
                                           }}
                                         >
-                                          {item.name}
+                                          {item.username}
                                         </Link>
                                       </List.Item>
                                     )}

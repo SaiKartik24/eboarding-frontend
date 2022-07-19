@@ -333,7 +333,10 @@ const EmployeeDetails = () => {
                           {templateName}
                         </div>
                       </div>
-                      <div className="mt-3 chooseStyEmp mb-4">
+                      <div
+                        className="chooseStyEmp mb-4"
+                        style={{ marginTop: "2rem" }}
+                      >
                         <div className="mainTitle">Employee Information</div>
                         <div className="mb-4 mt-3">
                           <form>
@@ -341,7 +344,8 @@ const EmployeeDetails = () => {
                               <div className="d-flex form-group col-md-4">
                                 <label
                                   htmlFor="name"
-                                  className="font-weight-bold fontsize w-50"
+                                  className="fontsize w-50"
+                                  style={{ fontWeight: "600" }}
                                 >
                                   Name
                                 </label>
@@ -356,9 +360,10 @@ const EmployeeDetails = () => {
                               <div className="d-flex form-group col-md-4">
                                 <label
                                   htmlFor="email"
-                                  className="font-weight-bold w-50 fontsize"
+                                  className="w-50 fontsize"
+                                  style={{ fontWeight: "600" }}
                                 >
-                                  email
+                                  Email
                                 </label>
                                 <Input
                                   size="large"
@@ -371,9 +376,10 @@ const EmployeeDetails = () => {
                               <div className="d-flex form-group col-md-4">
                                 <label
                                   htmlFor="status"
-                                  className="font-weight-bold w-50 fontsize"
+                                  className="w-50 fontsize"
+                                  style={{ fontWeight: "600" }}
                                 >
-                                  status
+                                  Status
                                 </label>
                                 <Input
                                   size="large"
@@ -388,7 +394,8 @@ const EmployeeDetails = () => {
                               <div className="form-group col-md-4 d-flex">
                                 <label
                                   htmlFor="type"
-                                  className="font-weight-bold w-50 fontsize"
+                                  className="w-50 fontsize"
+                                  style={{ fontWeight: "600" }}
                                 >
                                   Type
                                 </label>
@@ -405,7 +412,8 @@ const EmployeeDetails = () => {
                               <div className="form-group col-md-4 d-flex">
                                 <label
                                   htmlFor="role"
-                                  className="font-weight-bold w-50 fontsize"
+                                  className="w-50 fontsize"
+                                  style={{ fontWeight: "600" }}
                                 >
                                   Role
                                 </label>
@@ -426,7 +434,8 @@ const EmployeeDetails = () => {
                               <div className="form-group col-md-4 d-flex">
                                 <label
                                   htmlFor="startDate"
-                                  className="font-weight-bold w-50 fontsize"
+                                  className="w-50 fontsize"
+                                  style={{ fontWeight: "600" }}
                                 >
                                   Start Date
                                 </label>
@@ -444,32 +453,57 @@ const EmployeeDetails = () => {
                           </form>
                         </div>
                       </div>
-                      <div className="mt-3 chooseStyEmpApp mb-4">
+                      <div className="mt-5 empDetailsSty mb-4">
                         <div className="mainTitle">Applications</div>
-                        <div className="float-right w-25 mr-5">
-                          <Button
-                            type="primary"
-                            className="float-right w-25"
-                            onClick={openModal}
-                          >
-                            Add
-                          </Button>
-                        </div>
-                        <div className="float-left mt-4 ml-4">
-                          {templateApplications.map((app) => (
-                            <Select
-                              className="selectStyle"
-                              mode="tags"
-                              value={app.name}
-                              open={false}
-                              bordered={false}
-                              onDeselect={(e) => handleCrossDelete(e, app)}
-                            ></Select>
-                          ))}
+                        <div className="row flex-column ml-auto mr-auto">
+                          <div className="mr-5 mt-3 mb-1">
+                            <Button
+                              type="primary"
+                              className="float-right"
+                              onClick={openModal}
+                              style={{ width: "7%" }}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                          <div className="mt-4">
+                            <hr className="hrStyles" />
+                            <div className="mainTitle">Granted</div>
+                            <div className="mr-5">
+                              <Button
+                                type="primary"
+                                className="float-right"
+                                onClick={openModal}
+                                style={{ width: "7%" }}
+                              >
+                                Revoke
+                              </Button>
+                            </div>
+                            <div className="float-left mt-4 ml-4">
+                              {templateApplications.map((app) => (
+                                <Select
+                                  className="selectStyle"
+                                  mode="tags"
+                                  value={app.name}
+                                  open={false}
+                                  bordered={false}
+                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                ></Select>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="mt-4">
+                            <hr className="hrStyles" />
+                            <div className="mainTitle">Requested</div>
+                          </div>
+                          <div className="mt-4">
+                            <hr className="hrStyles" />
+                            <div className="mainTitle">Revoked/Declined</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="float-right w-25 mr-5 mt-4">
+                    {/* <div className="float-right w-25 mr-5 mt-4">
                       <Button
                         type="primary"
                         className="float-right w-25"
@@ -480,7 +514,7 @@ const EmployeeDetails = () => {
                         ) : null}
                         Request
                       </Button>
-                    </div>
+                    </div> */}
                     <TemplateModal
                       visibility={modal}
                       handleClose={handleClose}
