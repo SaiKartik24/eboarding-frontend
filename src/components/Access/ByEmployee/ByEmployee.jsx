@@ -3,8 +3,10 @@ import "../access.scss";
 import { Button, Input, List, Layout, Empty, Form, Select } from "antd";
 import { debounce } from "lodash";
 import { GetApplications } from "../../services/application.service";
-import { GetTemplateByName } from "../../services/template.service";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import { NoEmployeeNotification } from "../../common/Notifications/AlertNotifications";
+import { GetEmployeeByMail } from "../../services/setup.service";
+import { GetEmployeeByName } from "../../services/byEmployee.service";
 
 const { Search } = Input;
 
@@ -15,6 +17,7 @@ const ByEmployee = () => {
   const template = path[3];
   const nextName = path[4];
   const [items, setItems] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [apps, setApps] = useState([]);
   const [form] = Form.useForm();
@@ -23,8 +26,8 @@ const ByEmployee = () => {
   const getAllApps = async () => {
     setPageLoader(true);
     apps.splice(0, apps.length);
-    items.splice(0, apps.length);
     setItems([]);
+    setEmployees([]);
     if (template === "by-employee" && nextName === undefined) {
       try {
         let applicationResponse = await GetApplications();
@@ -42,16 +45,39 @@ const ByEmployee = () => {
     }
   };
 
-  const searchTemplate = debounce(async (e) => {
+  const getEmployeeByName = debounce(async (e) => {
     let val = e.target.value;
-    console.log(val);
     if (val !== "") {
       try {
-        let response = await GetTemplateByName(val);
+        let response = await GetEmployeeByName(val);
         response = await response.json();
         if (response.Result && response.Result.length > 0)
           setItems(response.Result);
-        else setItems([]);
+        else {
+          setItems([]);
+          NoEmployeeNotification();
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
+    } else {
+      setItems([]);
+    }
+  }, 500);
+
+  const searchExistingEmail = debounce(async (e) => {
+    let val = e.target.value;
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (val !== "" && val.match(mailformat)) {
+      try {
+        let response = await GetEmployeeByMail(val);
+        response = await response.json();
+        if (response.Result && response.Result.length > 0)
+          setEmployees(response.Result);
+        else {
+          setEmployees([]);
+          NoEmployeeNotification();
+        }
       } catch (error) {
         console.log("Error", error);
       }
@@ -88,7 +114,7 @@ const ByEmployee = () => {
                           <Search
                             allowClear
                             size="large"
-                            onChange={(e) => searchTemplate(e)}
+                            onChange={(e) => searchExistingEmail(e)}
                             placeholder="Email"
                             className="mr-5 w-25"
                           />
@@ -96,7 +122,7 @@ const ByEmployee = () => {
                           <Search
                             allowClear
                             size="large"
-                            onChange={(e) => searchTemplate(e)}
+                            onChange={(e) => getEmployeeByName(e)}
                             placeholder="Employee Name"
                             className="ml-5 w-25"
                           />
@@ -104,7 +130,7 @@ const ByEmployee = () => {
                       </div>
                       {items.length > 0 ? (
                         <div className="chooseSty mt-4 mb-4">
-                          <div className="mainTitle">Results</div>
+                          <div className="mainTitle">Name Search Results</div>
                           <div className="row">
                             <div className="col-sm">
                               <div className="applicationData">
@@ -131,7 +157,7 @@ const ByEmployee = () => {
                                             state: { item },
                                           }}
                                         >
-                                          {item.name}
+                                          {item.username}
                                         </Link>
                                       </List.Item>
                                     )}
@@ -147,6 +173,55 @@ const ByEmployee = () => {
                               </div>
                             </div>
                           </div>
+                          {/* </div> */}
+                        </div>
+                      ) : null}
+                      {employees.length > 0 ? (
+                        <div className="chooseSty mt-4 mb-4">
+                          <div className="mainTitle">Email Search Results</div>
+                          <div className="row">
+                            <div className="col-sm">
+                              <div className="applicationData">
+                                {employees.length > 0 ? (
+                                  <List
+                                    itemLayout="horizontal"
+                                    dataSource={employees}
+                                    className={
+                                      employees.length == 0
+                                        ? "listBodyStyle"
+                                        : "listBodyStyle listBodyOverflow"
+                                    }
+                                    renderItem={(item) => (
+                                      <List.Item
+                                        className="justify-content-center"
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        <Link
+                                          className="linkStyle"
+                                          to={{
+                                            pathname:
+                                              "/itaccess/access/by-employee/" +
+                                              item._id,
+                                            state: { item },
+                                          }}
+                                        >
+                                          {item.username}
+                                        </Link>
+                                      </List.Item>
+                                    )}
+                                  />
+                                ) : (
+                                  <div className="col-12">
+                                    <Empty
+                                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                      description="No Employees Found"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          {/* </div> */}
                         </div>
                       ) : null}
                     </div>

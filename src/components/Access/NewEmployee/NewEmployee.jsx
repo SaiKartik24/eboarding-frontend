@@ -23,6 +23,7 @@ const NewEmployee = () => {
   const [apps, setApps] = useState([]);
   const [form] = Form.useForm();
   const location = useLocation();
+
   // const getAllTemplates = async () => {
   //   setPageLoader(true);
   //   items.splice(0, items.length);
@@ -224,7 +225,8 @@ const NewEmployee = () => {
                                           className="linkStyle"
                                           to={{
                                             pathname:
-                                              "/itaccess/access/" + item._id,
+                                              "/itaccess/access/employee/" +
+                                              item._id,
                                             state: { item },
                                           }}
                                         >

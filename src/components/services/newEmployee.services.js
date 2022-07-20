@@ -40,5 +40,15 @@ export function GetEmployeeByMailId(empId) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/access/" + empId, options);
+  return fetch(host + "/access/employee/" + empId, options);
+}
+
+export function GetEmployeeById(empId) {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/employee/" + empId, options);
 }

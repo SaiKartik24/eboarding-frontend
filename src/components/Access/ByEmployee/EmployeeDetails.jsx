@@ -28,7 +28,11 @@ import { applicationDeleteNotification } from "../../common/Notifications/Delete
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
 import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { Link, useParams } from "react-router-dom";
-import { GetTemplateById, ShareApp } from "../../services/newEmployee.services";
+import {
+  GetEmployeeById,
+  GetEmployeeByMailId,
+  ShareApp,
+} from "../../services/newEmployee.services";
 import { GetEmployeeByMail } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
 import moment from "moment";
@@ -43,14 +47,20 @@ const EmployeeDetails = () => {
   const [pageLoader, setPageLoader] = useState(false);
   const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
-  const [templateName, setTemplateName] = useState("");
+  const [employeeDetails, setEmployeeDetails] = useState("");
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [recommendedLoader, setRecommendedLoader] = useState(false);
   const [apps, setApps] = useState([]);
   const [resultArray, setResultArray] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [Checked, setChecked] = useState(false);
-  const [templateApplications, setTemplateApplications] = useState([]);
+  const [employeeApplications, setEmployeeApplications] = useState([]);
+  const [employeeGrantedApplications, setEmployeeGrantedApplications] =
+    useState([]);
+  const [employeeRequestedApplications, setEmployeeRequestedApplications] =
+    useState([]);
+  const [employeeRevokedApplications, setEmployeeRevokedApplications] =
+    useState([]);
   const [tableData, setTableData] = useState([]);
   const [value, setValue] = useState();
   const [tableValues, setTableValues] = useState([]);
@@ -72,16 +82,33 @@ const EmployeeDetails = () => {
     }
   };
 
-  const getTemplateById = async () => {
+  const getEmployeeByMailId = async () => {
     setPageLoader(true);
-    templateApplications.splice(0, templateApplications.length);
+    employeeApplications.splice(0, employeeApplications.length);
     try {
-      let response = await GetTemplateById(empId);
+      let response = await GetEmployeeByMailId(empId);
       response = await response.json();
       if (response.Result[0].applications.length > 0) {
-        setTemplateName(response.Result[0].name);
-        setTemplateApplications(response.Result[0].applications);
-      } else setTemplateApplications("");
+        try {
+          let empResponse = await GetEmployeeById(response.Result[0].empId);
+          empResponse = await empResponse.json();
+          setEmployeeDetails(empResponse.Result[0]);
+        } catch (error) {
+          console.log("Error", error);
+        }
+        setEmployeeApplications(response.Result[0].applications);
+        response.Result[0].applications.map((app) => {
+          if (app.requestState) {
+            employeeRequestedApplications.push(app);
+          } else if (app.approveState) {
+            employeeGrantedApplications.push(app);
+          } else if (app.revokeState) {
+            employeeRevokedApplications.push(app);
+          } else {
+            console.log("app", app);
+          }
+        });
+      } else setEmployeeApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
       console.log("Error", error);
@@ -114,7 +141,7 @@ const EmployeeDetails = () => {
   };
 
   useEffect(() => {
-    getTemplateById();
+    getEmployeeByMailId();
   }, []);
 
   const save = async (record) => {
@@ -130,23 +157,29 @@ const EmployeeDetails = () => {
   const handleClose = () => {
     setModal(false);
     console.log(resultArray);
-    setTemplateApplications(resultArray);
+    setEmployeeApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
+    let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       empMail: tableData.map((val) => {
         return val.mail;
       }),
-      applications: templateApplications.map((temp) => {
+      applications: employeeApplications.map((app) => {
         return {
-          appName: temp.name,
+          _id: app._id,
+          name: app.name,
           status: "requested",
-          requestedDate: "",
+          requestState: true,
+          requestedDate: currentTimeSatamp,
+          approveState: false,
           approvedDate: "",
+          grantState: false,
           grantedDate: "",
+          revokeState: false,
           revokedDate: "",
         };
       }),
@@ -194,16 +227,16 @@ const EmployeeDetails = () => {
 
   const handleSubmitRecommendedApplications = () => {
     console.log(resultArray);
-    setTemplateApplications(resultArray);
+    setEmployeeApplications(resultArray);
     setModal(false);
   };
 
   const handleCrossDelete = (e, app) => {
-    let resultingTemplateApps = templateApplications.filter(
+    let resultingTemplateApps = employeeApplications.filter(
       (temApp) => temApp._id != app._id
     );
     setResultArray(resultingTemplateApps);
-    setTemplateApplications(resultingTemplateApps);
+    setEmployeeApplications(resultingTemplateApps);
     let resultingApps = apps.map((appData) => {
       if (appData._id == app._id) {
         appData.checked = false;
@@ -289,17 +322,17 @@ const EmployeeDetails = () => {
     });
   };
   let empDetails = {
-    name: "",
-    mail: "",
-    status: "",
-    type: "",
-    role: "",
-    startDate: "",
+    name: employeeDetails.fullname,
+    mail: employeeDetails.mail,
+    status: employeeDetails.status,
+    type: employeeDetails.employmenttype,
+    role: employeeDetails.role,
+    startDate: employeeDetails.startdate,
   };
 
   return (
     <div>
-      <section className="newEmployee h-100">
+      <section className="newEmployee byEmployeeDetails h-100">
         <div className="pl-3 my-4 mb-4">
           {pageLoader ? (
             <div className="text-center my-4 py-4">
@@ -330,7 +363,7 @@ const EmployeeDetails = () => {
                           </Tooltip>
                         </Link>
                         <div className="ml-3 text-capitalize tname">
-                          {templateName}
+                          {employeeDetails.username}
                         </div>
                       </div>
                       <div
@@ -351,7 +384,7 @@ const EmployeeDetails = () => {
                                 </label>
                                 <Input
                                   size="large"
-                                  className="form-control"
+                                  className="form-control profFont"
                                   id="name"
                                   value={empDetails.name}
                                   disabled={disabled}
@@ -367,7 +400,7 @@ const EmployeeDetails = () => {
                                 </label>
                                 <Input
                                   size="large"
-                                  className="form-control"
+                                  className="form-control profFont"
                                   id="email"
                                   value={empDetails.mail}
                                   disabled={true}
@@ -383,7 +416,7 @@ const EmployeeDetails = () => {
                                 </label>
                                 <Input
                                   size="large"
-                                  className="form-control"
+                                  className="form-control profFont"
                                   id="status"
                                   value={empDetails.status}
                                   disabled={true}
@@ -446,7 +479,7 @@ const EmployeeDetails = () => {
                                   )}
                                   format={dateFormatList}
                                   disabled={true}
-                                  className="w-100"
+                                  className="w-100 profFont"
                                 />
                               </div>
                             </div>
@@ -470,7 +503,7 @@ const EmployeeDetails = () => {
                             <hr className="hrStyles" />
                             <div className="mainTitle">Granted</div>
                             <div className="float-left mt-4 ml-4">
-                              {templateApplications.map((app) => (
+                              {employeeGrantedApplications.map((app) => (
                                 <Select
                                   className="selectStyle"
                                   mode="tags"
@@ -495,6 +528,18 @@ const EmployeeDetails = () => {
                           <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Requested</div>
+                            <div className="float-left mt-4 ml-4">
+                              {employeeRequestedApplications.map((app) => (
+                                <Select
+                                  className="selectStyle"
+                                  mode="tags"
+                                  value={app.name}
+                                  open={false}
+                                  bordered={false}
+                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                ></Select>
+                              ))}
+                            </div>
                             <div className="mr-5">
                               <Button
                                 type="primary"
@@ -509,6 +554,18 @@ const EmployeeDetails = () => {
                           <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Revoked/Declined</div>
+                            <div className="float-left mt-4 ml-4">
+                              {employeeRevokedApplications.map((app) => (
+                                <Select
+                                  className="selectStyle"
+                                  mode="tags"
+                                  value={app.name}
+                                  open={false}
+                                  bordered={false}
+                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                ></Select>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>

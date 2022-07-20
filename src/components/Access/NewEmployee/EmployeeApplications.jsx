@@ -17,7 +17,11 @@ import TemplateModal from "../../common/Modal/TemplateModal";
 import { UpdateTemplate } from "../../services/template.service";
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
 import { Link, useParams } from "react-router-dom";
-import { GetTemplateById, ShareApp } from "../../services/newEmployee.services";
+import {
+  GetEmployeeById,
+  GetEmployeeByMailId,
+  ShareApp,
+} from "../../services/newEmployee.services";
 import UsersDropdown from "./UsersDropdown";
 import { GetEmployeeByMail } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
@@ -26,20 +30,20 @@ const { Search } = Input;
 
 const { Content } = Layout;
 
-const ShareApplications = () => {
-  const { templateId } = useParams();
+const EmployeeApplications = () => {
+  const { empId } = useParams();
   // const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   // const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
-  const [templateName, setTemplateName] = useState("");
+  const [employeeName, setEmployeeName] = useState("");
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [recommendedLoader, setRecommendedLoader] = useState(false);
   const [apps, setApps] = useState([]);
   const [resultArray, setResultArray] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [Checked, setChecked] = useState(false);
-  const [templateApplications, setTemplateApplications] = useState([]);
+  const [employeeApplications, setEmployeeApplications] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [value, setValue] = useState();
   const [tableValues, setTableValues] = useState([]);
@@ -61,16 +65,22 @@ const ShareApplications = () => {
     }
   };
 
-  const getTemplateById = async () => {
+  const getEmployeeByMailId = async () => {
     setPageLoader(true);
-    templateApplications.splice(0, templateApplications.length);
+    employeeApplications.splice(0, employeeApplications.length);
     try {
-      let response = await GetTemplateById(templateId);
+      let response = await GetEmployeeByMailId(empId);
       response = await response.json();
       if (response.Result[0].applications.length > 0) {
-        setTemplateName(response.Result[0].name);
-        setTemplateApplications(response.Result[0].applications);
-      } else setTemplateApplications("");
+        try {
+          let empResponse = await GetEmployeeById(response.Result[0].empId);
+          empResponse = await empResponse.json();
+          setEmployeeName(empResponse.Result[0].username);
+        } catch (error) {
+          console.log("Error", error);
+        }
+        setEmployeeApplications(response.Result[0].applications);
+      } else setEmployeeApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
       console.log("Error", error);
@@ -78,6 +88,7 @@ const ShareApplications = () => {
   };
 
   const getAllApps = async (tempApps) => {
+    console.log(tempApps);
     apps.splice(0, apps.length);
     try {
       let applicationResponse = await GetApplications();
@@ -103,13 +114,13 @@ const ShareApplications = () => {
   };
 
   useEffect(() => {
-    getTemplateById();
+    getEmployeeByMailId();
   }, []);
 
   const handleClose = () => {
     setModal(false);
     // console.log(resultArray);
-    // setTemplateApplications(resultArray);
+    // setEmployeeApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
@@ -120,10 +131,9 @@ const ShareApplications = () => {
       empMail: tableData.map((val) => {
         return val.mail;
       }),
-      applications: templateApplications.map((temp) => {
+      applications: employeeApplications.map((app) => {
         return {
-          _id: temp._id,
-          name: temp.name,
+          appId: app._id,
           status: "requested",
           requestState: true,
           requestedDate: currentTimeSatamp,
@@ -187,20 +197,20 @@ const ShareApplications = () => {
 
   const handleSubmitRecommendedApplications = () => {
     resultArray.map((val) => {
-      var item = templateApplications.find((item) => item._id === val._id);
+      var item = employeeApplications.find((item) => item._id === val._id);
       if (item == undefined) {
-        templateApplications.push(val);
+        employeeApplications.push(val);
       }
     });
     setModal(false);
   };
 
   const handleCrossDelete = (e, app) => {
-    let resultingTemplateApps = templateApplications.filter(
+    let resultingTemplateApps = employeeApplications.filter(
       (temApp) => temApp._id != app._id
     );
     setResultArray(resultingTemplateApps);
-    setTemplateApplications(resultingTemplateApps);
+    setEmployeeApplications(resultingTemplateApps);
     let resultingApps = apps.map((appData) => {
       if (appData._id == app._id) {
         appData.checked = false;
@@ -319,7 +329,7 @@ const ShareApplications = () => {
                           </Tooltip>
                         </Link>
                         <div className="ml-3 text-capitalize tname">
-                          {templateName}
+                          {employeeName}
                         </div>
                       </div>
                       <div className="mt-3 chooseStyEmp mb-4">
@@ -360,11 +370,11 @@ const ShareApplications = () => {
                           </Button>
                         </div>
                         <div className="float-left mt-4 ml-4">
-                          {templateApplications.map((app) => (
+                          {employeeApplications.map((app) => (
                             <Select
                               className="selectStyle"
                               mode="tags"
-                              value={app.name}
+                              value={app.appName}
                               open={false}
                               bordered={false}
                               onDeselect={(e) => handleCrossDelete(e, app)}
@@ -410,4 +420,4 @@ const ShareApplications = () => {
   );
 };
 
-export default ShareApplications;
+export default EmployeeApplications;

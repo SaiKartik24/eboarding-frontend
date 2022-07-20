@@ -230,3 +230,22 @@
     letter-spacing: 2px;
   }
 }
+
+.byEmployeeDetails {
+  .ant-select-selector {
+    background: #e9ecef !important;
+    text-align: left;
+  }
+  .ant-picker.ant-picker-disabled {
+    background: #e9ecef !important;
+  }
+  .ant-picker-input > input[disabled] {
+    font-weight: 900 !important;
+  }
+  .ant-select-single .ant-select-selector .ant-select-selection-item {
+    font-weight: 900;
+  }
+  .profFont {
+    font-weight: 900 !important;
+  }
+}
