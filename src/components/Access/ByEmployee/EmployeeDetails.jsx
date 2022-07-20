@@ -469,16 +469,6 @@ const EmployeeDetails = () => {
                           <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Granted</div>
-                            <div className="mr-5">
-                              <Button
-                                type="primary"
-                                className="float-right"
-                                onClick={openModal}
-                                style={{ width: "7%" }}
-                              >
-                                Revoke
-                              </Button>
-                            </div>
                             <div className="float-left mt-4 ml-4">
                               {templateApplications.map((app) => (
                                 <Select
@@ -491,10 +481,30 @@ const EmployeeDetails = () => {
                                 ></Select>
                               ))}
                             </div>
+                            <div className="mr-5">
+                              <Button
+                                type="primary"
+                                className="float-right"
+                                onClick={openModal}
+                                style={{ width: "7%" }}
+                              >
+                                Revoke
+                              </Button>
+                            </div>
                           </div>
                           <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Requested</div>
+                            <div className="mr-5">
+                              <Button
+                                type="primary"
+                                className="float-right"
+                                onClick={openModal}
+                                style={{ width: "7%" }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
                           <div className="mt-4">
                             <hr className="hrStyles" />

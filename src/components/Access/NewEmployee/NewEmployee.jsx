@@ -6,6 +6,7 @@ import { GetApplications } from "../../services/application.service";
 import { GetTemplateByName } from "../../services/template.service";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { GetTemplateByEmail } from "../../services/newEmployee.services";
+import { NoEmployeeNotification } from "../../common/Notifications/AlertNotifications";
 
 const { Search } = Input;
 
@@ -17,6 +18,7 @@ const NewEmployee = () => {
   const nextName = path[4];
   const { templateId } = useParams();
   const [items, setItems] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [apps, setApps] = useState([]);
   const [form] = Form.useForm();
@@ -38,8 +40,9 @@ const NewEmployee = () => {
   const getAllApps = async () => {
     setPageLoader(true);
     apps.splice(0, apps.length);
-    items.splice(0, apps.length);
+    // items.splice(0, items.length);
     setItems([]);
+    setEmployees([]);
     if (template === "new-employee" && nextName === undefined) {
       try {
         let applicationResponse = await GetApplications();
@@ -65,7 +68,10 @@ const NewEmployee = () => {
         response = await response.json();
         if (response.Result && response.Result.length > 0)
           setItems(response.Result);
-        else setItems([]);
+        else {
+          setItems([]);
+          NoEmployeeNotification();
+        }
       } catch (error) {
         console.log("Error", error);
       }
@@ -82,8 +88,11 @@ const NewEmployee = () => {
         let response = await GetTemplateByEmail(val);
         response = await response.json();
         if (response.Result && response.Result.length > 0)
-          setItems(response.Result);
-        else setItems([]);
+          setEmployees(response.Result);
+        else {
+          setEmployees([]);
+          NoEmployeeNotification();
+        }
       } catch (error) {
         console.log("Error", error);
       }
@@ -141,7 +150,9 @@ const NewEmployee = () => {
                       </div>
                       {items.length > 0 ? (
                         <div className="chooseSty mt-4 mb-4">
-                          <div className="mainTitle">Results</div>
+                          <div className="mainTitle">
+                            Template Search Results
+                          </div>
                           <div className="row">
                             <div className="col-sm">
                               <div className="applicationData">
@@ -168,7 +179,7 @@ const NewEmployee = () => {
                                             state: { item },
                                           }}
                                         >
-                                          {item.username}
+                                          {item.name}
                                         </Link>
                                       </List.Item>
                                     )}
@@ -178,6 +189,55 @@ const NewEmployee = () => {
                                     <Empty
                                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                                       description="No Applications"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          {/* </div> */}
+                        </div>
+                      ) : null}
+                      {employees.length > 0 ? (
+                        <div className="chooseSty mt-4 mb-4">
+                          <div className="mainTitle">
+                            Employee Search Results
+                          </div>
+                          <div className="row">
+                            <div className="col-sm">
+                              <div className="applicationData">
+                                {employees.length > 0 ? (
+                                  <List
+                                    itemLayout="horizontal"
+                                    dataSource={employees}
+                                    className={
+                                      employees.length == 0
+                                        ? "listBodyStyle"
+                                        : "listBodyStyle listBodyOverflow"
+                                    }
+                                    renderItem={(item) => (
+                                      <List.Item
+                                        className="justify-content-center"
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        <Link
+                                          className="linkStyle"
+                                          to={{
+                                            pathname:
+                                              "/itaccess/access/" + item._id,
+                                            state: { item },
+                                          }}
+                                        >
+                                          {item.username}
+                                        </Link>
+                                      </List.Item>
+                                    )}
+                                  />
+                                ) : (
+                                  <div className="col-12">
+                                    <Empty
+                                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                      description="No Employees Found"
                                     />
                                   </div>
                                 )}

@@ -32,3 +32,13 @@ export function GetTemplateByEmail(mail) {
   };
   return fetch(host + "/access/search/" + mail, options);
 }
+
+export function GetEmployeeByMailId(empId) {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/access/" + empId, options);
+}
