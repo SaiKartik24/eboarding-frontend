@@ -543,7 +543,7 @@ const ApplicationDetails = () => {
                         className="chooseStyEmp mb-4"
                         style={{ marginTop: "2rem" }}
                       >
-                        <div className="mainTitle">Employee Information</div>
+                        <div className="mainTitle">Application Information</div>
                         <div className="mb-4 mt-3">
                           <form>
                             <div className="d-flex">
