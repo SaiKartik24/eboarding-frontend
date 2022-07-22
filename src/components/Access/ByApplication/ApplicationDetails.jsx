@@ -27,31 +27,30 @@ import { applicationDeleteNotification } from "../../common/Notifications/Delete
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
 import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { Link, useParams } from "react-router-dom";
-import {
-  GetEmployeeById,
-  GetEmployeeByMailId,
-  ShareApp,
-} from "../../services/newEmployee.services";
+import { GetEmployeeById, ShareApp } from "../../services/newEmployee.services";
 import { GetEmployeeByMail } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
 import moment from "moment";
 import EmployeeDetailsModal from "../../common/Modal/EmployeeDetailsModal";
 import GrantRevokeModal from "../../common/Modal/GrantRevokeModal";
 import { EmployeeApplicationAccess } from "../../services/byEmployee.service";
+import {
+  GetApplicationById,
+  GetEmployeesByApplication,
+} from "../../services/byApplication.service";
 
 const { Search } = Input;
 const { Content } = Layout;
 const { Option } = Select;
 
-const EmployeeDetails = () => {
-  const { empId } = useParams();
+const ApplicationDetails = () => {
+  const { applicationId } = useParams();
   const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
   const [grantModal, setGrantModal] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
-  const [employeeDetails, setEmployeeDetails] = useState("");
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [recommendedLoader, setRecommendedLoader] = useState(false);
   const [apps, setApps] = useState([]);
@@ -76,7 +75,8 @@ const EmployeeDetails = () => {
   const [requestActions, setRequestActions] = useState(["Grant", "Revoke"]);
   const [selectedAction, setSelectedAction] = useState("Grant");
   const [showAction, setShowAction] = useState(false);
-  const [accessId, setAccessId] = useState("");
+  const [appId, setAppId] = useState("");
+  const [applicationData, setApplicationData] = useState([]);
 
   const searchFilter = (searchText) => {
     if (searchText != "") {
@@ -121,11 +121,8 @@ const EmployeeDetails = () => {
     }
   };
 
-  const getEmployeeByMailId = async () => {
+  const getEmployeesByApplication = async () => {
     setPageLoader(true);
-    // setEmployeeGrantedApplications([]);
-    // setEmployeeRequestedApplications([]);
-    // setEmployeeRevokedApplications([]);
     employeeGrantedApplications.splice(0, employeeGrantedApplications.length);
     employeeRequestedApplications.splice(
       0,
@@ -134,33 +131,36 @@ const EmployeeDetails = () => {
     employeeRevokedApplications.splice(0, employeeRevokedApplications.length);
     employeeApplications.splice(0, employeeApplications.length);
     try {
-      let response = await GetEmployeeByMailId(empId);
+      let response = await GetApplicationById(applicationId);
       response = await response.json();
-      setAccessId(response.Result[0]._id);
-      if (response.Result[0].applications.length > 0) {
-        try {
-          let empResponse = await GetEmployeeById(response.Result[0].empId);
-          empResponse = await empResponse.json();
-          setEmployeeDetails(empResponse.Result[0]);
-        } catch (error) {
-          console.log("Error", error);
-        }
-        setEmployeeApplications(response.Result[0].applications);
-        response.Result[0].applications.map((app) => {
-          if (app.requestState) {
-            employeeRequestedApplications.push(app);
-            searchRequestedApps.push(app);
-          } else if (app.grantState) {
-            employeeGrantedApplications.push(app);
-            searchGrantedApps.push(app);
-          } else if (app.revokeState) {
-            employeeRevokedApplications.push(app);
-          } else {
-            console.log("app", app);
-          }
-        });
-      } else setEmployeeApplications("");
-      getAllApps(response.Result[0].applications);
+      console.log(response);
+      setPageLoader(false);
+      setAppId(response.Result[0]._id);
+      setApplicationData(response.Result[0]);
+      //   if (response.Result[0].applications.length > 0) {
+      //     try {
+      //       let empResponse = await GetEmployeeById(response.Result[0]._id);
+      //       empResponse = await empResponse.json();
+      //       setEmployeeDetails(empResponse.Result[0]);
+      //     } catch (error) {
+      //       console.log("Error", error);
+      //     }
+      //     setEmployeeApplications(response.Result[0].applications);
+      //     response.Result[0].applications.map((app) => {
+      //       if (app.requestState) {
+      //         employeeRequestedApplications.push(app);
+      //         searchRequestedApps.push(app);
+      //       } else if (app.grantState) {
+      //         employeeGrantedApplications.push(app);
+      //         searchGrantedApps.push(app);
+      //       } else if (app.revokeState) {
+      //         employeeRevokedApplications.push(app);
+      //       } else {
+      //         console.log("app", app);
+      //       }
+      //     });
+      //   } else setEmployeeApplications("");
+      //   getAllApps(response.Result[0].applications);
     } catch (error) {
       console.log("Error", error);
     }
@@ -192,7 +192,7 @@ const EmployeeDetails = () => {
   };
 
   useEffect(() => {
-    getEmployeeByMailId();
+    getEmployeesByApplication();
   }, []);
 
   const save = async (record) => {
@@ -235,7 +235,7 @@ const EmployeeDetails = () => {
       setTableData([]);
       setValue([]);
       setTableValues([]);
-      getEmployeeByMailId();
+      getEmployeesByApplication();
     } catch (error) {
       console.log("Error", error);
     }
@@ -335,7 +335,7 @@ const EmployeeDetails = () => {
     );
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
-      _id: accessId,
+      _id: appId,
       applications: res.map((app) => {
         return {
           _id: app._id,
@@ -361,7 +361,7 @@ const EmployeeDetails = () => {
   const handleSubmitGrantApplications = () => {
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
-      _id: accessId,
+      _id: appId,
       applications: resultArray.map((app) => {
         return {
           _id: app._id,
@@ -387,7 +387,7 @@ const EmployeeDetails = () => {
   const handleSubmitRequestApplications = () => {
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
-      _id: accessId,
+      _id: appId,
       applications: resultArray.map((app) => {
         return {
           _id: app._id,
@@ -494,12 +494,11 @@ const EmployeeDetails = () => {
   };
 
   let empDetails = {
-    name: employeeDetails.fullname,
-    mail: employeeDetails.mail,
-    status: employeeDetails.status,
-    type: employeeDetails.employmenttype,
-    role: employeeDetails.role,
-    startDate: employeeDetails.startdate,
+    name: applicationData.name,
+    teamMail: applicationData.teamMail,
+    approverMail: applicationData.approverMail,
+    type: applicationData.type,
+    env: applicationData.env,
   };
 
   return (
@@ -509,7 +508,9 @@ const EmployeeDetails = () => {
           {pageLoader ? (
             <div className="text-center my-4 py-4">
               <i className="fas fa-spinner fa-2x fa-spin spinner spinnerTop"></i>
-              <div className="loaderText mt-2">Fetching Employee Details</div>
+              <div className="loaderText mt-2">
+                Fetching Application Details
+              </div>
             </div>
           ) : (
             <>
@@ -520,7 +521,7 @@ const EmployeeDetails = () => {
                       <div className="d-flex mb-4">
                         <Link
                           className="mt-2 w text-decoration-none"
-                          to={"/itaccess/access/by-employee"}
+                          to={"/itaccess/access/by-application"}
                         >
                           <Tooltip
                             placement="leftTop"
@@ -535,7 +536,7 @@ const EmployeeDetails = () => {
                           </Tooltip>
                         </Link>
                         <div className="ml-3 text-capitalize tname">
-                          {employeeDetails.username}
+                          {applicationData.name}
                         </div>
                       </div>
                       <div
@@ -568,13 +569,13 @@ const EmployeeDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Email
+                                  Team Mail
                                 </label>
                                 <Input
                                   size="large"
                                   className="form-control profFont"
                                   id="email"
-                                  value={empDetails.mail}
+                                  value={empDetails.teamMail}
                                   disabled={true}
                                 />
                               </div>
@@ -584,13 +585,13 @@ const EmployeeDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Status
+                                  Approver Mail
                                 </label>
                                 <Input
                                   size="large"
                                   className="form-control profFont"
                                   id="status"
-                                  value={empDetails.status}
+                                  value={empDetails.approverMail}
                                   disabled={true}
                                 />
                               </div>
@@ -620,39 +621,17 @@ const EmployeeDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Role
+                                  Env
                                 </label>
                                 <Select
-                                  value={empDetails.role}
+                                  value={empDetails.env}
                                   disabled={disabled}
                                   className="w-100"
                                 >
-                                  <Option value="Team Member">
-                                    Team Member
-                                  </Option>
-                                  <Option value="Administrator">
-                                    Administrator
-                                  </Option>
-                                  <Option value="Manager">Manager</Option>
+                                  <Option value="Dev">Dev</Option>
+                                  <Option value="QA">QA</Option>
+                                  <Option value="PROD">PROD</Option>
                                 </Select>
-                              </div>
-                              <div className="form-group col-md-4 d-flex">
-                                <label
-                                  htmlFor="startDate"
-                                  className="w-50 fontsize"
-                                  style={{ fontWeight: "600" }}
-                                >
-                                  Start Date
-                                </label>
-                                <DatePicker
-                                  defaultValue={moment(
-                                    empDetails.startDate,
-                                    dateFormatList[0]
-                                  )}
-                                  format={dateFormatList}
-                                  disabled={true}
-                                  className="w-100 profFont"
-                                />
                               </div>
                             </div>
                           </form>
@@ -810,4 +789,4 @@ const EmployeeDetails = () => {
   );
 };
 
-export default EmployeeDetails;
+export default ApplicationDetails;

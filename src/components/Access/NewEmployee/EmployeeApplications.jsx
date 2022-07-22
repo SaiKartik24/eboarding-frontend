@@ -133,7 +133,8 @@ const EmployeeApplications = () => {
       }),
       applications: employeeApplications.map((app) => {
         return {
-          appId: app._id,
+          _id: app._id,
+          name: app.name,
           status: "requested",
           requestState: true,
           requestedDate: currentTimeSatamp,
@@ -146,6 +147,7 @@ const EmployeeApplications = () => {
         };
       }),
     };
+    console.log(applicationDetails);
     try {
       let applicationResponse = await ShareApp(applicationDetails);
       applicationResponse = await applicationResponse.json();
@@ -374,7 +376,7 @@ const EmployeeApplications = () => {
                             <Select
                               className="selectStyle"
                               mode="tags"
-                              value={app.appName}
+                              value={app.name}
                               open={false}
                               bordered={false}
                               onDeselect={(e) => handleCrossDelete(e, app)}
@@ -383,7 +385,7 @@ const EmployeeApplications = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="float-right w-25 mr-5 mt-4">
+                    <div className="float-right w-25 mr-5">
                       <Button
                         type="primary"
                         className="float-right w-25"

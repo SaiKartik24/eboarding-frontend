@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import ApplicationDetails from "../Access/ByApplication/ApplicationDetails";
+import ByApplication from "../Access/ByApplication/ByApplication";
 import ByEmployee from "../Access/ByEmployee/ByEmployee";
 import EmployeeDetails from "../Access/ByEmployee/EmployeeDetails";
 import EmployeeApplications from "../Access/NewEmployee/EmployeeApplications";
@@ -56,8 +58,14 @@ class Routing extends Component {
               <Route
                 exact
                 path="/itaccess/access/by-application"
-                element={<Template key={6} />}
-              />
+                element={<ByApplication key={6} />}
+              >
+                <Route
+                  exact
+                  path=":applicationId"
+                  element={<ApplicationDetails key={13} />}
+                />
+              </Route>
               <Route
                 exact
                 path="/itaccess/setup/employee"

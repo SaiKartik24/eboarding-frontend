@@ -373,7 +373,7 @@ const ShareApplications = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="float-right w-25 mr-5 mt-4">
+                    <div className="float-right w-25 mr-5">
                       <Button
                         type="primary"
                         className="float-right w-25"
