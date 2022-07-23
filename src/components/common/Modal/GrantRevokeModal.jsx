@@ -49,7 +49,11 @@ const GrantRevokeModal = (props) => {
             // size="large"
             value={props.searchText}
             onChange={(e) => props.searchFilter(e.target.value)}
-            placeholder="Search for application"
+            placeholder={
+              props.from === "ByEmployee"
+                ? "Search for application"
+                : "Search for employees"
+            }
             className="mr-3"
           />
         </div>
@@ -76,7 +80,9 @@ const GrantRevokeModal = (props) => {
                       }}
                       // checked={item.checked}
                     />
-                    <List.Item className="listStyle">{item.name}</List.Item>
+                    <List.Item className="listStyle">
+                      {props.from === "ByEmployee" ? item.name : item.username}
+                    </List.Item>
                   </List.Item>
                 )}
               />

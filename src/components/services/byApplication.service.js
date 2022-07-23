@@ -19,7 +19,7 @@ export function GetEmployeesByApplication(id) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/access/application/" + id, options);
+  return fetch(host + "/access/app/" + id, options);
 }
 
 export function GetApplicationById(id) {

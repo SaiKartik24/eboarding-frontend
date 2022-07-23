@@ -15,7 +15,6 @@ import {
 } from "antd";
 import { debounce, indexOf } from "lodash";
 import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
-import { GetApplications } from "../../services/application.service";
 import {
   AddTemplate,
   DeleteTemplate,
@@ -28,7 +27,7 @@ import { recordUpdateNotification } from "../../common/Notifications/UpdateNotif
 import { AddTemplateRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { Link, useParams } from "react-router-dom";
 import { GetEmployeeById, ShareApp } from "../../services/newEmployee.services";
-import { GetEmployeeByMail } from "../../services/setup.service";
+import { GetEmployeeByMail, GetEmployees } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
 import moment from "moment";
 import EmployeeDetailsModal from "../../common/Modal/EmployeeDetailsModal";
@@ -53,7 +52,7 @@ const ApplicationDetails = () => {
   const [requestModal, setRequestModal] = useState(false);
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [recommendedLoader, setRecommendedLoader] = useState(false);
-  const [apps, setApps] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [resultArray, setResultArray] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [Checked, setChecked] = useState(false);
@@ -80,9 +79,9 @@ const ApplicationDetails = () => {
 
   const searchFilter = (searchText) => {
     if (searchText != "") {
-      console.log(apps);
-      let filteredApps = apps.filter((val) => {
-        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+      console.log(employees);
+      let filteredApps = employees.filter((val) => {
+        if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -96,7 +95,7 @@ const ApplicationDetails = () => {
   const grantAppSearchFilter = (searchText) => {
     if (searchText != "") {
       let filteredApps = employeeGrantedApplications.filter((val) => {
-        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+        if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -110,7 +109,7 @@ const ApplicationDetails = () => {
   const requestAppSearchFilter = (searchText) => {
     if (searchText != "") {
       let filteredApps = employeeRequestedApplications.filter((val) => {
-        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+        if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -134,45 +133,54 @@ const ApplicationDetails = () => {
       let response = await GetApplicationById(applicationId);
       response = await response.json();
       console.log(response);
-      setPageLoader(false);
       setAppId(response.Result[0]._id);
       setApplicationData(response.Result[0]);
-      //   if (response.Result[0].applications.length > 0) {
-      //     try {
-      //       let empResponse = await GetEmployeeById(response.Result[0]._id);
-      //       empResponse = await empResponse.json();
-      //       setEmployeeDetails(empResponse.Result[0]);
-      //     } catch (error) {
-      //       console.log("Error", error);
-      //     }
-      //     setEmployeeApplications(response.Result[0].applications);
-      //     response.Result[0].applications.map((app) => {
-      //       if (app.requestState) {
-      //         employeeRequestedApplications.push(app);
-      //         searchRequestedApps.push(app);
-      //       } else if (app.grantState) {
-      //         employeeGrantedApplications.push(app);
-      //         searchGrantedApps.push(app);
-      //       } else if (app.revokeState) {
-      //         employeeRevokedApplications.push(app);
-      //       } else {
-      //         console.log("app", app);
-      //       }
-      //     });
-      //   } else setEmployeeApplications("");
-      //   getAllApps(response.Result[0].applications);
+      // if (response.Result[0].applications.length > 0) {
+      try {
+        let empResponse = await GetEmployeesByApplication(
+          response.Result[0]._id
+        );
+        empResponse = await empResponse.json();
+        console.log(empResponse);
+        empResponse.Result.map((app) => {
+          if (app.appStatus === "requested") {
+            app.empDetails.map((item) => {
+              employeeRequestedApplications.push(item);
+              searchRequestedApps.push(item);
+              employeeApplications.push(item);
+            });
+          } else if (app.appStatus === "granted") {
+            app.empDetails.map((item) => {
+              employeeGrantedApplications.push(item);
+              searchGrantedApps.push(item);
+              employeeApplications.push(item);
+            });
+          } else if (app.appStatus === "revoked") {
+            app.empDetails.map((item) => {
+              employeeRevokedApplications.push(item);
+              employeeApplications.push(item);
+            });
+          } else {
+            console.log("app", app);
+          }
+        });
+      } catch (error) {
+        console.log("Error", error);
+      }
+      setPageLoader(false);
+      getAllApps(employeeApplications);
     } catch (error) {
       console.log("Error", error);
     }
   };
 
   const getAllApps = async (tempApps) => {
-    apps.splice(0, apps.length);
+    employees.splice(0, employees.length);
     try {
-      let applicationResponse = await GetApplications();
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result.length > 0) {
-        let res = applicationResponse.Result;
+      let employeeResponse = await GetEmployees();
+      employeeResponse = await employeeResponse.json();
+      if (employeeResponse.Result.length > 0) {
+        let res = employeeResponse.Result;
         for (let i = 0; i < res.length; i++) {
           for (let j = 0; j < tempApps.length; j++) {
             if (res[i]._id === tempApps[j]._id) {
@@ -181,8 +189,8 @@ const ApplicationDetails = () => {
             }
           }
         }
-        setApps(res);
-      } else setApps("");
+        setEmployees(res);
+      } else setEmployees("");
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
@@ -194,16 +202,6 @@ const ApplicationDetails = () => {
   useEffect(() => {
     getEmployeesByApplication();
   }, []);
-
-  const save = async (record) => {
-    try {
-      let response = await UpdateTemplate(record, record._id);
-      response = await response.json();
-      recordUpdateNotification();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleClose = () => {
     setModal(false);
@@ -224,11 +222,11 @@ const ApplicationDetails = () => {
 
   const ConfirmHandler = async (applicationDetails) => {
     try {
-      let applicationResponse = await EmployeeApplicationAccess(
+      let employeeResponse = await EmployeeApplicationAccess(
         applicationDetails,
         applicationDetails._id
       );
-      applicationResponse = await applicationResponse.json();
+      employeeResponse = await employeeResponse.json();
       ShareTemplateNotification();
       setConfirmBtnLoader(false);
       setChecked(false);
@@ -245,7 +243,7 @@ const ApplicationDetails = () => {
     setModal(true);
     setRecommendedLoader(true);
     setResultArray([]);
-    apps.map((appData) => {
+    employees.map((appData) => {
       return (appData.checked = false);
     });
     setTimeout(() => {
@@ -280,14 +278,14 @@ const ApplicationDetails = () => {
 
   const onRecommendedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      let res = apps.map((appData) => {
+      let res = employees.map((appData) => {
         if (appData._id === item._id) {
           appData.checked = e.target.checked;
         }
         return appData;
       });
-      setApps(res);
-      const result = apps.filter((appData) => {
+      setEmployees(res);
+      const result = employees.filter((appData) => {
         return appData.checked == true;
       });
       resultArray.splice(0, resultArray.length);
@@ -339,7 +337,7 @@ const ApplicationDetails = () => {
       applications: res.map((app) => {
         return {
           _id: app._id,
-          name: app.name,
+          username: app.username,
           status: "requested",
           requestState: true,
           requestedDate: currentTimeSatamp,
@@ -354,7 +352,7 @@ const ApplicationDetails = () => {
     };
     console.log(applicationDetails);
     setModal(false);
-    ConfirmHandler(applicationDetails);
+    // ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
@@ -365,14 +363,15 @@ const ApplicationDetails = () => {
       applications: resultArray.map((app) => {
         return {
           _id: app._id,
-          name: app.name,
+          username: app.username,
           status: "revoked",
           requestState: false,
-          requestedDate: app.requestedDate,
+          requestedDate:
+            app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: false,
-          grantedDate: app.grantedDate,
+          grantedDate: app.grantedDate !== undefined ? app.grantedDate : "",
           revokeState: true,
           revokedDate: currentTimeSatamp,
         };
@@ -380,7 +379,7 @@ const ApplicationDetails = () => {
     };
     console.log(applicationDetails);
     setGrantModal(false);
-    ConfirmHandler(applicationDetails);
+    // ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
@@ -391,41 +390,51 @@ const ApplicationDetails = () => {
       applications: resultArray.map((app) => {
         return {
           _id: app._id,
-          name: app.name,
-          status: selectedAction != "Grant" ? "revoked" : "grant",
+          username: app.username,
+          status: selectedAction != "Grant" ? "revoked" : "granted",
           requestState: false,
-          requestedDate: app.requestedDate,
+          requestedDate:
+            app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: selectedAction === "Grant" ? true : false,
           grantedDate:
-            selectedAction === "Grant" ? currentTimeSatamp : app.grantedDate,
+            selectedAction === "Grant"
+              ? currentTimeSatamp
+              : app.grantedDate !== undefined
+              ? app.grantedDate
+              : "",
           revokeState: selectedAction != "Grant" ? true : false,
           revokedDate:
-            selectedAction != "Grant" ? currentTimeSatamp : app.grantedDate,
+            selectedAction != "Grant"
+              ? currentTimeSatamp
+              : app.revokedDate !== undefined
+              ? app.revokedDate
+              : "",
         };
       }),
     };
     setRequestModal(false);
     setShowAction(false);
     console.log(applicationDetails);
-    ConfirmHandler(applicationDetails);
+    // ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
-  const handleCrossDelete = (e, app) => {
+  const handleCrossDelete = (e, app, state) => {
+    console.log("app", app, state);
     let resultingTemplateApps = employeeApplications.filter(
       (temApp) => temApp._id != app._id
     );
     setResultArray(resultingTemplateApps);
     setEmployeeApplications(resultingTemplateApps);
-    let resultingApps = apps.map((appData) => {
+    let resultingApps = employees.map((appData) => {
       if (appData._id == app._id) {
         appData.checked = false;
       }
       return appData;
     });
-    setApps(resultingApps);
+    setEmployees(resultingApps);
   };
 
   const deleteFunc = (record) => {
@@ -560,7 +569,7 @@ const ApplicationDetails = () => {
                                   className="form-control profFont"
                                   id="name"
                                   value={empDetails.name}
-                                  disabled={disabled}
+                                  disabled={true}
                                 />
                               </div>
                               <div className="d-flex form-group col-md-4">
@@ -608,7 +617,7 @@ const ApplicationDetails = () => {
                                 <Select
                                   placeholder="Please select Type"
                                   value={empDetails.type}
-                                  disabled={disabled}
+                                  disabled={true}
                                   className="w-100"
                                 >
                                   <Option value="Hardware">Hardware</Option>
@@ -625,7 +634,7 @@ const ApplicationDetails = () => {
                                 </label>
                                 <Select
                                   value={empDetails.env}
-                                  disabled={disabled}
+                                  disabled={true}
                                   className="w-100"
                                 >
                                   <Option value="Dev">Dev</Option>
@@ -638,7 +647,7 @@ const ApplicationDetails = () => {
                         </div>
                       </div>
                       <div className="mt-5 empDetailsSty mb-4">
-                        <div className="mainTitle">Applications</div>
+                        <div className="mainTitle">Employees</div>
                         <div className="row flex-column ml-auto mr-auto">
                           <div className="mr-5 mt-3 mb-1">
                             <Button
@@ -658,10 +667,12 @@ const ApplicationDetails = () => {
                                 <Select
                                   className="selectStyle"
                                   mode="tags"
-                                  value={app.name}
+                                  value={app.username}
                                   open={false}
                                   bordered={false}
-                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                  onDeselect={(e) =>
+                                    handleCrossDelete(e, app, "granted")
+                                  }
                                 ></Select>
                               ))}
                             </div>
@@ -684,10 +695,12 @@ const ApplicationDetails = () => {
                                 <Select
                                   className="selectStyle"
                                   mode="tags"
-                                  value={app.name}
+                                  value={app.username}
                                   open={false}
                                   bordered={false}
-                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                  onDeselect={(e) =>
+                                    handleCrossDelete(e, app, "requested")
+                                  }
                                 ></Select>
                               ))}
                             </div>
@@ -706,14 +719,16 @@ const ApplicationDetails = () => {
                             <hr className="hrStyles" />
                             <div className="mainTitle">Revoked/Declined</div>
                             <div className="float-left mt-4 ml-4">
-                              {employeeRevokedApplications.map((app) => (
+                              {employeeRevokedApplications.map((item) => (
                                 <Select
                                   className="selectStyle"
                                   mode="tags"
-                                  value={app.name}
+                                  value={item.username}
                                   open={false}
                                   bordered={false}
-                                  onDeselect={(e) => handleCrossDelete(e, app)}
+                                  onDeselect={(e) =>
+                                    handleCrossDelete(e, item, "revoked")
+                                  }
                                 ></Select>
                               ))}
                             </div>
@@ -736,7 +751,7 @@ const ApplicationDetails = () => {
                     <EmployeeDetailsModal
                       visibility={modal}
                       handleClose={handleClose}
-                      apps={apps}
+                      apps={employees}
                       recommendedLoader={recommendedLoader}
                       onRecommendedItemChecked={onRecommendedItemChecked}
                       handleSubmitRecommendedApplications={
@@ -745,6 +760,7 @@ const ApplicationDetails = () => {
                       searchApps={searchApps}
                       searchFilter={searchFilter}
                       Checked={Checked}
+                      from="ByApplication"
                     />
                     <GrantRevokeModal
                       visibility={grantModal}
@@ -760,6 +776,7 @@ const ApplicationDetails = () => {
                       Checked={Checked}
                       requestActions={requestActions}
                       showAction={showAction}
+                      from="ByApplication"
                     />
                     <GrantRevokeModal
                       visibility={requestModal}
@@ -777,6 +794,7 @@ const ApplicationDetails = () => {
                       showAction={showAction}
                       selectedAction={selectedAction}
                       setSelectedAction={setSelectedAction}
+                      from="ByApplication"
                     />
                   </div>
                 </div>

@@ -368,11 +368,12 @@ const EmployeeDetails = () => {
           name: app.name,
           status: "revoked",
           requestState: false,
-          requestedDate: app.requestedDate,
+          requestedDate:
+            app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: false,
-          grantedDate: app.grantedDate,
+          grantedDate: app.grantedDate !== undefined ? app.grantedDate : "",
           revokeState: true,
           revokedDate: currentTimeSatamp,
         };
@@ -392,17 +393,25 @@ const EmployeeDetails = () => {
         return {
           _id: app._id,
           name: app.name,
-          status: selectedAction != "Grant" ? "revoked" : "grant",
+          status: selectedAction != "Grant" ? "revoked" : "granted",
           requestState: false,
           requestedDate: app.requestedDate,
           approveState: false,
           approvedDate: "",
           grantState: selectedAction === "Grant" ? true : false,
           grantedDate:
-            selectedAction === "Grant" ? currentTimeSatamp : app.grantedDate,
+            selectedAction === "Grant"
+              ? currentTimeSatamp
+              : app.grantedDate !== undefined
+              ? app.grantedDate
+              : "",
           revokeState: selectedAction != "Grant" ? true : false,
           revokedDate:
-            selectedAction != "Grant" ? currentTimeSatamp : app.grantedDate,
+            selectedAction != "Grant"
+              ? currentTimeSatamp
+              : app.revokedDate !== undefined
+              ? app.revokedDate
+              : "",
         };
       }),
     };
@@ -559,7 +568,7 @@ const EmployeeDetails = () => {
                                   className="form-control profFont"
                                   id="name"
                                   value={empDetails.name}
-                                  disabled={disabled}
+                                  disabled={true}
                                 />
                               </div>
                               <div className="d-flex form-group col-md-4">
@@ -607,7 +616,7 @@ const EmployeeDetails = () => {
                                 <Select
                                   placeholder="Please select Type"
                                   value={empDetails.type}
-                                  disabled={disabled}
+                                  disabled={true}
                                   className="w-100"
                                 >
                                   <Option value="Hardware">Hardware</Option>
@@ -624,7 +633,7 @@ const EmployeeDetails = () => {
                                 </label>
                                 <Select
                                   value={empDetails.role}
-                                  disabled={disabled}
+                                  disabled={true}
                                   className="w-100"
                                 >
                                   <Option value="Team Member">
@@ -766,6 +775,7 @@ const EmployeeDetails = () => {
                       searchApps={searchApps}
                       searchFilter={searchFilter}
                       Checked={Checked}
+                      from="ByEmployee"
                     />
                     <GrantRevokeModal
                       visibility={grantModal}
@@ -781,6 +791,7 @@ const EmployeeDetails = () => {
                       Checked={Checked}
                       requestActions={requestActions}
                       showAction={showAction}
+                      from="ByEmployee"
                     />
                     <GrantRevokeModal
                       visibility={requestModal}
@@ -798,6 +809,7 @@ const EmployeeDetails = () => {
                       showAction={showAction}
                       selectedAction={selectedAction}
                       setSelectedAction={setSelectedAction}
+                      from="ByEmployee"
                     />
                   </div>
                 </div>

@@ -8,7 +8,13 @@ const EmployeeDetailsModal = (props) => {
   let apps = props.apps;
   return (
     <Modal
-      title={<b>Add Applications</b>}
+      title={
+        props.from === "ByEmployee" ? (
+          <b>Add Applications</b>
+        ) : (
+          <b>Add Employees</b>
+        )
+      }
       visible={props.visibility}
       className="modalFont modalSection"
       onCancel={props.handleClose}
@@ -49,7 +55,9 @@ const EmployeeDetailsModal = (props) => {
                       }}
                       // checked={item.checked}
                     />
-                    <List.Item className="listStyle">{item.name}</List.Item>
+                    <List.Item className="listStyle">
+                      {props.from === "ByEmployee" ? item.name : item.username}
+                    </List.Item>
                   </List.Item>
                 )}
               />
