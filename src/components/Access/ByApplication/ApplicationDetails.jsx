@@ -217,17 +217,20 @@ const ApplicationDetails = () => {
     setModal(false);
     setResultArray([]);
     setConfirmBtnLoader(false);
+    setChecked(false);
   };
 
   const handleCloseGrantModal = () => {
     setGrantModal(false);
     setResultArray([]);
+    setChecked(false);
   };
 
   const handleCloseRequestModal = () => {
     setRequestModal(false);
     setShowAction(false);
     setResultArray([]);
+    setChecked(false);
   };
 
   const ConfirmHandler = async (applicationDetails) => {
