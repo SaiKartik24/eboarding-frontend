@@ -67,6 +67,18 @@ const GrantRevokeModal = (props) => {
             </div>
           ) : (
             <>
+              <div className="mb-1">
+                <Checkbox
+                  className="mr-4"
+                  onChange={(e, value) =>
+                    props.onRecommendedItemChecked(null, e, "selectAll")
+                  }
+                  checked={props.Checked}
+                ></Checkbox>
+                <span className="selectSize selectStyle">
+                  {props.Checked ? <b>Deselect All</b> : <b>Select All</b>}
+                </span>
+              </div>
               <List
                 itemLayout="horizontal"
                 dataSource={props.searchApps}
@@ -78,7 +90,7 @@ const GrantRevokeModal = (props) => {
                       onChange={(e, value) => {
                         props.onRecommendedItemChecked(item, e, "selectOne");
                       }}
-                      // checked={item.checked}
+                      checked={item.checked}
                     />
                     <List.Item className="listStyle">
                       {props.from === "ByEmployee" ? item.name : item.username}

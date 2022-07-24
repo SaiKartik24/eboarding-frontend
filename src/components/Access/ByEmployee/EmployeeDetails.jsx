@@ -123,9 +123,6 @@ const EmployeeDetails = () => {
 
   const getEmployeeByMailId = async () => {
     setPageLoader(true);
-    // setEmployeeGrantedApplications([]);
-    // setEmployeeRequestedApplications([]);
-    // setEmployeeRevokedApplications([]);
     employeeGrantedApplications.splice(0, employeeGrantedApplications.length);
     employeeRequestedApplications.splice(
       0,
@@ -159,6 +156,10 @@ const EmployeeDetails = () => {
             console.log("app", app);
           }
         });
+        employeeRequestedApplications.map((item) => (item.checked = false));
+        employeeGrantedApplications.map((item) => (item.checked = false));
+        employeeRevokedApplications.map((item) => (item.checked = false));
+        console.log(employeeGrantedApplications);
       } else setEmployeeApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
@@ -310,6 +311,21 @@ const EmployeeDetails = () => {
       resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      let res = employeeGrantedApplications.map((data) => {
+        data.checked = check;
+        return data;
+      });
+      setEmployeeGrantedApplications(res);
+      const result = employeeGrantedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
     }
   };
 
@@ -324,6 +340,22 @@ const EmployeeDetails = () => {
       });
       resultArray.splice(0, resultArray.length);
       resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      let res = employeeRequestedApplications.map((data) => {
+        data.checked = check;
+        return data;
+      });
+      setEmployeeRequestedApplications(res);
+      const result = employeeRequestedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      console.log(resultArray);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
@@ -751,18 +783,6 @@ const EmployeeDetails = () => {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="float-right w-25 mr-5 mt-4">
-                      <Button
-                        type="primary"
-                        className="float-right w-25"
-                        onClick={ConfirmHandler}
-                      >
-                        {confirmBtnLoader ? (
-                          <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
-                        ) : null}
-                        Request
-                      </Button>
-                    </div> */}
                     <EmployeeDetailsModal
                       visibility={modal}
                       handleClose={handleClose}

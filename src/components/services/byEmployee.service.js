@@ -9,7 +9,7 @@ export function GetEmployeeByName(name) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/employee/" + name, options);
+  return fetch(host + "/employee/empName/" + name, options);
 }
 
 export function EmployeeApplicationAccess(reqData, id) {

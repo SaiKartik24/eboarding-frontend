@@ -76,6 +76,7 @@ const ApplicationDetails = () => {
   const [showAction, setShowAction] = useState(false);
   const [appId, setAppId] = useState("");
   const [applicationData, setApplicationData] = useState([]);
+  const [sampleData, setSampleData] = useState([]);
 
   const searchFilter = (searchText) => {
     if (searchText != "") {
@@ -145,18 +146,24 @@ const ApplicationDetails = () => {
         empResponse.Result.map((app) => {
           if (app.appStatus === "requested") {
             app.empDetails.map((item) => {
+              item.accessId = app.accessId;
+              // console.log(item);
               employeeRequestedApplications.push(item);
               searchRequestedApps.push(item);
               employeeApplications.push(item);
             });
           } else if (app.appStatus === "granted") {
             app.empDetails.map((item) => {
+              item.accessId = app.accessId;
               employeeGrantedApplications.push(item);
+
+              console.log(employeeGrantedApplications);
               searchGrantedApps.push(item);
               employeeApplications.push(item);
             });
           } else if (app.appStatus === "revoked") {
             app.empDetails.map((item) => {
+              item.accessId = app.accessId;
               employeeRevokedApplications.push(item);
               employeeApplications.push(item);
             });
@@ -164,6 +171,9 @@ const ApplicationDetails = () => {
             console.log("app", app);
           }
         });
+        employeeRequestedApplications.map((item) => (item.checked = false));
+        employeeGrantedApplications.map((item) => (item.checked = false));
+        employeeRevokedApplications.map((item) => (item.checked = false));
       } catch (error) {
         console.log("Error", error);
       }
@@ -277,6 +287,7 @@ const ApplicationDetails = () => {
   };
 
   const onRecommendedItemChecked = (item, e, mode) => {
+    console.log("Hi");
     if (mode == "selectOne") {
       let res = employees.map((appData) => {
         if (appData._id === item._id) {
@@ -288,6 +299,23 @@ const ApplicationDetails = () => {
       const result = employees.filter((appData) => {
         return appData.checked == true;
       });
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    } else if (mode == "selectAll") {
+      console.log(mode);
+      let check = e.target.checked;
+      let res = employees.map((data) => {
+        return (data.checked = check);
+      });
+      console.log(res);
+      setEmployees(res);
+      setSearchApps(res);
+      const result = employees.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
       resultArray.splice(0, resultArray.length);
       resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
@@ -308,6 +336,21 @@ const ApplicationDetails = () => {
       resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      let res = employeeGrantedApplications.map((data) => {
+        data.checked = check;
+        return data;
+      });
+      setEmployeeGrantedApplications(res);
+      const result = employeeGrantedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
     }
   };
 
@@ -324,6 +367,21 @@ const ApplicationDetails = () => {
       resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      let res = employeeRequestedApplications.map((data) => {
+        data.checked = check;
+        return data;
+      });
+      setEmployeeGrantedApplications(res);
+      const result = employeeRequestedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
     }
   };
 
@@ -334,10 +392,11 @@ const ApplicationDetails = () => {
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       _id: appId,
-      applications: res.map((app) => {
+      employees: res.map((emp) => {
         return {
-          _id: app._id,
-          username: app.username,
+          accessId: emp.accessId,
+          _id: emp._id,
+          username: emp.username,
           status: "requested",
           requestState: true,
           requestedDate: currentTimeSatamp,
@@ -360,18 +419,19 @@ const ApplicationDetails = () => {
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       _id: appId,
-      applications: resultArray.map((app) => {
+      applications: resultArray.map((emp) => {
         return {
-          _id: app._id,
-          username: app.username,
+          accessId: emp.accessId,
+          _id: emp._id,
+          username: emp.username,
           status: "revoked",
           requestState: false,
           requestedDate:
-            app.requestedDate !== undefined ? app.requestedDate : "",
+            emp.requestedDate !== undefined ? emp.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: false,
-          grantedDate: app.grantedDate !== undefined ? app.grantedDate : "",
+          grantedDate: emp.grantedDate !== undefined ? emp.grantedDate : "",
           revokeState: true,
           revokedDate: currentTimeSatamp,
         };
@@ -387,29 +447,30 @@ const ApplicationDetails = () => {
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       _id: appId,
-      applications: resultArray.map((app) => {
+      applications: resultArray.map((emp) => {
         return {
-          _id: app._id,
-          username: app.username,
+          accessId: emp.accessId,
+          _id: emp._id,
+          username: emp.username,
           status: selectedAction != "Grant" ? "revoked" : "granted",
           requestState: false,
           requestedDate:
-            app.requestedDate !== undefined ? app.requestedDate : "",
+            emp.requestedDate !== undefined ? emp.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: selectedAction === "Grant" ? true : false,
           grantedDate:
             selectedAction === "Grant"
               ? currentTimeSatamp
-              : app.grantedDate !== undefined
-              ? app.grantedDate
+              : emp.grantedDate !== undefined
+              ? emp.grantedDate
               : "",
           revokeState: selectedAction != "Grant" ? true : false,
           revokedDate:
             selectedAction != "Grant"
               ? currentTimeSatamp
-              : app.revokedDate !== undefined
-              ? app.revokedDate
+              : emp.revokedDate !== undefined
+              ? emp.revokedDate
               : "",
         };
       }),
@@ -423,18 +484,28 @@ const ApplicationDetails = () => {
 
   const handleCrossDelete = (e, app, state) => {
     console.log("app", app, state);
-    let resultingTemplateApps = employeeApplications.filter(
-      (temApp) => temApp._id != app._id
-    );
-    setResultArray(resultingTemplateApps);
-    setEmployeeApplications(resultingTemplateApps);
-    let resultingApps = employees.map((appData) => {
-      if (appData._id == app._id) {
-        appData.checked = false;
-      }
-      return appData;
-    });
-    setEmployees(resultingApps);
+    if (state == "granted") {
+      let resultingGrantedEmployees = employeeGrantedApplications.filter(
+        (temApp) => temApp._id != app._id
+      );
+      setEmployeeGrantedApplications(resultingGrantedEmployees);
+      var res = employeeGrantedApplications.filter(function (n) {
+        return !this.has(n);
+      }, new Set(resultingGrantedEmployees));
+      employeeRevokedApplications.push(res);
+    }
+    // let resultingTemplateApps = employeeApplications.filter(
+    //   (temApp) => temApp._id != app._id
+    // );
+    // setResultArray(resultingTemplateApps);
+    // setEmployeeApplications(resultingTemplateApps);
+    // let resultingApps = employees.map((appData) => {
+    //   if (appData._id == app._id) {
+    //     appData.checked = false;
+    //   }
+    //   return appData;
+    // });
+    // setEmployees(resultingApps);
   };
 
   const deleteFunc = (record) => {
