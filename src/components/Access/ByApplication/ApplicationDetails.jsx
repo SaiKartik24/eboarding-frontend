@@ -290,7 +290,6 @@ const ApplicationDetails = () => {
   };
 
   const onRecommendedItemChecked = (item, e, mode) => {
-    console.log("Hi");
     if (mode == "selectOne") {
       let res = employees.map((appData) => {
         if (appData._id === item._id) {
@@ -307,12 +306,11 @@ const ApplicationDetails = () => {
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     } else if (mode == "selectAll") {
-      console.log(mode);
       let check = e.target.checked;
       let res = employees.map((data) => {
-        return (data.checked = check);
+        data.checked = check;
+        return data;
       });
-      console.log(res);
       setEmployees(res);
       setSearchApps(res);
       const result = employees.filter((appData) => {
@@ -328,10 +326,13 @@ const ApplicationDetails = () => {
 
   const onGrantedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      employeeGrantedApplications.map((appData) => {
-        if (appData._id === item._id)
-          return (appData.checked = e.target.checked);
+      let res = employeeGrantedApplications.map((appData) => {
+        if (appData._id === item._id) {
+          appData.checked = e.target.checked;
+        }
+        return appData;
       });
+      setEmployeeGrantedApplications(res);
       const result = employeeGrantedApplications.filter((appData) => {
         return appData.checked == true;
       });
@@ -359,10 +360,13 @@ const ApplicationDetails = () => {
 
   const onRequestedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      employeeRequestedApplications.map((appData) => {
-        if (appData._id === item._id)
-          return (appData.checked = e.target.checked);
+      let res = employeeRequestedApplications.map((appData) => {
+        if (appData._id === item._id) {
+          appData.checked = e.target.checked;
+        }
+        return appData;
       });
+      setEmployeeRequestedApplications(res);
       const result = employeeRequestedApplications.filter((appData) => {
         return appData.checked == true;
       });
@@ -376,7 +380,7 @@ const ApplicationDetails = () => {
         data.checked = check;
         return data;
       });
-      setEmployeeGrantedApplications(res);
+      setEmployeeRequestedApplications(res);
       const result = employeeRequestedApplications.filter((appData) => {
         return appData.checked == true;
       });
@@ -509,71 +513,6 @@ const ApplicationDetails = () => {
     //   return appData;
     // });
     // setEmployees(resultingApps);
-  };
-
-  const deleteFunc = (record) => {
-    const res = tableData.filter((y) => {
-      return y.mail != record.mail;
-    });
-    const tableRes = tableValues.filter((y) => {
-      return y.value != record.mail;
-    });
-    setTableValues(tableRes);
-    setTableData(res);
-  };
-
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "username",
-    },
-    {
-      title: "Email",
-      dataIndex: "mail",
-    },
-    {
-      title: <b>Actions</b>,
-      key: "action",
-      render: (_, record) => {
-        return (
-          <div>
-            <Typography.Link
-              onClick={() => {
-                deleteFunc(record);
-              }}
-            >
-              <Tooltip title="Delete">
-                <i
-                  className="fas fa-trash ml-1 mr-1"
-                  style={{ color: "red" }}
-                ></i>
-              </Tooltip>
-            </Typography.Link>
-          </div>
-        );
-      },
-    },
-  ];
-
-  async function getUsers(email) {
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (email.match(mailformat)) {
-      let userResponse = await GetEmployeeByMail(email);
-      userResponse = await userResponse.json();
-      let usersData = userResponse.Result.map((user) => ({
-        label: user.username,
-        value: user.mail,
-      }));
-      return usersData;
-    }
-  }
-  var userEmails = [];
-  const handleShare = async () => {
-    tableValues.map((val) => {
-      userEmails = [...userEmails, { username: val.label, mail: val.value }];
-    });
-    setTableData(userEmails);
-    setValue([]);
   };
 
   let empDetails = {

@@ -303,10 +303,14 @@ const EmployeeDetails = () => {
 
   const onGrantedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      employeeGrantedApplications.map((appData) => {
-        if (appData._id === item._id)
-          return (appData.checked = e.target.checked);
+      console.log(item);
+      let res = employeeGrantedApplications.map((appData) => {
+        if (appData._id === item._id) {
+          appData.checked = e.target.checked;
+        }
+        return appData;
       });
+      setEmployeeGrantedApplications(res);
       const result = employeeGrantedApplications.filter((appData) => {
         return appData.checked == true;
       });
@@ -334,10 +338,13 @@ const EmployeeDetails = () => {
 
   const onRequestedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      employeeRequestedApplications.map((appData) => {
-        if (appData._id === item._id)
-          return (appData.checked = e.target.checked);
+      let res = employeeRequestedApplications.map((appData) => {
+        if (appData._id === item._id) {
+          appData.checked = e.target.checked;
+        }
+        return appData;
       });
+      setEmployeeRequestedApplications(res);
       const result = employeeRequestedApplications.filter((appData) => {
         return appData.checked == true;
       });
