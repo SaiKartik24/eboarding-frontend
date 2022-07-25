@@ -11,6 +11,7 @@ import Profile from "../common/Profile/Profile";
 import Home from "../Home/Home";
 import LoginPage from "../Login/loginPage";
 import Application from "../Setup/Application";
+import Connectors from "../Setup/Connectors/Connectors";
 import Employee from "../Setup/Employee";
 import Template from "../Setup/Template/Template";
 import TemplateDetails from "../Setup/Template/TemplateDetails";
@@ -63,7 +64,7 @@ class Routing extends Component {
                 <Route
                   exact
                   path=":applicationId"
-                  element={<ApplicationDetails key={13} />}
+                  element={<ApplicationDetails key={14} />}
                 />
               </Route>
               <Route
@@ -87,6 +88,11 @@ class Routing extends Component {
                   element={<TemplateDetails key={10} />}
                 />
               </Route>
+              <Route
+                exact
+                path="/itaccess/setup/connectors"
+                element={<Connectors key={15} />}
+              />
             </Route>
           </Routes>
         </div>
