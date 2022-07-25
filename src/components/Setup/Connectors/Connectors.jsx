@@ -41,11 +41,11 @@ const Connectors = () => {
   const [toggleState, setToggleState] = useState(1);
   const [modal, setModal] = useState(false);
   const [name, setName] = useState("");
-  const [type, setType] = useState("Hardware");
+  const [type, setType] = useState("HTTPS");
   const [env, setEnv] = useState("DEV");
   const [url, setUrl] = useState("");
   const [userName, setUserName] = useState("");
-  const Applicationtype = ["Hardware", "Software"];
+  const Applicationtype = ["HTTPS"];
   const envType = ["DEV", "QA", "PROD"];
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [excelData, setExcelData] = useState([]);
@@ -370,7 +370,7 @@ const Connectors = () => {
     setEnv("DEV");
     setUrl("");
     setUserName("");
-    setType("Hardware");
+    setType("HTTPS");
     setPassword("");
     setConfirmBtnLoader(false);
     setExcelData([]);

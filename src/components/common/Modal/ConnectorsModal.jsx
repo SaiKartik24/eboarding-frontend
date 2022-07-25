@@ -145,8 +145,7 @@ const ConnectorsModal = (props) => {
               value={props.values.type}
               onChange={props.handleType}
             >
-              <Option value="Hardware">Hardware</Option>
-              <Option value="Software">Software</Option>
+              <Option value="HTTPS">HTTPS</Option>
             </Select>
           </div>
           <div className="form-group col-md-4">
