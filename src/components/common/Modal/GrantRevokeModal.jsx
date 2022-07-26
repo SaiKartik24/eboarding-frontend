@@ -30,8 +30,16 @@ const GrantRevokeModal = (props) => {
           </div>
           <Radio.Group
             name="radiogroup"
-            defaultValue={props.selectedAction}
-            onChange={(e) => props.setSelectedAction(e.target.value)}
+            defaultValue={
+              props.fromModal == "requested"
+                ? props.selectedAction
+                : props.selectedApproveAction
+            }
+            onChange={(e) => {
+              props.fromModal == "requested"
+                ? props.setSelectedAction(e.target.value)
+                : props.setSelectedApproveAction(e.target.value);
+            }}
           >
             <Radio value={props.requestActions[0]} style={{ fontSize: "1rem" }}>
               {props.requestActions[0]}
@@ -115,7 +123,11 @@ const GrantRevokeModal = (props) => {
           {props.addSpinner ? (
             <i className="fas fa-spinner fa-2x fa-spin spinner spinnerColor"></i>
           ) : null}
-          {props.showAction ? props.selectedAction : "Revoke"}
+          {props.showAction
+            ? props.fromModal == "requested"
+              ? props.selectedAction
+              : props.selectedApproveAction
+            : "Revoke"}
         </Button>
       </div>
     </Modal>
