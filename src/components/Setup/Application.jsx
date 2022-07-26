@@ -235,7 +235,7 @@ const Application = () => {
       editable: true,
     },
     {
-      title: <b>Env</b>,
+      title: <b>Environment</b>,
       dataIndex: "env",
       key: "env",
       editable: true,
@@ -253,7 +253,7 @@ const Application = () => {
       editable: true,
     },
     {
-      title: <b>Access Type</b>,
+      title: <b>Connector Type</b>,
       dataIndex: "accessType",
       key: "accessType",
       editable: true,

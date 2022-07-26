@@ -191,7 +191,7 @@ const Login = () => {
                   <div className="overlay-container">
                     <div className="overlay h-100">
                       <div className="overlay-panel overlay-right">
-                        <ul className="image-text mcp-white ul-text list-unstyled text-right">
+                        <ul className=" mt-5 image-text mcp-white ul-text list-unstyled text-right">
                           <li>Welcome to</li>
                           <li className="lstTitle">
                             <b>IT Access</b>
@@ -201,7 +201,7 @@ const Login = () => {
                           className="mt-5 mlogoImage"
                           src={
                             process.env.PUBLIC_URL +
-                            "assets/login/IT-Access.png"
+                            "assets/login/itaccess_logo.svg"
                           }
                           alt="Logo"
                         />

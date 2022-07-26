@@ -11,3 +11,7 @@ const openNotificationForSave = (placement, msg) => {
 export const SaveTemplateNotification = () => {
   openNotificationForSave("topRight", "Template");
 };
+
+export const SaveRecordNotification = () => {
+  openNotificationForSave("topRight", "Record");
+};

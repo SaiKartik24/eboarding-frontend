@@ -632,7 +632,7 @@ const Employee = (props) => {
                 dataSource={items}
                 columns={mergedColumns}
                 rowClassName="editable-row"
-                pagination={true}
+                pagination={{ pageSize: 7 }}
                 // scroll={{
                 //   x: 200,
                 //   y: 500,

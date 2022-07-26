@@ -146,9 +146,7 @@ const Sidebar = () => {
                 )}
               </div>
             </Link>
-            {userData.role &&
-            (userData.role == "administrator" ||
-              userData.role == "Administrator") ? (
+            {userData.role && userData.role != "Team Member" ? (
               <>
                 <div
                   className={
@@ -267,105 +265,40 @@ const Sidebar = () => {
                         //   navigateToNext("/itaccess/setup/employee")
                         // }
                       >
-                        <Menu.Item
-                          key={"employee"}
-                          className={collapsed ? "d-none" : "submenu-ItemStyle"}
-                        >
-                          <Link
-                            to={"/itaccess/setup/employee"}
-                            className="text-decoration-none"
-                          >
-                            Employee
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item
-                          key={"application"}
-                          className={
-                            collapsed
-                              ? "d-none"
-                              : "text-decoration-none submenu-ItemStyle"
-                          }
-                        >
-                          <Link
-                            to={"/itaccess/setup/application"}
-                            className="text-decoration-none"
-                          >
-                            Application
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item
-                          key={"template"}
-                          className={
-                            collapsed
-                              ? "d-none"
-                              : "text-decoration-none submenu-ItemStyle"
-                          }
-                        >
-                          <Link
-                            to={"/itaccess/setup/template"}
-                            className="text-decoration-none"
-                          >
-                            Template
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item
-                          key={"connectors"}
-                          className={
-                            collapsed
-                              ? "d-none"
-                              : "text-decoration-none submenu-ItemStyle"
-                          }
-                        >
-                          <Link
-                            to={"/itaccess/setup/connectors"}
-                            className="text-decoration-none"
-                          >
-                            Connectors
-                          </Link>
-                        </Menu.Item>
-                      </SubMenu>
-                    </Menu>
-                  )}
-                </div>
-              </>
-            ) : null}
-
-            {userData.role &&
-            (userData.role == "manager" || userData.role == "Manager") ? (
-              <>
-                <div
-                  className={
-                    collapsed ? "subTitle mt-4 d-flex" : "subTitle mt-1 d-flex"
-                  }
-                >
-                  {collapsed ? (
-                    <div
-                      className={
-                        collapsed
-                          ? "material-icons-outlined setupIcon ml-2"
-                          : "material-icons-outlined"
-                      }
-                    >
-                      phonelink_setup
-                    </div>
-                  ) : (
-                    <Menu
-                      key="13"
-                      mode="inline"
-                      className=" text-decoration-none searchMenuStyle mt-1"
-                      openKeys={openKeys}
-                      onOpenChange={onOpenChange}
-                      defaultSelectedKeys={pathId != undefined ? pathId : ""}
-                      style={{
-                        width: 400,
-                      }}
-                    >
-                      <SubMenu
-                        key={"sub"}
-                        title={"Setup"}
-                        icon={<CustomAvatar />}
-                        className="text-decoration-none text-capitalize "
-                      >
+                        {userData.role &&
+                        (userData.role === "administrator" ||
+                          userData.role === "Administrator") ? (
+                          <>
+                            <Menu.Item
+                              key={"employee"}
+                              className={
+                                collapsed ? "d-none" : "submenu-ItemStyle"
+                              }
+                            >
+                              <Link
+                                to={"/itaccess/setup/employee"}
+                                className="text-decoration-none"
+                              >
+                                Employee
+                              </Link>
+                            </Menu.Item>
+                            <Menu.Item
+                              key={"application"}
+                              className={
+                                collapsed
+                                  ? "d-none"
+                                  : "text-decoration-none submenu-ItemStyle"
+                              }
+                            >
+                              <Link
+                                to={"/itaccess/setup/application"}
+                                className="text-decoration-none"
+                              >
+                                Application
+                              </Link>
+                            </Menu.Item>
+                          </>
+                        ) : null}
                         <Menu.Item
                           key={"template"}
                           className={
@@ -381,6 +314,27 @@ const Sidebar = () => {
                             Template
                           </Link>
                         </Menu.Item>
+                        {userData.role &&
+                        (userData.role === "administrator" ||
+                          userData.role === "Administrator") ? (
+                          <>
+                            <Menu.Item
+                              key={"connectors"}
+                              className={
+                                collapsed
+                                  ? "d-none"
+                                  : "text-decoration-none submenu-ItemStyle"
+                              }
+                            >
+                              <Link
+                                to={"/itaccess/setup/connectors"}
+                                className="text-decoration-none"
+                              >
+                                Connectors
+                              </Link>
+                            </Menu.Item>
+                          </>
+                        ) : null}
                       </SubMenu>
                     </Menu>
                   )}

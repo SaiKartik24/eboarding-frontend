@@ -23,6 +23,7 @@ import { Link, useParams } from "react-router-dom";
 import { GetTemplateById } from "../../services/newEmployee.services";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
+import { SaveRecordNotification } from "../../common/Notifications/SaveNotifications";
 
 const { Search } = Input;
 
@@ -122,7 +123,7 @@ const TemplateDetails = () => {
         tempId
       );
       applicationResponse = await applicationResponse.json();
-      setConfirmBtnLoader(false);
+      SaveRecordNotification();
       try {
         let response = await GetTemplateById(tempId);
         response = await response.json();
@@ -132,6 +133,7 @@ const TemplateDetails = () => {
       } catch (error) {
         console.log("Error", error);
       }
+      setConfirmBtnLoader(false);
     } catch (error) {
       console.log("Error", error);
     }
@@ -258,7 +260,7 @@ const TemplateDetails = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="float-right w-25 mr-5 mt-4">
+                    <div className="float-right w-25 mr-5">
                       <Button
                         type="primary"
                         className="float-right w-25"
