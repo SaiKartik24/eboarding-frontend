@@ -12,11 +12,6 @@ import {
 } from "antd";
 import * as XLSX from "xlsx";
 import { debounce } from "lodash";
-import {
-  ApplicationEnvSelect,
-  ApplicationSelect,
-} from "../../common/Select/ApplicationSelect";
-import ApplicationInput from "../../common/Input/ApplicationInput";
 import ApplicationModal from "../../common/Modal/ApplicationModal";
 import { AddApplicationRequiredNotification } from "../../common/Notifications/RequiredNotification";
 import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
@@ -29,6 +24,11 @@ import {
   GetConnectors,
   UpdateConnector,
 } from "../../services/connectors.service";
+import ConnectorInput from "../../common/Input/ConnectorInput";
+import {
+  ConnectorEnvSelect,
+  ConnectorSelect,
+} from "../../common/Select/ConnectorSelect";
 
 const { Search } = Input;
 
@@ -45,7 +45,7 @@ const Connectors = () => {
   const [env, setEnv] = useState("DEV");
   const [url, setUrl] = useState("");
   const [userName, setUserName] = useState("");
-  const Applicationtype = ["HTTPS"];
+  const Applicationtype = ["HTTPS", "HTTP"];
   const envType = ["DEV", "QA", "PROD"];
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [excelData, setExcelData] = useState([]);
@@ -174,21 +174,17 @@ const Connectors = () => {
   }) => {
     const inputNode =
       inputType === "type" ? (
-        <ApplicationSelect
-          field={record}
-          type="type"
-          values={Applicationtype}
-        />
+        <ConnectorSelect field={record} type="type" values={Applicationtype} />
       ) : inputType === "name" ? (
-        <ApplicationInput field={record} type="name" />
+        <ConnectorInput field={record} type="name" />
       ) : inputType === "env" ? (
-        <ApplicationEnvSelect field={record} type="env" values={envType} />
+        <ConnectorEnvSelect field={record} type="env" values={envType} />
       ) : inputType === "userName" ? (
-        <ApplicationInput field={record} type="userName" />
+        <ConnectorInput field={record} type="userName" />
       ) : inputType === "password" ? (
-        <ApplicationInput field={record} type="password" />
+        <ConnectorInput field={record} type="password" />
       ) : inputType === "url" ? (
-        <ApplicationInput field={record} type="url" />
+        <ConnectorInput field={record} type="url" />
       ) : (
         <Input />
       );
@@ -251,6 +247,9 @@ const Connectors = () => {
       dataIndex: "password",
       key: "password",
       editable: true,
+      render: (_, record) => {
+        return <span className="hidetext">{record.password}</span>;
+      },
     },
     {
       title: <b>Actions</b>,
@@ -479,7 +478,7 @@ const Connectors = () => {
                   allowClear
                   // size="large"
                   onChange={(e) => searchApplication(e)}
-                  placeholder="Search for application"
+                  placeholder="Search for connectors"
                   className="mr-3"
                 />
                 <Button

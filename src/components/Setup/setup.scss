@@ -257,6 +257,9 @@
     text-decoration: none;
     color: #00aae7;
   }
+  .hidetext {
+    -webkit-text-security: disc;
+  }
 }
 
 .selectStyle {

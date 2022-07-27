@@ -1,39 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "../../Access/access.scss";
-import {
-  Button,
-  Input,
-  List,
-  Layout,
-  Empty,
-  Form,
-  Select,
-  Tooltip,
-} from "antd";
+import { Button, Input, Layout, Select, Tooltip } from "antd";
 import { GetApplications } from "../../services/application.service";
 import TemplateModal from "../../common/Modal/TemplateModal";
-import {
-  AddTemplate,
-  DeleteTemplate,
-  GetTemplateByName,
-  GetTemplates,
-  UpdateTemplate,
-} from "../../services/template.service";
+import { UpdateTemplate } from "../../services/template.service";
 import { Link, useParams } from "react-router-dom";
 import { GetTemplateById } from "../../services/newEmployee.services";
-import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
-import { recordUpdateNotification } from "../../common/Notifications/UpdateNotifications";
 import { SaveRecordNotification } from "../../common/Notifications/SaveNotifications";
+import CheckOutsideClick from "../../common/ClickEvent/ClickEvent";
 
-const { Search } = Input;
-
-const { Content } = Layout;
 const TemplateDetails = () => {
   const { tempId } = useParams();
   const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [modal, setModal] = useState(false);
   const [templateName, setTemplateName] = useState("");
+  const [editTemplateName, setEditTemplateName] = useState(false);
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [recommendedLoader, setRecommendedLoader] = useState(false);
   const [apps, setApps] = useState([]);
@@ -199,6 +181,21 @@ const TemplateDetails = () => {
     setApps(resultingApps);
   };
 
+  const handleClick = () => {
+    let name = localStorage.getItem("name");
+    setTemplateName(name);
+    setEditTemplateName(false);
+  };
+
+  const keyDownHandlerForEdit = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.code === "Enter") {
+      setTemplateName(event.target.value);
+      setEditTemplateName(false);
+    }
+  };
+
   return (
     <div>
       <section className="newEmployee h-100">
@@ -232,7 +229,31 @@ const TemplateDetails = () => {
                           </Tooltip>
                         </Link>
                         <div className="ml-3 text-capitalize tname">
-                          {templateName}
+                          {editTemplateName ? (
+                            <CheckOutsideClick onClickOutside={handleClick}>
+                              <Input
+                                defaultValue={templateName}
+                                onChange={(e) => {
+                                  setTemplateName(e.target.value);
+                                  localStorage.setItem("name", e.target.value);
+                                }}
+                                onKeyDown={(e) => keyDownHandlerForEdit(e)}
+                              />
+                            </CheckOutsideClick>
+                          ) : (
+                            templateName
+                          )}
+                          <div
+                            className={
+                              editTemplateName
+                                ? "editHide"
+                                : "material-icons-outlined align-bottom"
+                            }
+                            style={{ fontSize: "18px", cursor: "pointer" }}
+                            onClick={() => setEditTemplateName(true)}
+                          >
+                            border_color
+                          </div>
                         </div>
                       </div>
                       <div className="mt-3 chooseStyEmpApp mb-4">
