@@ -12,6 +12,16 @@ export function GetTemplateById(id) {
   return fetch(host + "/template/" + id, options);
 }
 
+export function UpTemplateById(id) {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/template/" + id, options);
+}
+
 export function ShareApp(reqData) {
   var options = {
     method: "POST",

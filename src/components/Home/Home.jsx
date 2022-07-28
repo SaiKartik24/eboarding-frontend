@@ -3,12 +3,17 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "./home.scss";
 import TopBar from "../common/Topbar/Topbar";
 import Sidebar from "../common/Sidebar/Sidebar";
-import { Button, DatePicker, Input, Layout, Modal, Select } from "antd";
+import { Button, DatePicker, Input, Layout, Modal, Select, Table } from "antd";
 import { resolveUserData } from "../services/configs";
 import moment from "moment";
 import { UpdateEmployee } from "../services/setup.service";
 import { ProfileUpdateNotification } from "../common/Notifications/UpdateNotifications";
 import { AddEmployeeRequiredNotification } from "../common/Notifications/RequiredNotification";
+import {
+  GetPendingAccess,
+  GetPendingApprovals,
+} from "../services/home.service";
+import PendingApprovalsORAccessModal from "../common/Modal/PendingApprovalsORAccessModal";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -24,6 +29,8 @@ const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
+  const [pendingModal, setPendingModal] = useState(false);
+  const [pendingAccessModal, setPendingAccessModal] = useState(false);
   const [id, setId] = useState(userData._id);
   const [fullName, setFullName] = useState(userData.fullname);
   const [userName, setUserName] = useState(userData.username);
@@ -37,6 +44,10 @@ const Home = () => {
   const [status, setStatus] = useState(userData.status);
   const [lastlogindate, setLastlogindate] = useState(userData.lastlogindate);
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const [pendingApprovalsCount, setPendingApprovalsCount] = useState("");
+  const [pendingAccess, setPendingAccess] = useState([]);
+  const [pendingAccessCount, setPendingAccessCount] = useState("");
 
   useEffect(() => {
     console.log("entered");
@@ -49,9 +60,34 @@ const Home = () => {
   const appLoaderFunction = async () => {
     if (appname == "itaccess" && nextname == undefined) {
       setAppLoader(true);
+      try {
+        let pendingApprovalResponse = await GetPendingApprovals("requested");
+        pendingApprovalResponse = await pendingApprovalResponse.json();
+        console.log();
+        setPendingApprovalsCount(pendingApprovalResponse.Result.count);
+        setPendingApprovals(pendingApprovalResponse.Result.data);
+        getPendingAccess();
+      } catch (error) {
+        console.log("Error", error);
+      }
       setTimeout(() => {
         setAppLoader(false);
       }, 1000);
+    }
+  };
+
+  const getPendingAccess = async () => {
+    try {
+      let pendingAccessResponse = await GetPendingAccess("approved");
+      pendingAccessResponse = await pendingAccessResponse.json();
+      console.log();
+      setPendingAccessCount(pendingAccessResponse.Result.count);
+      setPendingAccess(pendingAccessResponse.Result.data);
+      setTimeout(() => {
+        setPageLoader(false);
+      }, 1000);
+    } catch (error) {
+      console.log("Error", error);
     }
   };
   const handleClose = (e) => {
@@ -130,6 +166,36 @@ const Home = () => {
     // console.log(date, dateString);
   };
 
+  const columns = [
+    {
+      title: <b>Employee Name</b>,
+      dataIndex: "empName",
+    },
+    {
+      title: <b>Application Name</b>,
+      dataIndex: "appName",
+    },
+    {
+      title: <b>Requested Date</b>,
+      dataIndex: "requestedDate",
+      render: (_, record) => {
+        const formatedDate = new Date(record.requestedDate).toLocaleString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }
+        );
+        return <span>{formatedDate}</span>;
+      },
+    },
+    {
+      title: <b>Pending With</b>,
+      dataIndex: "pendingWith",
+    },
+  ];
+
   return (
     <div className="home h-100">
       <Layout className="w-100" style={{ height: "100%", overflow: "hidden" }}>
@@ -174,61 +240,92 @@ const Home = () => {
                           <div className="py-4 mx-4 h-100">
                             <div className="row h-50">
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile shadow-sm bot">
+                                <div className="card bot-tile divCenter shadow-sm bot">
                                   <div
-                                    className="d-flex mb-1"
-                                    style={{
-                                      position: "absolute",
-                                      top: "2rem",
-                                      right: "2rem",
+                                    onClick={() => {
+                                      setPendingModal(true);
                                     }}
-                                  ></div>
-                                  <div>Dashboard 1</div>
+                                  >
+                                    Pending Approvals
+                                  </div>
+                                  <div>Count : {pendingApprovalsCount}</div>
                                 </div>
                               </div>
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile shadow-sm bot">
-                                  <div
-                                    className="d-flex mb-1"
-                                    style={{
-                                      position: "absolute",
-                                      top: "2rem",
-                                      right: "2rem",
-                                    }}
-                                  ></div>
-                                  <div>Dashboard 2</div>
+                                <div className="card bot-tile divCenter shadow-sm bot">
+                                  <div>
+                                    Inactive Employees having access to
+                                    applications
+                                  </div>
                                 </div>
                               </div>
                             </div>
                             <div className="row h-50">
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile shadow-sm bot">
+                                <div className="card bot-tile divCenter shadow-sm bot">
                                   <div
-                                    className="d-flex mb-1"
-                                    style={{
-                                      position: "absolute",
-                                      top: "2rem",
-                                      right: "2rem",
+                                    onClick={() => {
+                                      setPendingAccessModal(true);
                                     }}
-                                  ></div>
-                                  <div>Dashboard 3</div>
+                                  >
+                                    Pending Access
+                                  </div>
+                                  <div>Count : {pendingAccessCount}</div>
                                 </div>
                               </div>
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile shadow-sm bot">
-                                  <div
-                                    className="d-flex mb-1"
-                                    style={{
-                                      position: "absolute",
-                                      top: "2rem",
-                                      right: "2rem",
-                                    }}
-                                  ></div>
-                                  <div>Dashboard 4</div>
+                                <div className="card bot-tile divCenter shadow-sm bot">
+                                  <div>Employees with Inactive Manager</div>
                                 </div>
                               </div>
                             </div>
                           </div>
+                          {/* changiung */}
+                          {/* <Modal
+                            title={<b>Pending Approvals</b>}
+                            visible={pendingModal}
+                            className="modalFont"
+                            onCancel={() => {
+                              setPendingModal(false);
+                            }}
+                            footer={null}
+                            keyboard={false}
+                          >
+                            <Table
+                              columns={columns}
+                              dataSource={pendingApprovals}
+                              size="middle"
+                              bordered={true}
+                            />
+                            <Button
+                              style={{
+                                left: "90%",
+                                fontSize: "1rem",
+                                height: "fit-content",
+                                width: "118px",
+                              }}
+                              onClick={() => {
+                                setPendingModal(false);
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          </Modal> */}
+                          {/* cjanxkam */}
+
+                          <PendingApprovalsORAccessModal
+                            pendingModal={pendingModal}
+                            pendingApprovals={pendingApprovals}
+                            setPendingModal={setPendingModal}
+                            from="pendingRequests"
+                          />
+
+                          <PendingApprovalsORAccessModal
+                            pendingModal={pendingAccessModal}
+                            pendingApprovals={pendingAccess}
+                            setPendingModal={setPendingAccessModal}
+                            from="pendingAccess"
+                          />
                           <Modal
                             title={<b>Update Profile</b>}
                             visible={modal}

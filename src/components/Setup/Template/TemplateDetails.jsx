@@ -97,6 +97,7 @@ const TemplateDetails = () => {
     console.log(templateApplications);
     let applicationDetails = {
       _id: tempId,
+      name: templateName,
       applications: templateApplications,
     };
     try {
@@ -181,10 +182,35 @@ const TemplateDetails = () => {
     setApps(resultingApps);
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     let name = localStorage.getItem("name");
     setTemplateName(name);
     setEditTemplateName(false);
+    let applicationDetails = {
+      _id: tempId,
+      name: name,
+      applications: templateApplications,
+    };
+    try {
+      let applicationResponse = await UpdateTemplate(
+        applicationDetails,
+        tempId
+      );
+      applicationResponse = await applicationResponse.json();
+      SaveRecordNotification();
+      try {
+        let response = await GetTemplateById(tempId);
+        response = await response.json();
+        if (response.Result[0].applications.length > 0) {
+          setTemplateApplications(response.Result[0].applications);
+        } else setTemplateApplications("");
+      } catch (error) {
+        console.log("Error", error);
+      }
+      setConfirmBtnLoader(false);
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   const keyDownHandlerForEdit = async (
@@ -193,6 +219,31 @@ const TemplateDetails = () => {
     if (event.code === "Enter") {
       setTemplateName(event.target.value);
       setEditTemplateName(false);
+      let applicationDetails = {
+        _id: tempId,
+        name: event.target.value,
+        applications: templateApplications,
+      };
+      try {
+        let applicationResponse = await UpdateTemplate(
+          applicationDetails,
+          tempId
+        );
+        applicationResponse = await applicationResponse.json();
+        SaveRecordNotification();
+        try {
+          let response = await GetTemplateById(tempId);
+          response = await response.json();
+          if (response.Result[0].applications.length > 0) {
+            setTemplateApplications(response.Result[0].applications);
+          } else setTemplateApplications("");
+        } catch (error) {
+          console.log("Error", error);
+        }
+        setConfirmBtnLoader(false);
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
   };
 

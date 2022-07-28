@@ -30,21 +30,10 @@
     width: 20%;
   }
 
-  .bot-name {
-    color: #00aae7;
-    font-size: 1.6rem;
-    font-weight: 600;
-  }
-
-  .bot-description-section {
-    height: auto;
-  }
-
-  .bot-label {
-    color: #8c8c8c;
+  .divCenter {
+    place-content: center !important;
     font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0;
+    color: #00aae7;
   }
 
   .add-button {

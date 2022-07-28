@@ -52,7 +52,7 @@ const Application = () => {
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [submitExcel, setSubmitExcel] = useState(false);
-  const [accessType, setAccessType] = useState("");
+  const [connectorType, setconnectorType] = useState("");
   const [form] = Form.useForm();
 
   const getAllApplications = async () => {
@@ -193,8 +193,8 @@ const Application = () => {
         <ApplicationInput field={record} type="approverMail" />
       ) : inputType === "teamMail" ? (
         <ApplicationInput field={record} type="teamMail" />
-      ) : inputType === "accessType" ? (
-        <ApplicationInput field={record} type="accessType" />
+      ) : inputType === "connectorType" ? (
+        <ApplicationInput field={record} type="connectorType" />
       ) : (
         <Input />
       );
@@ -254,8 +254,8 @@ const Application = () => {
     },
     {
       title: <b>Connector Type</b>,
-      dataIndex: "accessType",
-      key: "accessType",
+      dataIndex: "connectorType",
+      key: "connectorType",
       editable: true,
     },
     {
@@ -327,8 +327,8 @@ const Application = () => {
             ? "approverMail"
             : col.dataIndex === "teamMail"
             ? "teamMail"
-            : col.dataIndex === "accessType"
-            ? "accessType"
+            : col.dataIndex === "connectorType"
+            ? "connectorType"
             : "text",
         dataIndex: col.dataIndex,
         title: col.title,
@@ -357,8 +357,8 @@ const Application = () => {
     setTeamMail(val);
   };
 
-  const handleAccessType = (val) => {
-    setAccessType(val);
+  const handleconnectorType = (val) => {
+    setconnectorType(val);
   };
 
   let modalValues = {
@@ -367,7 +367,7 @@ const Application = () => {
     approveMail: approverMail,
     teamMail: teamMail,
     env: env,
-    accessType: accessType,
+    connectorType: connectorType,
   };
 
   const handleClose = () => {
@@ -377,7 +377,7 @@ const Application = () => {
     setApproverMail("");
     setTeamMail("");
     setType("Hardware");
-    setAccessType("");
+    setconnectorType("");
     setConfirmBtnLoader(false);
     setExcelData([]);
     setSubmitExcel(false);
@@ -389,7 +389,7 @@ const Application = () => {
       name != "" &&
       approverMail != "" &&
       teamMail != "" &&
-      accessType !== "" &&
+      connectorType !== "" &&
       submitExcel != true
     ) {
       let applicationDetails = {
@@ -398,7 +398,7 @@ const Application = () => {
         env: env,
         approverMail: approverMail,
         teamMail: teamMail,
-        accessType: accessType,
+        connectorType: connectorType,
       };
       try {
         let applicationResponse = await AddApplication(applicationDetails);
@@ -414,7 +414,7 @@ const Application = () => {
       name != "" &&
       approverMail != "" &&
       teamMail != "" &&
-      accessType !== "" &&
+      connectorType !== "" &&
       submitExcel == true
     ) {
       let applicationDetails = {
@@ -423,7 +423,7 @@ const Application = () => {
         env: env,
         approverMail: approverMail,
         teamMail: teamMail,
-        accessType: accessType,
+        connectorType: connectorType,
       };
       try {
         let applicationResponse = await AddApplication(applicationDetails);
@@ -446,7 +446,7 @@ const Application = () => {
       name == "" &&
       approverMail == "" &&
       teamMail == "" &&
-      accessType == "" &&
+      connectorType == "" &&
       submitExcel == true
     ) {
       try {
@@ -519,7 +519,7 @@ const Application = () => {
                 handleApproveMail={handleApproveMail}
                 handleTeamMail={handleTeamMail}
                 handleType={handleType}
-                handleAccessType={handleAccessType}
+                handleAccessType={handleconnectorType}
                 ConfirmHandler={ConfirmHandler}
                 confirmBtnLoader={confirmBtnLoader}
                 readExcel={readExcel}
