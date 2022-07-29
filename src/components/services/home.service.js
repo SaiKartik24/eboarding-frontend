@@ -21,3 +21,23 @@ export function GetPendingAccess(status) {
   };
   return fetch(host + "/admin/approved/" + status, options);
 }
+
+export function GetPendingInactiveEmployees() {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/admin/emp/Inactive/app/granted", options);
+}
+
+export function GetPendingInactiveMangers() {
+  var options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return fetch(host + "/admin/manager/Inactive", options);
+}

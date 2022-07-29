@@ -57,25 +57,25 @@ const PendingApprovalsORAccessModal = (props) => {
         return <span>{formatedDate}</span>;
       },
     },
-    // {
-    //   title: <b>Approved Date</b>,
-    //   dataIndex: "approvedDate",
-    //   render: (_, record) => {
-    //     const formatedDate = new Date(record.approvedDate).toLocaleString(
-    //       "en-US",
-    //       {
-    //         month: "short",
-    //         day: "2-digit",
-    //         year: "numeric",
-    //       }
-    //     );
-    //     return <span>{formatedDate}</span>;
-    //   },
-    // },
-    // {
-    //   title: <b>Approved By</b>,
-    //   dataIndex: "approvedBy",
-    // },
+    {
+      title: <b>Approved Date</b>,
+      dataIndex: "approvedDate",
+      render: (_, record) => {
+        const formatedDate = new Date(record.approvedDate).toLocaleString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }
+        );
+        return <span>{formatedDate}</span>;
+      },
+    },
+    {
+      title: <b>Approved By</b>,
+      dataIndex: "approvedBy",
+    },
     {
       title: <b>Pending With</b>,
       dataIndex: "pendingWith",

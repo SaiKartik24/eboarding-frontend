@@ -77,8 +77,8 @@ const EmployeeDetails = () => {
   const [searchApprovedApps, setSearchApprovedApps] = useState([]);
   const [searchRequestedApps, setSearchRequestedApps] = useState([]);
   const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
-  const [requestActions, setRequestActions] = useState(["Approve", "Revoke"]);
-  const [approveActions, setApproveActions] = useState(["Grant", "Revoke"]);
+  const [requestActions, setRequestActions] = useState(["Approve", "Deny"]);
+  const [approveActions, setApproveActions] = useState(["Grant", "Deny"]);
   const [selectedAction, setSelectedAction] = useState("Approve");
   const [selectedApproveAction, setSelectedApproveAction] = useState("Grant");
   const [showAction, setShowAction] = useState(false);
@@ -514,7 +514,8 @@ const EmployeeDetails = () => {
           name: app.name,
           status: selectedApproveAction != "Grant" ? "revoked" : "granted",
           requestState: false,
-          requestedDate: app.requestedDate,
+          requestedDate:
+            app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
           approvedDate: "",
           grantState: selectedApproveAction === "Grant" ? true : false,
@@ -550,7 +551,8 @@ const EmployeeDetails = () => {
           name: app.name,
           status: selectedAction != "Approve" ? "revoked" : "approved",
           requestState: false,
-          requestedDate: app.requestedDate,
+          requestedDate:
+            app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: selectedAction === "Approve" ? true : false,
           approvedDate:
             selectedAction === "Approve"

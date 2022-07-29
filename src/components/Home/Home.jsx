@@ -12,8 +12,11 @@ import { AddEmployeeRequiredNotification } from "../common/Notifications/Require
 import {
   GetPendingAccess,
   GetPendingApprovals,
+  GetPendingInactiveEmployees,
+  GetPendingInactiveMangers,
 } from "../services/home.service";
 import PendingApprovalsORAccessModal from "../common/Modal/PendingApprovalsORAccessModal";
+import InactiveEmployeeORMangerModal from "../common/Modal/InactiveEmployeeORMangerModal";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -31,6 +34,8 @@ const Home = () => {
   const [modal, setModal] = useState(false);
   const [pendingModal, setPendingModal] = useState(false);
   const [pendingAccessModal, setPendingAccessModal] = useState(false);
+  const [inactiveEmployeesModal, setinactiveEmployeesModal] = useState(false);
+  const [inactiveManagersModal, setinactiveManagersModal] = useState(false);
   const [id, setId] = useState(userData._id);
   const [fullName, setFullName] = useState(userData.fullname);
   const [userName, setUserName] = useState(userData.username);
@@ -48,6 +53,12 @@ const Home = () => {
   const [pendingApprovalsCount, setPendingApprovalsCount] = useState("");
   const [pendingAccess, setPendingAccess] = useState([]);
   const [pendingAccessCount, setPendingAccessCount] = useState("");
+  const [pendingInactiveEmployees, setPendingInactiveEmployees] = useState([]);
+  const [pendingInactiveManager, setPendingInactiveManager] = useState("");
+  const [pendingInactiveEmployeesCount, setPendingInactiveEmployeesCount] =
+    useState([]);
+  const [pendingInactiveManagerCount, setPendingInactiveManagerCount] =
+    useState("");
 
   useEffect(() => {
     console.log("entered");
@@ -63,7 +74,6 @@ const Home = () => {
       try {
         let pendingApprovalResponse = await GetPendingApprovals("requested");
         pendingApprovalResponse = await pendingApprovalResponse.json();
-        console.log();
         setPendingApprovalsCount(pendingApprovalResponse.Result.count);
         setPendingApprovals(pendingApprovalResponse.Result.data);
         getPendingAccess();
@@ -80,9 +90,38 @@ const Home = () => {
     try {
       let pendingAccessResponse = await GetPendingAccess("approved");
       pendingAccessResponse = await pendingAccessResponse.json();
-      console.log();
       setPendingAccessCount(pendingAccessResponse.Result.count);
       setPendingAccess(pendingAccessResponse.Result.data);
+      getPendingInactiveEmployees();
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const getPendingInactiveEmployees = async () => {
+    try {
+      let pendingInactiveEmployeeResponse = await GetPendingInactiveEmployees();
+      pendingInactiveEmployeeResponse =
+        await pendingInactiveEmployeeResponse.json();
+      setPendingInactiveEmployeesCount(
+        pendingInactiveEmployeeResponse.Result.count
+      );
+      setPendingInactiveEmployees(pendingInactiveEmployeeResponse.Result.data);
+      getPendingInactiveMangers();
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  const getPendingInactiveMangers = async () => {
+    try {
+      let pendingInactiveManagerResponse = await GetPendingInactiveMangers();
+      pendingInactiveManagerResponse =
+        await pendingInactiveManagerResponse.json();
+      setPendingInactiveManagerCount(
+        pendingInactiveManagerResponse.Result.count
+      );
+      setPendingInactiveManager(pendingInactiveManagerResponse.Result.data);
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
@@ -90,6 +129,7 @@ const Home = () => {
       console.log("Error", error);
     }
   };
+
   const handleClose = (e) => {
     setModal(false);
     setStatus(userData.status);
@@ -253,9 +293,16 @@ const Home = () => {
                               </div>
                               <div className="col-md-6 mt-4">
                                 <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div>
+                                  <div
+                                    onClick={() => {
+                                      setinactiveEmployeesModal(true);
+                                    }}
+                                  >
                                     Inactive Employees having access to
                                     applications
+                                  </div>
+                                  <div>
+                                    Count : {pendingInactiveEmployeesCount}
                                   </div>
                                 </div>
                               </div>
@@ -275,43 +322,20 @@ const Home = () => {
                               </div>
                               <div className="col-md-6 mt-4">
                                 <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div>Employees with Inactive Manager</div>
+                                  <div
+                                    onClick={() => {
+                                      setinactiveManagersModal(true);
+                                    }}
+                                  >
+                                    Employees with Inactive Manager
+                                  </div>
+                                  <div>
+                                    Count : {pendingInactiveManagerCount}
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          {/* changiung */}
-                          {/* <Modal
-                            title={<b>Pending Approvals</b>}
-                            visible={pendingModal}
-                            className="modalFont"
-                            onCancel={() => {
-                              setPendingModal(false);
-                            }}
-                            footer={null}
-                            keyboard={false}
-                          >
-                            <Table
-                              columns={columns}
-                              dataSource={pendingApprovals}
-                              size="middle"
-                              bordered={true}
-                            />
-                            <Button
-                              style={{
-                                left: "90%",
-                                fontSize: "1rem",
-                                height: "fit-content",
-                                width: "118px",
-                              }}
-                              onClick={() => {
-                                setPendingModal(false);
-                              }}
-                            >
-                              Cancel
-                            </Button>
-                          </Modal> */}
-                          {/* cjanxkam */}
 
                           <PendingApprovalsORAccessModal
                             pendingModal={pendingModal}
@@ -326,6 +350,21 @@ const Home = () => {
                             setPendingModal={setPendingAccessModal}
                             from="pendingAccess"
                           />
+
+                          <InactiveEmployeeORMangerModal
+                            pendingModal={inactiveEmployeesModal}
+                            pendingApprovals={pendingInactiveEmployees}
+                            setPendingModal={setinactiveEmployeesModal}
+                            from="inactiveEmployees"
+                          />
+
+                          <InactiveEmployeeORMangerModal
+                            pendingModal={inactiveManagersModal}
+                            pendingApprovals={pendingInactiveManager}
+                            setPendingModal={setinactiveManagersModal}
+                            from="inactiveManagers"
+                          />
+
                           <Modal
                             title={<b>Update Profile</b>}
                             visible={modal}
