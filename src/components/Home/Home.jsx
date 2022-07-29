@@ -50,15 +50,15 @@ const Home = () => {
   const [lastlogindate, setLastlogindate] = useState(userData.lastlogindate);
   const [confirmBtnLoader, setConfirmBtnLoader] = useState(false);
   const [pendingApprovals, setPendingApprovals] = useState([]);
-  const [pendingApprovalsCount, setPendingApprovalsCount] = useState("");
+  const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
   const [pendingAccess, setPendingAccess] = useState([]);
-  const [pendingAccessCount, setPendingAccessCount] = useState("");
+  const [pendingAccessCount, setPendingAccessCount] = useState(0);
   const [pendingInactiveEmployees, setPendingInactiveEmployees] = useState([]);
   const [pendingInactiveManager, setPendingInactiveManager] = useState("");
   const [pendingInactiveEmployeesCount, setPendingInactiveEmployeesCount] =
-    useState([]);
+    useState(0);
   const [pendingInactiveManagerCount, setPendingInactiveManagerCount] =
-    useState("");
+    useState(0);
 
   useEffect(() => {
     console.log("entered");
@@ -122,9 +122,9 @@ const Home = () => {
         pendingInactiveManagerResponse.Result.count
       );
       setPendingInactiveManager(pendingInactiveManagerResponse.Result.data);
-      setTimeout(() => {
-        setPageLoader(false);
-      }, 1000);
+      // setTimeout(() => {
+      setPageLoader(false);
+      // }, 1000);
     } catch (error) {
       console.log("Error", error);
     }
@@ -280,57 +280,77 @@ const Home = () => {
                           <div className="py-4 mx-4 h-100">
                             <div className="row h-50">
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div
-                                    onClick={() => {
-                                      setPendingModal(true);
-                                    }}
-                                  >
-                                    Pending Approvals
+                                <div className="card bot-tile shadow-sm bot">
+                                  <div className="chooseSty mt-4 ">
+                                    <div className="mainTitle">
+                                      Pending Approvals
+                                    </div>
+                                    <div className="divCenter">
+                                      <div
+                                        onClick={() => {
+                                          setPendingModal(true);
+                                        }}
+                                      >
+                                        {" "}
+                                        {pendingApprovalsCount}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div>Count : {pendingApprovalsCount}</div>
                                 </div>
                               </div>
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div
-                                    onClick={() => {
-                                      setinactiveEmployeesModal(true);
-                                    }}
-                                  >
-                                    Inactive Employees having access to
-                                    applications
-                                  </div>
-                                  <div>
-                                    Count : {pendingInactiveEmployeesCount}
+                                <div className="card bot-tile shadow-sm bot">
+                                  <div className="chooseSty mt-4 ">
+                                    <div className="mainTitle">
+                                      Inactive Employees with applications
+                                    </div>
+                                    <div className="divCenter">
+                                      <div
+                                        onClick={() => {
+                                          setinactiveEmployeesModal(true);
+                                        }}
+                                      >
+                                        {pendingInactiveEmployeesCount}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div className="row h-50">
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div
-                                    onClick={() => {
-                                      setPendingAccessModal(true);
-                                    }}
-                                  >
-                                    Pending Access
+                                <div className="card bot-tile shadow-sm bot">
+                                  <div className="chooseSty mt-4 ">
+                                    <div className="mainTitle">
+                                      Pending Access
+                                    </div>
+                                    <div className="divCenter">
+                                      <div
+                                        onClick={() => {
+                                          setPendingAccessModal(true);
+                                        }}
+                                      >
+                                        {pendingAccessCount}
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div>Count : {pendingAccessCount}</div>
                                 </div>
                               </div>
                               <div className="col-md-6 mt-4">
-                                <div className="card bot-tile divCenter shadow-sm bot">
-                                  <div
-                                    onClick={() => {
-                                      setinactiveManagersModal(true);
-                                    }}
-                                  >
-                                    Employees with Inactive Manager
-                                  </div>
-                                  <div>
-                                    Count : {pendingInactiveManagerCount}
+                                <div className="card bot-tile shadow-sm bot">
+                                  <div className="chooseSty mt-4 ">
+                                    <div className="mainTitle">
+                                      Employees with Inactive Manager
+                                    </div>
+                                    <div className="divCenter">
+                                      <div
+                                        onClick={() => {
+                                          setinactiveManagersModal(true);
+                                        }}
+                                      >
+                                        {pendingInactiveManagerCount}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>

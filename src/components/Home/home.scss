@@ -31,9 +31,12 @@
   }
 
   .divCenter {
-    place-content: center !important;
+    position: absolute;
     font-size: 1.2rem;
     color: #00aae7;
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
   }
 
   .add-button {
@@ -42,6 +45,20 @@
     margin-top: 20px;
   }
 
+    .chooseSty {
+    border: thin lightskyblue;
+    border-style: ridge;
+  }
+    .mainTitle {
+    margin-top: -13px;
+    width: fit-content;
+    padding: 0px 12px;
+    background: white;
+    margin-left: 2%;
+    font-weight: 600;
+    font-size: 0.9em;
+    letter-spacing: 2px;
+  }
   .s {
     /* float: right; */
     width: fit-content;
@@ -58,7 +75,7 @@
   .bot {
     overflow: hidden;
     display: grid;
-    cursor: pointer;
+    cursor: auto;
   }
 
   .ant-menu-submenu-arrow {
