@@ -20,6 +20,8 @@ const ByEmployee = () => {
   const [employees, setEmployees] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [apps, setApps] = useState([]);
+  const [val, setVal] = useState("");
+  const [eVal, setEVal] = useState("");
   const [form] = Form.useForm();
   const location = useLocation();
 
@@ -51,10 +53,13 @@ const ByEmployee = () => {
       try {
         let response = await GetEmployeeByName(val);
         response = await response.json();
-        if (response.Result && response.Result.length > 0)
+        if (response.Result && response.Result.length > 0){
           setItems(response.Result);
+        setEmployees([]);
+      }
         else {
           setItems([]);
+          setEmployees([]);
           NoEmployeeNotification();
         }
       } catch (error) {
@@ -62,6 +67,7 @@ const ByEmployee = () => {
       }
     } else {
       setItems([]);
+      setEmployees([]);
     }
   }, 500);
 
@@ -72,10 +78,13 @@ const ByEmployee = () => {
       try {
         let response = await GetEmployeeByMail(val);
         response = await response.json();
-        if (response.Result && response.Result.length > 0)
+        if (response.Result && response.Result.length > 0){
           setEmployees(response.Result);
+        setItems([]);
+      }
         else {
           setEmployees([]);
+          setItems([]);
           NoEmployeeNotification();
         }
       } catch (error) {
@@ -83,6 +92,7 @@ const ByEmployee = () => {
       }
     } else {
       setItems([]);
+      setEmployees([]);
     }
   }, 500);
 
@@ -113,16 +123,25 @@ const ByEmployee = () => {
                         >
                           <Search
                             allowClear
-                            size="large"
-                            onChange={(e) => searchExistingEmail(e)}
+                              size="large"
+                              value={eVal}
+                              onChange={(e) => {
+                                setEVal(e.target.value);
+                                setVal("");
+                                searchExistingEmail(e)
+                              }}
                             placeholder="Email"
                             className="mr-5 w-25"
                           />
                           <div className="orSty">(OR)</div>
                           <Search
                             allowClear
-                            size="large"
-                            onChange={(e) => getEmployeeByName(e)}
+                              size="large"
+                              value={val}
+                              onChange={(e) => {
+                                setVal(e.target.value)
+                                setEVal(""); getEmployeeByName(e)
+                              }}
                             placeholder="Employee Name"
                             className="ml-5 w-25"
                           />

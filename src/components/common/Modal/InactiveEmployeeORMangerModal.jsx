@@ -5,15 +5,15 @@ import "./modal.scss";
 const InactiveEmployeeORMangerModal = (props) => {
   const columns = [
     {
-      title: <b>Employee Name</b>,
+      title: <b>Employee</b>,
       dataIndex: "empName",
     },
     {
-      title: <b>Manager Name</b>,
+      title: <b>Manager</b>,
       dataIndex: "managerName",
     },
     {
-      title: <b>Application Name</b>,
+      title: <b>Application</b>,
       dataIndex: "appName",
     },
     {
@@ -24,11 +24,11 @@ const InactiveEmployeeORMangerModal = (props) => {
 
   const accessColumns = [
     {
-      title: <b>Employee Name</b>,
+      title: <b>Employee</b>,
       dataIndex: "empName",
     },
     {
-      title: <b>Manager Name</b>,
+      title: <b>Manager</b>,
       dataIndex: "managerName",
     },
   ];
@@ -36,7 +36,7 @@ const InactiveEmployeeORMangerModal = (props) => {
     <Modal
       title={
         props.from == "inactiveEmployees" ? (
-          <b>Inactive Employees having access to applications</b>
+          <b>Inactive Employees with applications</b>
         ) : (
           <b>Employees with Inactive Manager</b>
         )
@@ -66,7 +66,7 @@ const InactiveEmployeeORMangerModal = (props) => {
           props.setPendingModal(false);
         }}
       >
-        Cancel
+        Ok
       </Button>
     </Modal>
   );

@@ -87,13 +87,13 @@ const PopUpModal = (props) => {
         <div className="d-flex">
           <div className="form-group col-md-4 d-flex flex-column">
             <label htmlFor="empType" className="font-weight-bold fontsize">
-              Employment Type
+              Employment
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>
             </label>
             <Select
-              placeholder="Please select Employment Type"
+              placeholder="Please select Employment"
               value={props.values.empType}
               onChange={props.handleEmpType}
             >
@@ -104,7 +104,7 @@ const PopUpModal = (props) => {
           </div>
           <div className="form-group col-md-4 d-flex flex-column">
             <label htmlFor="empRole" className="font-weight-bold fontsize">
-              Employment Role
+              Role
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>
@@ -121,7 +121,7 @@ const PopUpModal = (props) => {
           </div>
           <div className="form-group col-md-4">
             <label htmlFor="managerMail" className="font-weight-bold fontsize">
-              Manager Mail
+              Manager
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>

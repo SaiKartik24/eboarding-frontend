@@ -225,7 +225,7 @@ const Connectors = () => {
       editable: true,
     },
     {
-      title: <b>Env</b>,
+      title: <b>Environment</b>,
       dataIndex: "env",
       key: "env",
       editable: true,

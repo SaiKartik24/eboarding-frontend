@@ -232,6 +232,46 @@
   .editHide {
     display: none;
   }
+  .selectStylesCls{
+  font-size: 1rem !important;
+
+  .ant-select-selection-search {
+    display: none;
+  }
+
+  .ant-select-selector {
+    cursor: default !important;
+    float: left !important;
+    padding: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    flex-flow: nowrap !important;
+  }
+
+  .selectColorStyle {
+    color: #00aae7;
+  }
+
+  .ant-select-selection-overflow-item {
+    display: block !important;
+  }
+
+  .ant-select-selection-item {
+    white-space: pre-wrap !important;
+    overflow: visible !important;
+    height: 40px !important;
+    border: 1px solid black !important;
+    align-items: center !important;
+  }
+
+  .ant-select-multiple .ant-select-selection-item-content {
+    white-space: initial !important;
+    overflow: visible !important;
+  }
+  .ant-select-selection-item-remove .anticon {
+    display: none;
+  }
+}
 }
 
 .byEmployeeDetails {

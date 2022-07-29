@@ -151,7 +151,7 @@ const ConnectorsModal = (props) => {
           </div>
           <div className="form-group col-md-4">
             <label htmlFor="env" className="font-weight-bold fontsize">
-              Env
+              Environment
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>

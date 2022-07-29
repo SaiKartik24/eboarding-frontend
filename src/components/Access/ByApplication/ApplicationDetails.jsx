@@ -806,7 +806,7 @@ const ApplicationDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Team Mail
+                                  Team
                                 </label>
                                 <Input
                                   size="large"
@@ -822,7 +822,7 @@ const ApplicationDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Approver Mail
+                                  Approver
                                 </label>
                                 <Input
                                   size="large"
@@ -858,7 +858,7 @@ const ApplicationDetails = () => {
                                   className="w-50 fontsize"
                                   style={{ fontWeight: "600" }}
                                 >
-                                  Env
+                                  Environment
                                 </label>
                                 <Select
                                   value={empDetails.env}
@@ -893,7 +893,7 @@ const ApplicationDetails = () => {
                             <div className="float-left mt-4 ml-4">
                               {employeeRequestedApplications.map((app) => (
                                 <Select
-                                  className="selectStyle"
+                                  className="selectStylesCls"
                                   mode="tags"
                                   value={app.username}
                                   open={false}
@@ -921,7 +921,7 @@ const ApplicationDetails = () => {
                             <div className="float-left mt-4 ml-4">
                               {employeeApprovedApplications.map((app) => (
                                 <Select
-                                  className="selectStyle"
+                                  className="selectStylesCls"
                                   mode="tags"
                                   value={app.username}
                                   open={false}
@@ -949,7 +949,7 @@ const ApplicationDetails = () => {
                             <div className="float-left mt-4 ml-4">
                               {employeeGrantedApplications.map((app) => (
                                 <Select
-                                  className="selectStyle"
+                                  className="selectStylesCls"
                                   mode="tags"
                                   value={app.username}
                                   open={false}
@@ -978,7 +978,7 @@ const ApplicationDetails = () => {
                             <div className="float-left mt-4 ml-4">
                               {employeeRevokedApplications.map((item) => (
                                 <Select
-                                  className="selectStyle"
+                                  className="selectStylesCls"
                                   mode="tags"
                                   value={item.username}
                                   open={false}

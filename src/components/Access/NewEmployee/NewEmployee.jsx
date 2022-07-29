@@ -21,6 +21,8 @@ const NewEmployee = () => {
   const [employees, setEmployees] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [apps, setApps] = useState([]);
+  const [val, setVal] = useState("");
+  const [tVal, setTVal] = useState("");
   const [form] = Form.useForm();
   const location = useLocation();
 
@@ -62,42 +64,52 @@ const NewEmployee = () => {
   };
 
   const searchTemplate = debounce(async (e) => {
+    setVal("");
     let val = e.target.value;
     if (val !== "") {
       try {
         let response = await GetTemplateByName(val);
         response = await response.json();
-        if (response.Result && response.Result.length > 0)
+        if (response.Result && response.Result.length > 0) {
           setItems(response.Result);
+          setEmployees([]);
+        }
         else {
-          setItems([]);
+      setItems([]);
+      setEmployees([]);
           NoEmployeeNotification();
         }
       } catch (error) {
         console.log("Error", error);
       }
     } else {
-      setItems([]);
+    setItems([]);
+      setEmployees([]);
     }
   }, 500);
 
   const searchExistingEmail = debounce(async (e) => {
+    setTVal("");
     let val = e.target.value;
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (val !== "" && val.match(mailformat)) {
       try {
         let response = await GetTemplateByEmail(val);
         response = await response.json();
-        if (response.Result && response.Result.length > 0)
+        if (response.Result && response.Result.length > 0){
           setEmployees(response.Result);
+        setItems([]);
+      }
         else {
           setEmployees([]);
           NoEmployeeNotification();
+          setItems([]);
         }
       } catch (error) {
         console.log("Error", error);
       }
     } else {
+      setEmployees([]);
       setItems([]);
     }
   }, 500);
@@ -134,16 +146,26 @@ const NewEmployee = () => {
                         >
                           <Search
                             allowClear
-                            size="large"
-                            onChange={(e) => searchExistingEmail(e)}
+                              size="large"
+                              value={val}
+                              onChange={(e) => {
+                                setVal(e.target.value);
+                                setTVal("");
+                                searchExistingEmail(e);
+                              }}
                             placeholder="Existing employee email"
                             className="mr-5 w-25"
                           />
                           <div className="orSty">(OR)</div>
                           <Search
                             allowClear
-                            size="large"
-                            onChange={(e) => searchTemplate(e)}
+                              size="large"
+                              value={tVal}
+                              onChange={(e) => {
+                                setTVal(e.target.value)
+                                setVal("");
+                                searchTemplate(e)
+                              }}
                             placeholder="Template Name"
                             className="ml-5 w-25"
                           />

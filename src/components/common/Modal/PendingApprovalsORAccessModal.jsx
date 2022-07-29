@@ -5,11 +5,11 @@ import "./modal.scss";
 const PendingApprovalsORAccessModal = (props) => {
   const columns = [
     {
-      title: <b>Employee Name</b>,
+      title: <b>Employee</b>,
       dataIndex: "empName",
     },
     {
-      title: <b>Application Name</b>,
+      title: <b>Application</b>,
       dataIndex: "appName",
     },
     {
@@ -35,11 +35,11 @@ const PendingApprovalsORAccessModal = (props) => {
 
   const accessColumns = [
     {
-      title: <b>Employee Name</b>,
+      title: <b>Employee</b>,
       dataIndex: "empName",
     },
     {
-      title: <b>Application Name</b>,
+      title: <b>Application</b>,
       dataIndex: "appName",
     },
     {
@@ -115,7 +115,7 @@ const PendingApprovalsORAccessModal = (props) => {
           props.setPendingModal(false);
         }}
       >
-        Cancel
+        Ok
       </Button>
     </Modal>
   );

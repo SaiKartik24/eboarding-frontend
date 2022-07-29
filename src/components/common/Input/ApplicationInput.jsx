@@ -5,8 +5,8 @@ const ApplicationInput = (props) => {
   var defaultVal =
     props.type === "name"
       ? props.field.name
-      : props.type === "accessType"
-      ? props.field.accessType
+      : props.type === "connectorType"
+      ? props.field.connectorType
       : props.type === "approverMail"
       ? props.field.approverMail
       : props.type === "teamMail"
@@ -15,8 +15,8 @@ const ApplicationInput = (props) => {
   const onChange = (e) => {
     if (props.type === "name") {
       props.field.name = e;
-    } else if (props.type === "accessType") {
-      props.field.accessType = e;
+    } else if (props.type === "connectorType") {
+      props.field.connectorType = e;
     } else if (props.type === "approverMail") {
       props.field.approverMail = e;
     } else if (props.type === "teamMail") {

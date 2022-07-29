@@ -308,19 +308,19 @@ const Employee = (props) => {
       editable: true,
     },
     {
-      title: <b>Employee Type</b>,
+      title: <b>Employment</b>,
       dataIndex: "employmenttype",
       key: "employmenttype",
       editable: true,
     },
     {
-      title: <b>Employee Role</b>,
+      title: <b>Role</b>,
       dataIndex: "role",
       key: "role",
       editable: true,
     },
     {
-      title: <b>Manager Mail</b>,
+      title: <b>Manager</b>,
       dataIndex: "managermail",
       key: "managermail",
       editable: true,

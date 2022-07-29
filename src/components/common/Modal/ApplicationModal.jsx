@@ -46,7 +46,7 @@ const ApplicationModal = (props) => {
             </label>
             <Select
               placeholder="Please select Type"
-              value={props.values.type}
+              defaultValue={props.values.type}
               onChange={props.handleType}
             >
               <Option value="Hardware">Hardware</Option>
@@ -119,7 +119,7 @@ const ApplicationModal = (props) => {
           </div>
           <div className="form-group col-md-4">
             <label htmlFor="teammail" className="font-weight-bold fontsize">
-              Connector Type
+              Connector
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>
@@ -128,7 +128,7 @@ const ApplicationModal = (props) => {
               size="large"
               className="form-control"
               id="accessType"
-              placeholder="Enter Connector Type"
+              placeholder="Enter Connector"
               value={props.values.accessType}
               onChange={(e) => {
                 if (e.target.value != "") {

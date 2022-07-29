@@ -253,7 +253,7 @@ const Application = () => {
       editable: true,
     },
     {
-      title: <b>Connector Type</b>,
+      title: <b>Connector</b>,
       dataIndex: "connectorType",
       key: "connectorType",
       editable: true,
