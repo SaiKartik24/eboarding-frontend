@@ -34,9 +34,12 @@ import EmployeeDetailsModal from "../../common/Modal/EmployeeDetailsModal";
 import GrantRevokeModal from "../../common/Modal/GrantRevokeModal";
 import { EmployeeApplicationAccess } from "../../services/byEmployee.service";
 import {
+  ApplicationEmployeeAccess,
   GetApplicationById,
   GetEmployeesByApplication,
 } from "../../services/byApplication.service";
+import AccessApplicationModal from "../../common/Modal/AccessApplicaationModal";
+import { GetApplications } from "../../services/application.service";
 
 const { Search } = Input;
 const { Content } = Layout;
@@ -47,6 +50,7 @@ const ApplicationDetails = () => {
   const [items, setItems] = useState([]);
   const [pageLoader, setPageLoader] = useState(false);
   const [toggleState, setToggleState] = useState(1);
+  const [apps, setApps] = useState([]);
   const [modal, setModal] = useState(false);
   const [grantModal, setGrantModal] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
@@ -61,6 +65,8 @@ const ApplicationDetails = () => {
     useState([]);
   const [employeeRequestedApplications, setEmployeeRequestedApplications] =
     useState([]);
+  const [employeeApprovedApplications, setEmployeeApprovedApplications] =
+    useState([]);
   const [employeeRevokedApplications, setEmployeeRevokedApplications] =
     useState([]);
   const [tableData, setTableData] = useState([]);
@@ -71,18 +77,21 @@ const ApplicationDetails = () => {
   const [searchGrantedApps, setSearchGrantedApps] = useState([]);
   const [searchRequestedApps, setSearchRequestedApps] = useState([]);
   const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
-  const [requestActions, setRequestActions] = useState(["Grant", "Revoke"]);
-  const [selectedAction, setSelectedAction] = useState("Grant");
+  const [requestActions, setRequestActions] = useState(["Approve", "Deny"]);
+  const [approveActions, setApproveActions] = useState(["Grant", "Deny"]);
+  const [selectedAction, setSelectedAction] = useState("Approve");
+  const [selectedApproveAction, setSelectedApproveAction] = useState("Grant");
   const [showAction, setShowAction] = useState(false);
   const [appId, setAppId] = useState("");
   const [applicationData, setApplicationData] = useState([]);
   const [sampleData, setSampleData] = useState([]);
+  const [approveModal, setApproveModal] = useState(false);
+  const [searchApprovedApps, setSearchApprovedApps] = useState([]);
 
-  const searchFilter = (searchText) => {
-    if (searchText != "") {
-      console.log(employees);
-      let filteredApps = employees.filter((val) => {
-        if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
+  const searchFilter = (searchTxt) => {
+    if (searchTxt != "") {
+      let filteredApps = apps.filter((val) => {
+        if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
           console.log(val);
           return val;
         }
@@ -90,6 +99,31 @@ const ApplicationDetails = () => {
       setSearchApps(filteredApps);
     } else {
       setSearchApps([]);
+    }
+  };
+
+  const getAllApps = async (tempApps) => {
+    apps.splice(0, apps.length);
+    try {
+      let applicationResponse = await GetApplications();
+      applicationResponse = await applicationResponse.json();
+      if (applicationResponse.Result.length > 0) {
+        let res = applicationResponse.Result;
+        for (let i = 0; i < res.length; i++) {
+          for (let j = 0; j < tempApps.length; j++) {
+            if (res[i]._id === tempApps[j]._id) {
+              res[i].checked = true;
+              resultArray.push(res[i]);
+            }
+          }
+        }
+        setApps(res);
+      } else setApps("");
+      setTimeout(() => {
+        setPageLoader(false);
+      }, 1000);
+    } catch (error) {
+      console.log("Error", error);
     }
   };
 
@@ -104,6 +138,19 @@ const ApplicationDetails = () => {
       setSearchGrantedApps(filteredApps);
     } else {
       setSearchGrantedApps(employeeGrantedApplications);
+    }
+  };
+
+  const approveAppSearchFilter = (searchText) => {
+    if (searchText != "") {
+      let filteredApps = employeeApprovedApplications.filter((val) => {
+        if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
+          return val;
+        }
+      });
+      setSearchApprovedApps(filteredApps);
+    } else {
+      setSearchApprovedApps(employeeApprovedApplications);
     }
   };
 
@@ -123,6 +170,7 @@ const ApplicationDetails = () => {
 
   const getEmployeesByApplication = async () => {
     setPageLoader(true);
+    employeeApprovedApplications.splice(0, employeeApprovedApplications.length);
     employeeGrantedApplications.splice(0, employeeGrantedApplications.length);
     employeeRequestedApplications.splice(
       0,
@@ -147,7 +195,6 @@ const ApplicationDetails = () => {
           if (app.appStatus === "requested") {
             app.empDetails.map((item) => {
               item.accessId = app.accessId;
-              // console.log(item);
               employeeRequestedApplications.push(item);
               searchRequestedApps.push(item);
               employeeApplications.push(item);
@@ -156,8 +203,6 @@ const ApplicationDetails = () => {
             app.empDetails.map((item) => {
               item.accessId = app.accessId;
               employeeGrantedApplications.push(item);
-
-              console.log(employeeGrantedApplications);
               searchGrantedApps.push(item);
               employeeApplications.push(item);
             });
@@ -167,43 +212,30 @@ const ApplicationDetails = () => {
               employeeRevokedApplications.push(item);
               employeeApplications.push(item);
             });
+          } else if (app.appStatus === "approved") {
+            app.empDetails.map((item) => {
+              item.accessId = app.accessId;
+              employeeApprovedApplications.push(item);
+              searchApprovedApps.push(item);
+              employeeApplications.push(item);
+            });
           } else {
             console.log("app", app);
           }
         });
+        console.log(
+          "employeeApprovedApplications",
+          employeeApprovedApplications
+        );
         employeeRequestedApplications.map((item) => (item.checked = false));
         employeeGrantedApplications.map((item) => (item.checked = false));
         employeeRevokedApplications.map((item) => (item.checked = false));
+        employeeApprovedApplications.map((item) => (item.checked = false));
       } catch (error) {
         console.log("Error", error);
       }
       setPageLoader(false);
-      getAllApps(employeeApplications);
-    } catch (error) {
-      console.log("Error", error);
-    }
-  };
-
-  const getAllApps = async (tempApps) => {
-    employees.splice(0, employees.length);
-    try {
-      let employeeResponse = await GetEmployees();
-      employeeResponse = await employeeResponse.json();
-      if (employeeResponse.Result.length > 0) {
-        let res = employeeResponse.Result;
-        for (let i = 0; i < res.length; i++) {
-          for (let j = 0; j < tempApps.length; j++) {
-            if (res[i]._id === tempApps[j]._id) {
-              res[i].checked = true;
-              resultArray.push(res[i]);
-            }
-          }
-        }
-        setEmployees(res);
-      } else setEmployees("");
-      setTimeout(() => {
-        setPageLoader(false);
-      }, 1000);
+      getAllApps(response.Result);
     } catch (error) {
       console.log("Error", error);
     }
@@ -235,7 +267,7 @@ const ApplicationDetails = () => {
 
   const ConfirmHandler = async (applicationDetails) => {
     try {
-      let employeeResponse = await EmployeeApplicationAccess(
+      let employeeResponse = await ApplicationEmployeeAccess(
         applicationDetails,
         applicationDetails._id
       );
@@ -256,7 +288,7 @@ const ApplicationDetails = () => {
     setModal(true);
     setRecommendedLoader(true);
     setResultArray([]);
-    employees.map((appData) => {
+    apps.map((appData) => {
       return (appData.checked = false);
     });
     setTimeout(() => {
@@ -271,6 +303,7 @@ const ApplicationDetails = () => {
     employeeGrantedApplications.map((appData) => {
       return (appData.checked = false);
     });
+    setShowAction(false);
     setTimeout(() => {
       setRecommendedLoader(false);
     }, 1000);
@@ -291,15 +324,19 @@ const ApplicationDetails = () => {
 
   const onRecommendedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      let res = employees.map((appData) => {
-        if (appData._id === item._id) {
-          appData.checked = e.target.checked;
-        }
+      let res = apps.map((appData) => {
+        if (appData._id === item._id) appData.checked = e.target.checked;
         return appData;
       });
-      setEmployees(res);
-      const result = employees.filter((appData) => {
+      const result = apps.filter((appData) => {
         return appData.checked == true;
+      });
+      setApps(res);
+      const filterResult = result.map((val) => {
+        var item = resultArray.find((item) => item._id === val._id);
+        if (item == undefined) {
+          resultArray.push(val);
+        }
       });
       resultArray.splice(0, resultArray.length);
       resultArray.push(...result);
@@ -307,13 +344,13 @@ const ApplicationDetails = () => {
       else setDisabled(true);
     } else if (mode == "selectAll") {
       let check = e.target.checked;
-      let res = employees.map((data) => {
+      let res = apps.map((data) => {
         data.checked = check;
         return data;
       });
       setEmployees(res);
       setSearchApps(res);
-      const result = employees.filter((appData) => {
+      const result = apps.filter((appData) => {
         return appData.checked == true;
       });
       setChecked(check);
@@ -358,6 +395,40 @@ const ApplicationDetails = () => {
     }
   };
 
+  const onApproveItemChecked = (item, e, mode) => {
+    if (mode == "selectOne") {
+      let res = employeeApprovedApplications.map((appData) => {
+        if (appData._id === item._id) {
+          appData.checked = e.target.checked;
+        }
+        return appData;
+      });
+      setEmployeeApprovedApplications(res);
+      const result = employeeApprovedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    } else if (mode == "selectAll") {
+      let check = e.target.checked;
+      let res = employeeApprovedApplications.map((data) => {
+        data.checked = check;
+        return data;
+      });
+      setEmployeeApprovedApplications(res);
+      const result = employeeApprovedApplications.filter((appData) => {
+        return appData.checked == true;
+      });
+      setChecked(check);
+      resultArray.splice(0, resultArray.length);
+      resultArray.push(...result);
+      if (result.length > 0) setDisabled(false);
+      else setDisabled(true);
+    }
+  };
+
   const onRequestedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
       let res = employeeRequestedApplications.map((appData) => {
@@ -392,18 +463,21 @@ const ApplicationDetails = () => {
     }
   };
 
-  const handleSubmitRecommendedApplications = () => {
-    const res = resultArray.filter(
-      (x) => !employeeApplications.some((y) => y._id === x._id)
-    );
+  const handleSubmitRecommendedApplications = async () => {
+    const res = resultArray.filter((x) => {
+      if (x._id !== applicationData._id) return x;
+    });
+    res.push(applicationData);
     let currentTimeSatamp = Date(Date.now().toString);
     let applicationDetails = {
       _id: appId,
-      employees: res.map((emp) => {
+      empMail: tableData.map((val) => {
+        return val.mail;
+      }),
+      applications: res.map((app) => {
         return {
-          accessId: emp.accessId,
-          _id: emp._id,
-          username: emp.username,
+          _id: app._id,
+          name: app.name,
           status: "requested",
           requestState: true,
           requestedDate: currentTimeSatamp,
@@ -416,9 +490,23 @@ const ApplicationDetails = () => {
         };
       }),
     };
-    console.log(applicationDetails);
-    setModal(false);
-    // ConfirmHandler(applicationDetails);
+    try {
+      let employeeResponse = await ShareApp(applicationDetails);
+      employeeResponse = await employeeResponse.json();
+      ShareTemplateNotification();
+      setConfirmBtnLoader(false);
+      apps.map((appData) => {
+        return (appData.checked = false);
+      });
+      setChecked(false);
+      setTableData([]);
+      setValue([]);
+      setTableValues([]);
+      setSearchApps([]);
+      getEmployeesByApplication();
+    } catch (error) {
+      console.log("Error", error);
+    }
     setModal(false);
   };
 
@@ -427,16 +515,17 @@ const ApplicationDetails = () => {
     let applicationDetails = {
       _id: appId,
       applications: resultArray.map((emp) => {
+        console.log(emp);
         return {
           accessId: emp.accessId,
-          _id: emp._id,
+          empId: emp._id,
           username: emp.username,
           status: "revoked",
           requestState: false,
           requestedDate:
             emp.requestedDate !== undefined ? emp.requestedDate : "",
           approveState: false,
-          approvedDate: "",
+          approvedDate: emp.approvedDate !== undefined ? emp.approvedDate : "",
           grantState: false,
           grantedDate: emp.grantedDate !== undefined ? emp.grantedDate : "",
           revokeState: true,
@@ -444,9 +533,48 @@ const ApplicationDetails = () => {
         };
       }),
     };
-    console.log(applicationDetails);
+    console.log("handleSubmitGrantApplications", applicationDetails);
     setGrantModal(false);
-    // ConfirmHandler(applicationDetails);
+    ConfirmHandler(applicationDetails);
+    setModal(false);
+  };
+
+  const handleSubmitApproveApplications = () => {
+    let currentTimeSatamp = Date(Date.now().toString);
+    let applicationDetails = {
+      _id: appId,
+      applications: resultArray.map((emp) => {
+        console.log(emp);
+        return {
+          accessId: emp.accessId,
+          empId: emp._id,
+          username: emp.username,
+          status: selectedApproveAction != "Grant" ? "revoked" : "granted",
+          requestState: false,
+          requestedDate:
+            emp.requestedDate !== undefined ? emp.requestedDate : "",
+          approveState: false,
+          approvedDate: "",
+          grantState: selectedApproveAction === "Grant" ? true : false,
+          grantedDate:
+            selectedApproveAction === "Grant"
+              ? currentTimeSatamp
+              : emp.grantedDate !== undefined
+              ? emp.grantedDate
+              : "",
+          revokeState: selectedApproveAction != "Grant" ? true : false,
+          revokedDate:
+            selectedApproveAction != "Grant"
+              ? currentTimeSatamp
+              : emp.revokedDate !== undefined
+              ? emp.revokedDate
+              : "",
+        };
+      }),
+    };
+    // console.log("handleSubmitApproveApplications", applicationDetails);
+    setApproveModal(false);
+    ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
@@ -457,24 +585,24 @@ const ApplicationDetails = () => {
       applications: resultArray.map((emp) => {
         return {
           accessId: emp.accessId,
-          _id: emp._id,
+          empId: emp._id,
           username: emp.username,
-          status: selectedAction != "Grant" ? "revoked" : "granted",
+          status: selectedAction != "Approve" ? "revoked" : "approved",
           requestState: false,
           requestedDate:
             emp.requestedDate !== undefined ? emp.requestedDate : "",
-          approveState: false,
-          approvedDate: "",
-          grantState: selectedAction === "Grant" ? true : false,
-          grantedDate:
-            selectedAction === "Grant"
+          approveState: selectedAction === "Approve" ? true : false,
+          approvedDate:
+            selectedAction === "Approve"
               ? currentTimeSatamp
-              : emp.grantedDate !== undefined
-              ? emp.grantedDate
+              : emp.approvedDate !== undefined
+              ? emp.approvedDate
               : "",
-          revokeState: selectedAction != "Grant" ? true : false,
+          grantState: false,
+          grantedDate: "",
+          revokeState: selectedAction != "Approve" ? true : false,
           revokedDate:
-            selectedAction != "Grant"
+            selectedAction != "Approve"
               ? currentTimeSatamp
               : emp.revokedDate !== undefined
               ? emp.revokedDate
@@ -484,8 +612,8 @@ const ApplicationDetails = () => {
     };
     setRequestModal(false);
     setShowAction(false);
-    console.log(applicationDetails);
-    // ConfirmHandler(applicationDetails);
+    // console.log("handleSubmitRequestApplications", applicationDetails);
+    ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
@@ -521,6 +649,93 @@ const ApplicationDetails = () => {
     approverMail: applicationData.approverMail,
     type: applicationData.type,
     env: applicationData.env,
+  };
+
+  const openApproveModal = async () => {
+    setApproveModal(true);
+    setRecommendedLoader(true);
+    resultArray.splice(0, resultArray.length);
+    console.log("employeeApprovedApplications", employeeApprovedApplications);
+    employeeApprovedApplications.map((appData) => {
+      return (appData.checked = false);
+    });
+    setShowAction(true);
+    setTimeout(() => {
+      setRecommendedLoader(false);
+    }, 1000);
+  };
+
+  const handleCloseApproveModal = () => {
+    setApproveModal(false);
+    setResultArray([]);
+    setShowAction(false);
+    setChecked(false);
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "username",
+    },
+    {
+      title: "Email",
+      dataIndex: "mail",
+    },
+    {
+      title: <b>Actions</b>,
+      key: "action",
+      render: (_, record) => {
+        return (
+          <div>
+            <Typography.Link
+              onClick={() => {
+                // deleteFunc(record);
+              }}
+            >
+              <Tooltip title="Delete">
+                <i
+                  className="fas fa-trash ml-1 mr-1"
+                  style={{ color: "red" }}
+                ></i>
+              </Tooltip>
+            </Typography.Link>
+          </div>
+        );
+      },
+    },
+  ];
+
+  async function getUsers(email) {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (email.match(mailformat)) {
+      let userResponse = await GetEmployeeByMail(email);
+      userResponse = await userResponse.json();
+      let usersData = userResponse.Result.map((user) => ({
+        label: user.username,
+        value: user.mail,
+      }));
+      return usersData;
+    }
+  }
+
+  var userEmails = [];
+  const handleShare = async () => {
+    tableValues.map((val) => {
+      userEmails = [...userEmails, { username: val.label, mail: val.value }];
+    });
+    setTableData(userEmails);
+    setValue([]);
+  };
+  const handleSetValue = (values) => {
+    console.log(values);
+    console.log(employeeApplications);
+    setValue(values);
+    values.map((val) => {
+      var item = tableValues.find((item) => item.value === val.value);
+      if (item == undefined) {
+        tableValues.push(val);
+      }
+    });
   };
 
   return (
@@ -674,34 +889,6 @@ const ApplicationDetails = () => {
                           </div>
                           <div className="mt-4">
                             <hr className="hrStyles" />
-                            <div className="mainTitle">Granted</div>
-                            <div className="float-left mt-4 ml-4">
-                              {employeeGrantedApplications.map((app) => (
-                                <Select
-                                  className="selectStyle"
-                                  mode="tags"
-                                  value={app.username}
-                                  open={false}
-                                  bordered={false}
-                                  onDeselect={(e) =>
-                                    handleCrossDelete(e, app, "granted")
-                                  }
-                                ></Select>
-                              ))}
-                            </div>
-                            <div className="mr-5">
-                              <Button
-                                type="primary"
-                                className="float-right"
-                                onClick={openGrantModal}
-                                style={{ width: "7%" }}
-                              >
-                                Revoke
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="mt-4">
-                            <hr className="hrStyles" />
                             <div className="mainTitle">Requested</div>
                             <div className="float-left mt-4 ml-4">
                               {employeeRequestedApplications.map((app) => (
@@ -730,6 +917,63 @@ const ApplicationDetails = () => {
                           </div>
                           <div className="mt-4">
                             <hr className="hrStyles" />
+                            <div className="mainTitle">Approved</div>
+                            <div className="float-left mt-4 ml-4">
+                              {employeeApprovedApplications.map((app) => (
+                                <Select
+                                  className="selectStyle"
+                                  mode="tags"
+                                  value={app.username}
+                                  open={false}
+                                  bordered={false}
+                                  onDeselect={(e) =>
+                                    handleCrossDelete(e, app, "requested")
+                                  }
+                                ></Select>
+                              ))}
+                            </div>
+                            <div className="mr-5">
+                              <Button
+                                type="primary"
+                                className="float-right"
+                                onClick={openApproveModal}
+                                style={{ width: "7%" }}
+                              >
+                                Action
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="mt-4">
+                            <hr className="hrStyles" />
+                            <div className="mainTitle">Granted</div>
+                            <div className="float-left mt-4 ml-4">
+                              {employeeGrantedApplications.map((app) => (
+                                <Select
+                                  className="selectStyle"
+                                  mode="tags"
+                                  value={app.username}
+                                  open={false}
+                                  bordered={false}
+                                  onDeselect={(e) =>
+                                    handleCrossDelete(e, app, "granted")
+                                  }
+                                ></Select>
+                              ))}
+                            </div>
+                            <div className="mr-5">
+                              <Button
+                                type="primary"
+                                className="float-right"
+                                onClick={openGrantModal}
+                                style={{ width: "7%" }}
+                              >
+                                Revoke
+                              </Button>
+                            </div>
+                          </div>
+
+                          <div className="mt-4">
+                            <hr className="hrStyles" />
                             <div className="mainTitle">Revoked/Declined</div>
                             <div className="float-left mt-4 ml-4">
                               {employeeRevokedApplications.map((item) => (
@@ -749,19 +993,7 @@ const ApplicationDetails = () => {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="float-right w-25 mr-5 mt-4">
-                      <Button
-                        type="primary"
-                        className="float-right w-25"
-                        onClick={ConfirmHandler}
-                      >
-                        {confirmBtnLoader ? (
-                          <i className="fas fa-spinner fa-2x fa-spin spinner saveSpinner spinnerColor"></i>
-                        ) : null}
-                        Request
-                      </Button>
-                    </div> */}
-                    <EmployeeDetailsModal
+                    <AccessApplicationModal
                       visibility={modal}
                       handleClose={handleClose}
                       apps={employees}
@@ -774,6 +1006,32 @@ const ApplicationDetails = () => {
                       searchFilter={searchFilter}
                       Checked={Checked}
                       from="ByApplication"
+                      getUsers={getUsers}
+                      value={value}
+                      handleSetValue={handleSetValue}
+                      handleShare={handleShare}
+                      form={form}
+                      columns={columns}
+                      tableData={tableData}
+                    />
+                    <GrantRevokeModal
+                      visibility={approveModal}
+                      title="Approved Applications"
+                      handleClose={handleCloseApproveModal}
+                      recommendedLoader={recommendedLoader}
+                      onRecommendedItemChecked={onApproveItemChecked}
+                      handleSubmitRecommendedApplications={
+                        handleSubmitApproveApplications
+                      }
+                      searchApps={searchApprovedApps}
+                      searchFilter={approveAppSearchFilter}
+                      Checked={Checked}
+                      requestActions={approveActions}
+                      showAction={showAction}
+                      selectedApproveAction={selectedApproveAction}
+                      setSelectedApproveAction={setSelectedApproveAction}
+                      from="ByApplication"
+                      fromModal="approve"
                     />
                     <GrantRevokeModal
                       visibility={grantModal}
@@ -790,6 +1048,7 @@ const ApplicationDetails = () => {
                       requestActions={requestActions}
                       showAction={showAction}
                       from="ByApplication"
+                      fromModal="grant"
                     />
                     <GrantRevokeModal
                       visibility={requestModal}
@@ -808,6 +1067,7 @@ const ApplicationDetails = () => {
                       selectedAction={selectedAction}
                       setSelectedAction={setSelectedAction}
                       from="ByApplication"
+                      fromModal="requested"
                     />
                   </div>
                 </div>

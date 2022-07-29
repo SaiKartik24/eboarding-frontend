@@ -294,6 +294,7 @@ const EmployeeDetails = () => {
     employeeGrantedApplications.map((appData) => {
       return (appData.checked = false);
     });
+    setShowAction(false);
     setTimeout(() => {
       setRecommendedLoader(false);
     }, 1000);
@@ -490,7 +491,7 @@ const EmployeeDetails = () => {
           requestedDate:
             app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
-          approvedDate: "",
+          approvedDate: app.approvedDate !== undefined ? app.approvedDate : "",
           grantState: false,
           grantedDate: app.grantedDate !== undefined ? app.grantedDate : "",
           revokeState: true,
@@ -517,7 +518,7 @@ const EmployeeDetails = () => {
           requestedDate:
             app.requestedDate !== undefined ? app.requestedDate : "",
           approveState: false,
-          approvedDate: "",
+          approvedDate: app.approvedDate !== undefined ? app.approvedDate : "",
           grantState: selectedApproveAction === "Grant" ? true : false,
           grantedDate:
             selectedApproveAction === "Grant"
@@ -561,7 +562,7 @@ const EmployeeDetails = () => {
               ? app.approvedDate
               : "",
           grantState: false,
-          grantedDate: "",
+          grantedDate: app.grantedDate !== undefined ? app.grantedDate : "",
           revokeState: selectedAction != "Approve" ? true : false,
           revokedDate:
             selectedAction != "Approve"

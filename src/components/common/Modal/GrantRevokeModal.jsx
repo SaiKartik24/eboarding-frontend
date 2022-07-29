@@ -91,6 +91,10 @@ const GrantRevokeModal = (props) => {
                 itemLayout="horizontal"
                 dataSource={props.searchApps}
                 className="modalListStyle"
+                style={{
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                }}
                 renderItem={(item) => (
                   <List.Item className="ml-0 d-inline-flex w-100 justify-content-lg-start">
                     <Checkbox

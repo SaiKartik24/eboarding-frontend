@@ -31,3 +31,14 @@ export function GetApplicationById(id) {
   };
   return fetch(host + "/application/" + id, options);
 }
+
+export function ApplicationEmployeeAccess(reqData, id) {
+  var options = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqData),
+  };
+  return fetch(host + "/access/emp/" + id, options);
+}
