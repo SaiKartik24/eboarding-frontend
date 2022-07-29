@@ -138,6 +138,12 @@ const NewEmployee = () => {
                 <div className="container">
                   <div className="content-tabs">
                     <div className="content  active-content d-flex flex-column">
+                      <div
+                        className="mb-3"
+                        style={{ fontSize: "1rem", color: "#00aae7" }}
+                      >
+                        New-Employee
+                      </div>
                       <div className="chooseSty mt-4 mb-4">
                         <div className="mainTitle">Search</div>
                         <div
@@ -146,26 +152,26 @@ const NewEmployee = () => {
                         >
                           <Search
                             allowClear
-                              size="large"
-                              value={val}
-                              onChange={(e) => {
-                                setVal(e.target.value);
-                                setTVal("");
-                                searchExistingEmail(e);
-                              }}
+                            size="large"
+                            value={val}
+                            onChange={(e) => {
+                              setVal(e.target.value);
+                              setTVal("");
+                              searchExistingEmail(e);
+                            }}
                             placeholder="Existing employee email"
                             className="mr-5 w-25"
                           />
                           <div className="orSty">(OR)</div>
                           <Search
                             allowClear
-                              size="large"
-                              value={tVal}
-                              onChange={(e) => {
-                                setTVal(e.target.value)
-                                setVal("");
-                                searchTemplate(e)
-                              }}
+                            size="large"
+                            value={tVal}
+                            onChange={(e) => {
+                              setTVal(e.target.value);
+                              setVal("");
+                              searchTemplate(e);
+                            }}
                             placeholder="Template Name"
                             className="ml-5 w-25"
                           />

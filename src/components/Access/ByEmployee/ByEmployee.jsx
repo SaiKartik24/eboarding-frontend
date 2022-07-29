@@ -115,6 +115,12 @@ const ByEmployee = () => {
                 <div className="container">
                   <div className="content-tabs">
                     <div className="content  active-content d-flex flex-column">
+                      <div
+                        className="mb-3"
+                        style={{ fontSize: "1rem", color: "#00aae7" }}
+                      >
+                        By-Employee
+                      </div>
                       <div className="chooseSty mt-4 mb-4">
                         <div className="mainTitle">Search</div>
                         <div
@@ -123,25 +129,26 @@ const ByEmployee = () => {
                         >
                           <Search
                             allowClear
-                              size="large"
-                              value={eVal}
-                              onChange={(e) => {
-                                setEVal(e.target.value);
-                                setVal("");
-                                searchExistingEmail(e)
-                              }}
+                            size="large"
+                            value={eVal}
+                            onChange={(e) => {
+                              setEVal(e.target.value);
+                              setVal("");
+                              searchExistingEmail(e);
+                            }}
                             placeholder="Email"
                             className="mr-5 w-25"
                           />
                           <div className="orSty">(OR)</div>
                           <Search
                             allowClear
-                              size="large"
-                              value={val}
-                              onChange={(e) => {
-                                setVal(e.target.value)
-                                setEVal(""); getEmployeeByName(e)
-                              }}
+                            size="large"
+                            value={val}
+                            onChange={(e) => {
+                              setVal(e.target.value);
+                              setEVal("");
+                              getEmployeeByName(e);
+                            }}
                             placeholder="Employee Name"
                             className="ml-5 w-25"
                           />

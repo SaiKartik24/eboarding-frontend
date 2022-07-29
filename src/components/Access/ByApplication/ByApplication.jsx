@@ -85,6 +85,12 @@ const ByApplication = () => {
                 <div className="container">
                   <div className="content-tabs">
                     <div className="content  active-content d-flex flex-column">
+                      <div
+                        className="mb-3"
+                        style={{ fontSize: "1rem", color: "#00aae7" }}
+                      >
+                        By-Application
+                      </div>
                       <div className="chooseSty mt-4 mb-4">
                         <div className="mainTitle">Search</div>
                         <div className="">

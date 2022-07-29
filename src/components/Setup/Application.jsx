@@ -476,54 +476,65 @@ const Application = () => {
             </div>
           ) : (
             <div>
-              <div className="d-flex float-right mb-4">
-                <Search
-                  allowClear
-                  // size="large"
-                  onChange={(e) => searchApplication(e)}
-                  placeholder="Search for application"
-                  className="mr-3"
-                />
-                <Button
-                  type="primary"
-                  className="buttonStyles"
-                  onClick={() => setModal(true)}
-                >
-                  Add
-                </Button>
+              <div className="pl-3 my-4 mb-4">
+                <div className="content-tabs">
+                  <div className="content  active-content d-flex flex-column">
+                    <div className="d-flex mb-4 justify-content-between">
+                      <div style={{ fontSize: "1rem", color: "#00aae7" }}>
+                        Application
+                        </div>
+                        <div className="d-flex">
+                      <Search
+                        allowClear
+                        // size="large"
+                        onChange={(e) => searchApplication(e)}
+                        placeholder="Search for application"
+                        className="mr-3"
+                      />
+                      <Button
+                        type="primary"
+                        className="buttonStyles"
+                        onClick={() => setModal(true)}
+                      >
+                        Add
+                          </Button>
+                          </div>
+                    </div>
+                    <Form form={form} component={false}>
+                      <Table
+                        components={{
+                          body: {
+                            cell: EditableCell,
+                          },
+                        }}
+                        bordered
+                        dataSource={items}
+                        columns={mergedColumns}
+                        rowClassName="editable-row"
+                        pagination={{ pageSize: 7 }}
+                        // scroll={{
+                        //   x: 200,
+                        //   y: 500,
+                        // }}
+                      />
+                    </Form>
+                    <ApplicationModal
+                      visibility={modal}
+                      handleClose={handleClose}
+                      values={modalValues}
+                      handleName={handleName}
+                      handleEnv={handleEnv}
+                      handleApproveMail={handleApproveMail}
+                      handleTeamMail={handleTeamMail}
+                      handleType={handleType}
+                      handleAccessType={handleconnectorType}
+                      ConfirmHandler={ConfirmHandler}
+                      confirmBtnLoader={confirmBtnLoader}
+                      readExcel={readExcel}
+                    />
+                  </div>
+                </div>
               </div>
-              <Form form={form} component={false}>
-                <Table
-                  components={{
-                    body: {
-                      cell: EditableCell,
-                    },
-                  }}
-                  bordered
-                  dataSource={items}
-                  columns={mergedColumns}
-                  rowClassName="editable-row"
-                  pagination={{ pageSize: 7 }}
-                  // scroll={{
-                  //   x: 200,
-                  //   y: 500,
-                  // }}
-                />
-              </Form>
-              <ApplicationModal
-                visibility={modal}
-                handleClose={handleClose}
-                values={modalValues}
-                handleName={handleName}
-                handleEnv={handleEnv}
-                handleApproveMail={handleApproveMail}
-                handleTeamMail={handleTeamMail}
-                handleType={handleType}
-                handleAccessType={handleconnectorType}
-                ConfirmHandler={ConfirmHandler}
-                confirmBtnLoader={confirmBtnLoader}
-                readExcel={readExcel}
-              />
             </div>
           )}
         </div>
