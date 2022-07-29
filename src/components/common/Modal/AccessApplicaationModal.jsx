@@ -23,15 +23,15 @@ const { Search } = Input;
 const AccessApplicationModal = (props) => {
   return (
     <Modal
-      title={null}
+      title={<b>Add Employee</b>}
       visible={props.visibility}
       className="modalFont modalSection"
       onCancel={props.handleClose}
       footer={null}
       keyboard={false}
     >
-      <Tabs type="card">
-        <TabPane tab={<b>Add Employee</b>} key="1">
+      {/* <Tabs type="card"> */}
+        {/* <TabPane tab={<b>Add Employee</b>} key="1"> */}
           <div className="d-flex justify-content-around mb-4 mt-3">
             <UsersDropdown
               getUsers={props.getUsers}
@@ -55,8 +55,8 @@ const AccessApplicationModal = (props) => {
               />
             </Form>
           </div>
-        </TabPane>
-        <TabPane tab={<b>Add Applications</b>} key="2">
+        {/* </TabPane> */}
+        {/* <TabPane tab={<b>Add Applications</b>} key="2">
           <form>
             <div className="form-group d-flex">
               <Search
@@ -103,8 +103,8 @@ const AccessApplicationModal = (props) => {
               )}
             </div>
           </form>
-        </TabPane>
-      </Tabs>
+        </TabPane> */}
+      {/* </Tabs> */}
       <div style={{ textAlign: "right" }}>
         <Button className="btnWidth mr-4" onClick={props.handleClose}>
           Cancel
