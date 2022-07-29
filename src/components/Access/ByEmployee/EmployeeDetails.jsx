@@ -237,23 +237,41 @@ const EmployeeDetails = () => {
   };
 
   const handleCloseGrantModal = () => {
-    setGrantModal(false);
     setResultArray([]);
     setChecked(false);
+        let res = employeeGrantedApplications.map((appData) => {
+          appData.checked = false;
+          return appData;
+        });
+    setEmployeeGrantedApplications(res);
+    setSearchGrantedApps([]);
+    setGrantModal(false);
   };
 
   const handleCloseApproveModal = () => {
-    setApproveModal(false);
     setResultArray([]);
     setShowAction(false);
     setChecked(false);
+    let res = employeeApprovedApplications.map((appData) => {
+      appData.checked = false;
+      return appData;
+    });
+    setEmployeeApprovedApplications(res);
+    setSearchApprovedApps([]);
+    setApproveModal(false);
   };
 
   const handleCloseRequestModal = () => {
-    setRequestModal(false);
     setShowAction(false);
     setResultArray([]);
     setChecked(false);
+    let res = employeeRequestedApplications.map((appData) => {
+      appData.checked = false;
+      return appData;
+    });
+    setEmployeeRequestedApplications(res);
+    setSearchRequestedApps([]);
+    setRequestModal(false);
   };
 
   const ConfirmHandler = async (applicationDetails) => {
@@ -278,10 +296,13 @@ const EmployeeDetails = () => {
   const openModal = async () => {
     setModal(true);
     setRecommendedLoader(true);
+    setSearchApps([]);
     setResultArray([]);
-    apps.map((appData) => {
-      return (appData.checked = false);
+    let res = apps.map((appData) => {
+      appData.checked = false;
+      return appData;
     });
+    setApps(res);
     setTimeout(() => {
       setRecommendedLoader(false);
     }, 1000);
@@ -289,11 +310,9 @@ const EmployeeDetails = () => {
 
   const openGrantModal = async () => {
     setGrantModal(true);
+    setSearchGrantedApps(employeeGrantedApplications);
     setRecommendedLoader(true);
     resultArray.splice(0, resultArray.length);
-    employeeGrantedApplications.map((appData) => {
-      return (appData.checked = false);
-    });
     setShowAction(false);
     setTimeout(() => {
       setRecommendedLoader(false);
@@ -302,11 +321,9 @@ const EmployeeDetails = () => {
 
   const openApproveModal = async () => {
     setApproveModal(true);
+    setSearchApprovedApps(employeeApprovedApplications);
     setRecommendedLoader(true);
     resultArray.splice(0, resultArray.length);
-    employeeApprovedApplications.map((appData) => {
-      return (appData.checked = false);
-    });
     setShowAction(true);
     setTimeout(() => {
       setRecommendedLoader(false);
@@ -315,11 +332,9 @@ const EmployeeDetails = () => {
 
   const openRequestModal = async () => {
     setRequestModal(true);
+    setSearchRequestedApps(employeeRequestedApplications);
     setRecommendedLoader(true);
     resultArray.splice(0, resultArray.length);
-    employeeRequestedApplications.map((appData) => {
-      return (appData.checked = false);
-    });
     setShowAction(true);
     setTimeout(() => {
       setRecommendedLoader(false);
