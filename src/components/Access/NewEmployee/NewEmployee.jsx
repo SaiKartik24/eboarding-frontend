@@ -63,9 +63,9 @@ const NewEmployee = () => {
     }
   };
 
-  const searchTemplate = debounce(async (e) => {
+  const searchTemplate = (async (val) => {
     setVal("");
-    let val = e.target.value;
+    // let val = e.target.value;
     if (val !== "") {
       try {
         let response = await GetTemplateByName(val);
@@ -86,11 +86,10 @@ const NewEmployee = () => {
     setItems([]);
       setEmployees([]);
     }
-  }, 500);
+  });
 
-  const searchExistingEmail = debounce(async (e) => {
+  const searchExistingEmail = (async (val) => {
     setTVal("");
-    let val = e.target.value;
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (val !== "" && val.match(mailformat)) {
       try {
@@ -112,10 +111,12 @@ const NewEmployee = () => {
       setEmployees([]);
       setItems([]);
     }
-  }, 500);
+  });
 
   useEffect(() => {
     // getAllTemplates();
+    setVal("");
+    setTVal("");
     getAllApps();
   }, [location]);
 
@@ -157,8 +158,9 @@ const NewEmployee = () => {
                             onChange={(e) => {
                               setVal(e.target.value);
                               setTVal("");
-                              searchExistingEmail(e);
+                              setItems([]);
                             }}
+                            onSearch={searchExistingEmail}
                             placeholder="Existing employee email"
                             className="mr-5 w-25"
                           />
@@ -170,8 +172,10 @@ const NewEmployee = () => {
                             onChange={(e) => {
                               setTVal(e.target.value);
                               setVal("");
-                              searchTemplate(e);
+                              setEmployees([]);
+                              // searchTemplate(e);
                             }}
+                            onSearch={searchTemplate}
                             placeholder="Template Name"
                             className="ml-5 w-25"
                           />

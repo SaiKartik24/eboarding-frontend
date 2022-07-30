@@ -55,7 +55,7 @@ const UsersDropdown = (props) => {
       <DebounceSelect
         mode="multiple"
         value={value}
-        placeholder="Select users"
+        placeholder="new employee email"
         fetchOptions={getUsers}
         onChange={(newValue) => {
           props.setValues(newValue);

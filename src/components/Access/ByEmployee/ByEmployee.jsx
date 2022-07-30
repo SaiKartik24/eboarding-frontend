@@ -47,8 +47,7 @@ const ByEmployee = () => {
     }
   };
 
-  const getEmployeeByName = debounce(async (e) => {
-    let val = e.target.value;
+  const getEmployeeByName = (async (val) => {
     if (val !== "") {
       try {
         let response = await GetEmployeeByName(val);
@@ -69,10 +68,9 @@ const ByEmployee = () => {
       setItems([]);
       setEmployees([]);
     }
-  }, 500);
+  });
 
-  const searchExistingEmail = debounce(async (e) => {
-    let val = e.target.value;
+  const searchExistingEmail = (async (val) => {
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (val !== "" && val.match(mailformat)) {
       try {
@@ -94,9 +92,11 @@ const ByEmployee = () => {
       setItems([]);
       setEmployees([]);
     }
-  }, 500);
+  });
 
   useEffect(() => {
+    setVal("");
+    setEVal("");
     getAllApps();
   }, [location]);
 
@@ -134,8 +134,9 @@ const ByEmployee = () => {
                             onChange={(e) => {
                               setEVal(e.target.value);
                               setVal("");
-                              searchExistingEmail(e);
+                              setItems([]);
                             }}
+                            onSearch={searchExistingEmail}
                             placeholder="Email"
                             className="mr-5 w-25"
                           />
@@ -147,8 +148,9 @@ const ByEmployee = () => {
                             onChange={(e) => {
                               setVal(e.target.value);
                               setEVal("");
-                              getEmployeeByName(e);
+                              setEmployees([]);
                             }}
+                            onSearch={getEmployeeByName}
                             placeholder="Employee Name"
                             className="ml-5 w-25"
                           />

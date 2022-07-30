@@ -696,7 +696,7 @@ const ApplicationDetails = () => {
       dataIndex: "mail",
     },
     {
-      title: <b>Actions</b>,
+      title: "Actions",
       key: "action",
       render: (_, record) => {
         return (

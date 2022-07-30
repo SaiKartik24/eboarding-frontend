@@ -78,7 +78,7 @@ const Employee = (props) => {
     setExcelData([]);
     setSubmitExcel(false);
   };
-  const dateFormatList = ["MM/DD/YYYY", "MM/DD/YY"];
+  const dateFormatList = ["MM/DD/YYYY", "MM/DD/YYYY"];
   const EditableCell = ({
     editing,
     dataIndex,
@@ -260,7 +260,7 @@ const Employee = (props) => {
   const save = async (record) => {
     setEditingKey("");
     if (updateEndDate) {
-      const formatDate = moment().format("MM-DD-YYYY");
+      const formatDate = moment().format("MM/DD/YYYY");
       record.enddate = formatDate;
     }
     try {

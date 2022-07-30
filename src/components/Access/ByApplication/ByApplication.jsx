@@ -46,8 +46,7 @@ const ByApplication = () => {
     }
   };
 
-  const searchApplicationName = debounce(async (e) => {
-    let val = e.target.value;
+  const searchApplicationName = (async (val) => {
     if (val !== "") {
       try {
         let response = await GetApplicationName(val);
@@ -64,7 +63,7 @@ const ByApplication = () => {
     } else {
       setApplications([]);
     }
-  }, 500);
+  });
 
   useEffect(() => {
     getAllApps();
@@ -98,7 +97,7 @@ const ByApplication = () => {
                             <Search
                               allowClear
                               size="large"
-                              onChange={(e) => searchApplicationName(e)}
+                              onSearch={searchApplicationName}
                               placeholder="Application Name"
                               className="mr-3"
                             />
