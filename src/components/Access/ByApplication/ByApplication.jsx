@@ -34,14 +34,14 @@ const ByApplication = () => {
         let applicationResponse = await GetApplications();
         applicationResponse = await applicationResponse.json();
         if (applicationResponse.Result.length > 0) {
-          console.log(applicationResponse.Result);
+          //console.log(applicationResponse.Result);
           setApps(applicationResponse.Result);
         } else setApps("");
         setTimeout(() => {
           setPageLoader(false);
         }, 1000);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   };
@@ -58,7 +58,7 @@ const ByApplication = () => {
           NoEmployeeNotification();
         }
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       setApplications([]);

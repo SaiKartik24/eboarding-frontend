@@ -89,7 +89,7 @@ const Employee = (props) => {
     children,
     ...restProps
   }) => {
-    // console.log("record", record);
+    // //console.log("record", record);
     const inputNode =
       inputType === "employmenttype" ? (
         <SelectFun field={record} type="employmenttype" values={employeeType} />
@@ -111,7 +111,7 @@ const Employee = (props) => {
             allowClear={false}
             format={dateFormatList}
             onChange={(val) => {
-              console.log(val);
+              //console.log(val);
               record.startdate = val.format("MM/DD/YYYY");
             }}
           />
@@ -120,7 +120,7 @@ const Employee = (props) => {
             allowClear={false}
             format={dateFormatList}
             onChange={(val) => {
-              console.log(val);
+              //console.log(val);
               record.startdate = val.format("MM/DD/YYYY");
             }}
           />
@@ -242,14 +242,14 @@ const Employee = (props) => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
   const isEditing = (record) => record._id === editingKey;
 
   const edit = (record) => {
-    console.log("record", record);
+    //console.log("record", record);
     setEditingKey(record._id);
   };
 
@@ -268,7 +268,7 @@ const Employee = (props) => {
       response = await response.json();
       recordUpdateNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -284,7 +284,7 @@ const Employee = (props) => {
       setItems(myArr);
       recordDeleteNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -512,7 +512,7 @@ const Employee = (props) => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       fullName != "" &&
@@ -541,7 +541,7 @@ const Employee = (props) => {
         employeeResponse = await employeeResponse.json();
         // getEmployees();
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       try {
         let employeeResponse = await AddEmployee(excelData);
@@ -551,7 +551,7 @@ const Employee = (props) => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       fullName == "" &&
@@ -569,7 +569,7 @@ const Employee = (props) => {
         handleClose();
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       AddEmployeeRequiredNotification();
@@ -592,7 +592,7 @@ const Employee = (props) => {
         } else setItems("");
       }
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   }, 500);
 

@@ -1,4 +1,5 @@
 import { resolveOrigin } from "./configs";
+import { resolveUserMail } from "./configs";
 
 const host = resolveOrigin();
 
@@ -44,21 +45,23 @@ export function GetTemplateByEmail(mail) {
 }
 
 export function GetEmployeeByMailId(empId) {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/access/employee/" + empId, options);
+  return fetch(host + "/access/employee/" + empId + "?manager=" + manager, options);
 }
 
 export function GetEmployeeById(empId) {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/employee/" + empId, options);
+  return fetch(host + "/employee/" + empId + "?manager=" + manager, options);
 }

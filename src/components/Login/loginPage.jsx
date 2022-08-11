@@ -70,7 +70,7 @@ const Login = () => {
         })
         .catch((error) => {
           setLoginBtnLoader(false);
-          console.log("error", error);
+          //console.log("error", error);
         });
     } else if (username === "" && password !== "") setValidName(false);
     else if (password === "" && username !== "") setValidPass(false);
@@ -97,7 +97,7 @@ const Login = () => {
                   <div className="form-container sign-in-container">
                     <div className="titleSty">Login</div>
                     <div className="mt-4 txt">
-                      Welcome back, please put your login credentials below to
+                      Welcome back, please enter login credentials to
                       start using the app
                     </div>
                     <Form id="login" className="loginTStyle position-relative">

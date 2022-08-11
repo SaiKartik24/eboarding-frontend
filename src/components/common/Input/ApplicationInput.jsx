@@ -22,9 +22,9 @@ const ApplicationInput = (props) => {
     } else if (props.type === "teamMail") {
       props.field.teamMail = e;
     } else {
-      console.log(e);
+      //console.log(e);
     }
-    console.log(props.field);
+    //console.log(props.field);
   };
   return (
     <Input

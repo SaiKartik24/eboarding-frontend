@@ -92,7 +92,7 @@ const ApplicationDetails = () => {
     if (searchTxt != "") {
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
-          console.log(val);
+          ////console.log(val);
           return val;
         }
       });
@@ -123,7 +123,7 @@ const ApplicationDetails = () => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -131,7 +131,7 @@ const ApplicationDetails = () => {
     if (searchText != "") {
       let filteredApps = employeeGrantedApplications.filter((val) => {
         if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -158,7 +158,7 @@ const ApplicationDetails = () => {
     if (searchText != "") {
       let filteredApps = employeeRequestedApplications.filter((val) => {
         if (val.username.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -181,7 +181,7 @@ const ApplicationDetails = () => {
     try {
       let response = await GetApplicationById(applicationId);
       response = await response.json();
-      console.log(response);
+      //console.log(response);
       setAppId(response.Result[0]._id);
       setApplicationData(response.Result[0]);
       // if (response.Result[0].applications.length > 0) {
@@ -190,7 +190,7 @@ const ApplicationDetails = () => {
           response.Result[0]._id
         );
         empResponse = await empResponse.json();
-        console.log(empResponse);
+        //console.log(empResponse);
         empResponse.Result.map((app) => {
           if (app.appStatus === "requested") {
             app.empDetails.map((item) => {
@@ -220,24 +220,21 @@ const ApplicationDetails = () => {
               employeeApplications.push(item);
             });
           } else {
-            console.log("app", app);
+            //console.log("app", app);
           }
         });
-        console.log(
-          "employeeApprovedApplications",
-          employeeApprovedApplications
-        );
+        //console.log("employeeApprovedApplications",employeeApprovedApplications);
         employeeRequestedApplications.map((item) => (item.checked = false));
         employeeGrantedApplications.map((item) => (item.checked = false));
         employeeRevokedApplications.map((item) => (item.checked = false));
         employeeApprovedApplications.map((item) => (item.checked = false));
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       setPageLoader(false);
       getAllApps(response.Result);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -292,7 +289,7 @@ const ApplicationDetails = () => {
       setTableValues([]);
       getEmployeesByApplication();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -516,7 +513,7 @@ const ApplicationDetails = () => {
       setSearchApps([]);
       getEmployeesByApplication();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
     setModal(false);
   };
@@ -526,7 +523,7 @@ const ApplicationDetails = () => {
     let applicationDetails = {
       _id: appId,
       applications: resultArray.map((emp) => {
-        console.log(emp);
+        //console.log(emp);
         return {
           accessId: emp.accessId,
           empId: emp._id,
@@ -544,7 +541,7 @@ const ApplicationDetails = () => {
         };
       }),
     };
-    console.log("handleSubmitGrantApplications", applicationDetails);
+    //console.log("handleSubmitGrantApplications", applicationDetails);
     setGrantModal(false);
     ConfirmHandler(applicationDetails);
     setModal(false);
@@ -555,7 +552,7 @@ const ApplicationDetails = () => {
     let applicationDetails = {
       _id: appId,
       applications: resultArray.map((emp) => {
-        console.log(emp);
+        //console.log(emp);
         return {
           accessId: emp.accessId,
           empId: emp._id,
@@ -583,7 +580,7 @@ const ApplicationDetails = () => {
         };
       }),
     };
-    // console.log("handleSubmitApproveApplications", applicationDetails);
+    // //console.log("handleSubmitApproveApplications", applicationDetails);
     setApproveModal(false);
     ConfirmHandler(applicationDetails);
     setModal(false);
@@ -623,13 +620,13 @@ const ApplicationDetails = () => {
     };
     setRequestModal(false);
     setShowAction(false);
-    // console.log("handleSubmitRequestApplications", applicationDetails);
+    // //console.log("handleSubmitRequestApplications", applicationDetails);
     ConfirmHandler(applicationDetails);
     setModal(false);
   };
 
   const handleCrossDelete = (e, app, state) => {
-    console.log("app", app, state);
+    //console.log("app", app, state);
     if (state == "granted") {
       let resultingGrantedEmployees = employeeGrantedApplications.filter(
         (temApp) => temApp._id != app._id
@@ -741,8 +738,8 @@ const ApplicationDetails = () => {
     setValue([]);
   };
   const handleSetValue = (values) => {
-    console.log(values);
-    console.log(employeeApplications);
+    //console.log(values);
+    //console.log(employeeApplications);
     setValue(values);
     values.map((val) => {
       var item = tableValues.find((item) => item.value === val.value);

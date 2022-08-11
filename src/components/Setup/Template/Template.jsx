@@ -44,7 +44,7 @@ const Template = () => {
     if (searchText != "") {
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -65,7 +65,7 @@ const Template = () => {
       } else setItems("");
       getAllApps();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -75,19 +75,19 @@ const Template = () => {
       let applicationResponse = await GetApplications();
       applicationResponse = await applicationResponse.json();
       if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
+        //console.log(applicationResponse.Result);
         setApps(applicationResponse.Result);
       } else setApps("");
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
   const searchTemplate = debounce(async (e) => {
     let val = e.target.value;
-    console.log(val);
+    //console.log(val);
     if (val !== "") {
       try {
         let response = await GetTemplateByName(val);
@@ -96,7 +96,7 @@ const Template = () => {
           setItems(response.Result);
         else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       try {
@@ -106,7 +106,7 @@ const Template = () => {
           setItems(response.Result);
         } else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   }, 500);
@@ -125,7 +125,7 @@ const Template = () => {
       response = await response.json();
       recordUpdateNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -141,7 +141,7 @@ const Template = () => {
       setItems(myArr);
       applicationDeleteNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -172,7 +172,7 @@ const Template = () => {
         setTemplateName("");
         getAllTemplates();
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       AddTemplateRequiredNotification();
@@ -205,7 +205,7 @@ const Template = () => {
   };
 
   const handleSubmitRecommendedApplications = () => {
-    console.log(resultArray);
+    //console.log(resultArray);
     setTemplateApplications(resultArray);
     setModal(false);
   };

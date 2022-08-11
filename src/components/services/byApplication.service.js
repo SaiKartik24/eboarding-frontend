@@ -1,15 +1,17 @@
 import { resolveOrigin } from "./configs";
+import { resolveUserMail } from "./configs";
 
 const host = resolveOrigin();
 
 export function GetApplicationName(name) {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/access/application/" + name, options);
+  return fetch(host + "/access/applicationname/" + name + "?manager=" + manager, options);
 }
 
 export function GetEmployeesByApplication(id) {
@@ -19,7 +21,7 @@ export function GetEmployeesByApplication(id) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/access/app/" + id, options);
+  return fetch(host + "/access/application/" + id, options);
 }
 
 export function GetApplicationById(id) {
@@ -40,5 +42,5 @@ export function ApplicationEmployeeAccess(reqData, id) {
     },
     body: JSON.stringify(reqData),
   };
-  return fetch(host + "/access/emp/" + id, options);
+  return fetch(host + "/access/employee/" + id, options);
 }

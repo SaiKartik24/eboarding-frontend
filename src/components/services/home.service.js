@@ -9,7 +9,7 @@ export function GetPendingApprovals(status) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/admin/request/" + status, options);
+  return fetch(host + "/dashboard/request/" + status, options);
 }
 
 export function GetPendingAccess(status) {
@@ -19,7 +19,7 @@ export function GetPendingAccess(status) {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/admin/approved/" + status, options);
+  return fetch(host + "/dashboard/approved/" + status, options);
 }
 
 export function GetPendingInactiveEmployees() {
@@ -29,7 +29,7 @@ export function GetPendingInactiveEmployees() {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/admin/emp/Inactive/app/granted", options);
+  return fetch(host + "/dashboard/emp/Inactive/app/granted", options);
 }
 
 export function GetPendingInactiveMangers() {
@@ -39,5 +39,5 @@ export function GetPendingInactiveMangers() {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/admin/manager/Inactive", options);
+  return fetch(host + "/dashboard/manager/Inactive", options);
 }

@@ -1,15 +1,17 @@
 import { resolveOrigin } from "./configs";
+import { resolveUserMail } from "./configs";
 
 const host = resolveOrigin();
 
 export function GetEmployeeByName(name) {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/employee/empName/" + name, options);
+  return fetch(host + "/employee/empName/" + name + "?manager=" + manager, options);
 }
 
 export function EmployeeApplicationAccess(reqData, id) {
@@ -20,5 +22,5 @@ export function EmployeeApplicationAccess(reqData, id) {
     },
     body: JSON.stringify(reqData),
   };
-  return fetch(host + "/access/app/" + id, options);
+  return fetch(host + "/access/application/" + id, options);
 }

@@ -26,7 +26,7 @@ const ApplicationModal = (props) => {
               size="large"
               className="form-control"
               id="name"
-              placeholder="Enter name"
+              placeholder="Enter Name"
               value={props.values.name}
               onChange={(e) => {
                 if (e.target.value != "") {
@@ -75,7 +75,7 @@ const ApplicationModal = (props) => {
         <div className="d-flex">
           <div className="form-group col-md-4">
             <label htmlFor="approveMail" className="font-weight-bold fontsize">
-              Approve Mail
+              Approver Mail
               <span className="ml-1" style={{ color: "red" }}>
                 *
               </span>
@@ -84,7 +84,7 @@ const ApplicationModal = (props) => {
               size="large"
               className="form-control"
               id="approveMail"
-              placeholder="Enter Approve Mail"
+              placeholder="Enter Approver Mail"
               value={props.values.approveMail}
               onChange={(e) => {
                 if (e.target.value != "") {

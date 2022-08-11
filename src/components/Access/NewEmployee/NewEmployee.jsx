@@ -36,7 +36,7 @@ const NewEmployee = () => {
   //       setItems(response.Result);
   //     } else setItems("");
   //   } catch (error) {
-  //     console.log("Error", error);
+  //     //console.log("Error", error);
   //   }
   // };
 
@@ -51,14 +51,14 @@ const NewEmployee = () => {
         let applicationResponse = await GetApplications();
         applicationResponse = await applicationResponse.json();
         if (applicationResponse.Result.length > 0) {
-          console.log(applicationResponse.Result);
+          //console.log(applicationResponse.Result);
           setApps(applicationResponse.Result);
         } else setApps("");
         setTimeout(() => {
           setPageLoader(false);
         }, 1000);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   };
@@ -80,7 +80,7 @@ const NewEmployee = () => {
           NoEmployeeNotification();
         }
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
     setItems([]);
@@ -105,7 +105,7 @@ const NewEmployee = () => {
           setItems([]);
         }
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       setEmployees([]);

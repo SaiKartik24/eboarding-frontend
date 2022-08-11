@@ -55,7 +55,7 @@ const EmployeeApplications = () => {
     if (searchTxt != "") {
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -77,18 +77,18 @@ const EmployeeApplications = () => {
           empResponse = await empResponse.json();
           setEmployeeName(empResponse.Result[0].username);
         } catch (error) {
-          console.log("Error", error);
+          //console.log("Error", error);
         }
         setEmployeeApplications(response.Result[0].applications);
       } else setEmployeeApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
   const getAllApps = async (tempApps) => {
-    console.log(tempApps);
+    //console.log(tempApps);
     apps.splice(0, apps.length);
     try {
       let applicationResponse = await GetApplications();
@@ -109,7 +109,7 @@ const EmployeeApplications = () => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -119,7 +119,7 @@ const EmployeeApplications = () => {
 
   const handleClose = () => {
     setModal(false);
-    // console.log(resultArray);
+    // //console.log(resultArray);
     // setEmployeeApplications(resultArray);
     setConfirmBtnLoader(false);
   };
@@ -147,7 +147,7 @@ const EmployeeApplications = () => {
         };
       }),
     };
-    console.log(applicationDetails);
+    //console.log(applicationDetails);
     try {
       let applicationResponse = await ShareApp(applicationDetails);
       applicationResponse = await applicationResponse.json();
@@ -161,7 +161,7 @@ const EmployeeApplications = () => {
       setValue([]);
       setTableValues([]);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -288,7 +288,7 @@ const EmployeeApplications = () => {
   };
 
   const handleSetValue = (values) => {
-    console.log(values);
+    //console.log(values);
     setValue(values);
     values.map((val) => {
       var item = tableValues.find((item) => item.value === val.value);

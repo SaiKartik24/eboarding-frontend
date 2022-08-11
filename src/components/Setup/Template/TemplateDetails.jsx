@@ -30,7 +30,7 @@ const TemplateDetails = () => {
     if (searchTxt != "") {
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -52,7 +52,7 @@ const TemplateDetails = () => {
       } else setTemplateApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -77,7 +77,7 @@ const TemplateDetails = () => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -87,14 +87,14 @@ const TemplateDetails = () => {
 
   const handleClose = () => {
     setModal(false);
-    // console.log(resultArray);
+    // //console.log(resultArray);
     // setTemplateApplications(resultArray);
     setConfirmBtnLoader(false);
   };
 
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
-    console.log(templateApplications);
+    //console.log(templateApplications);
     let applicationDetails = {
       _id: tempId,
       name: templateName,
@@ -114,11 +114,11 @@ const TemplateDetails = () => {
           setTemplateApplications(response.Result[0].applications);
         } else setTemplateApplications("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       setConfirmBtnLoader(false);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -147,7 +147,7 @@ const TemplateDetails = () => {
           resultArray.push(val);
         }
       });
-      // console.log(result);
+      // //console.log(result);
       // resultArray.splice(0, resultArray.length);
       // resultArray.push(...result);
       if (result.length > 0) setDisabled(false);
@@ -157,7 +157,7 @@ const TemplateDetails = () => {
 
   const handleSubmitRecommendedApplications = () => {
     // setTemplateApplications(resultArray);
-    // console.log(resultArray);
+    // //console.log(resultArray);
     resultArray.map((val) => {
       var item = templateApplications.find((item) => item._id === val._id);
       if (item == undefined) {
@@ -205,11 +205,11 @@ const TemplateDetails = () => {
           setTemplateApplications(response.Result[0].applications);
         } else setTemplateApplications("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       setConfirmBtnLoader(false);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -238,11 +238,11 @@ const TemplateDetails = () => {
             setTemplateApplications(response.Result[0].applications);
           } else setTemplateApplications("");
         } catch (error) {
-          console.log("Error", error);
+          //console.log("Error", error);
         }
         setConfirmBtnLoader(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   };

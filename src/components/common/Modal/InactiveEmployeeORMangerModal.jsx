@@ -36,7 +36,7 @@ const InactiveEmployeeORMangerModal = (props) => {
     <Modal
       title={
         props.from == "inactiveEmployees" ? (
-          <b>Inactive Employees with applications</b>
+          <b>Defective Access</b>
         ) : (
           <b>Employees with Inactive Manager</b>
         )

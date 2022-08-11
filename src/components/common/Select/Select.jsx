@@ -20,7 +20,7 @@ const SelectFun = (props) => {
       if (e == "Inactive") props.setUpdateEndDate(true);
       else props.setUpdateEndDate(false);
     }
-    console.log(props.field);
+    //console.log(props.field);
   };
   return (
     <Select

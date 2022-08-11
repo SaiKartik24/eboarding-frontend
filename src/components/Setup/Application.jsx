@@ -62,14 +62,14 @@ const Application = () => {
       let applicationResponse = await GetApplications();
       applicationResponse = await applicationResponse.json();
       if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
+        //console.log(applicationResponse.Result);
         setItems(applicationResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -83,7 +83,7 @@ const Application = () => {
           setItems(applicationResponse.Result);
         else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       try {
@@ -93,7 +93,7 @@ const Application = () => {
           setItems(applicationResponse.Result);
         else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   }, 500);
@@ -133,7 +133,7 @@ const Application = () => {
   };
 
   const edit = (record) => {
-    console.log("record", record);
+    //console.log("record", record);
     setEditingKey(record._id);
   };
 
@@ -148,7 +148,7 @@ const Application = () => {
       response = await response.json();
       recordUpdateNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -164,7 +164,7 @@ const Application = () => {
       setItems(myArr);
       applicationDeleteNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -408,7 +408,7 @@ const Application = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       name != "" &&
@@ -430,7 +430,7 @@ const Application = () => {
         applicationResponse = await applicationResponse.json();
         //   getAllApplications();
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       try {
         let response = await AddApplication(excelData);
@@ -440,7 +440,7 @@ const Application = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       name == "" &&
@@ -457,7 +457,7 @@ const Application = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       AddApplicationRequiredNotification();

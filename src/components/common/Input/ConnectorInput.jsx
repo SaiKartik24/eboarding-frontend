@@ -22,9 +22,9 @@ const ConnectorInput = (props) => {
     } else if (props.type === "url") {
       props.field.url = e;
     } else {
-      console.log(e);
+      //console.log(e);
     }
-    console.log(props.field);
+    //console.log(props.field);
   };
   return (
     <Input

@@ -61,14 +61,14 @@ const Connectors = () => {
       let applicationResponse = await GetConnectors();
       applicationResponse = await applicationResponse.json();
       if (applicationResponse.Result.length > 0) {
-        console.log(applicationResponse.Result);
+        //console.log(applicationResponse.Result);
         setItems(applicationResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -82,7 +82,7 @@ const Connectors = () => {
           setItems(applicationResponse.Result);
         else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       try {
@@ -92,7 +92,7 @@ const Connectors = () => {
           setItems(applicationResponse.Result);
         else setItems("");
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     }
   }, 500);
@@ -127,7 +127,7 @@ const Connectors = () => {
   };
 
   const edit = (record) => {
-    console.log("record", record);
+    //console.log("record", record);
     setEditingKey(record._id);
   };
 
@@ -142,7 +142,7 @@ const Connectors = () => {
       response = await response.json();
       recordUpdateNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -158,7 +158,7 @@ const Connectors = () => {
       setItems(myArr);
       connectorDeleteNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -401,7 +401,7 @@ const Connectors = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       name != "" &&
@@ -423,7 +423,7 @@ const Connectors = () => {
         applicationResponse = await applicationResponse.json();
         //   getAllApplications();
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       try {
         let response = await AddConnector(excelData);
@@ -433,7 +433,7 @@ const Connectors = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else if (
       name == "" &&
@@ -450,7 +450,7 @@ const Connectors = () => {
         setConfirmBtnLoader(false);
         setModal(false);
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
     } else {
       AddApplicationRequiredNotification();

@@ -10,6 +10,7 @@
     "bootstrap": "4.3.1",
     "bootstrap-icons": "^1.8.1",
     "crypto-js": "4.1.1",
+    "env-cmd": "^10.1.0",
     "jquery": "3.6.0",
     "lodash": "4.17.21",
     "markdown-to-text": "^0.1.1",
@@ -28,6 +29,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "env-cmd -f .env.dev react-scripts start",
+    "prod": "env-cmd -f .env.prod react-scripts start",
     "build": "CI=false && react-scripts build",
     "build-dev": "react-scripts build",
     "test": "react-scripts test",

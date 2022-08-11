@@ -15,6 +15,8 @@ import Connectors from "../Setup/Connectors/Connectors";
 import Employee from "../Setup/Employee";
 import Template from "../Setup/Template/Template";
 import TemplateDetails from "../Setup/Template/TemplateDetails";
+import PrivateRoute from "./privateRoute";
+import PublicRoute from "./publicRoute";
 
 class Routing extends Component {
   render() {

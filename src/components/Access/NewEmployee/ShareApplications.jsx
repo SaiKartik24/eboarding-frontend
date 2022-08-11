@@ -51,7 +51,7 @@ const ShareApplications = () => {
     if (searchTxt != "") {
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchTxt.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -73,7 +73,7 @@ const ShareApplications = () => {
       } else setTemplateApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -98,7 +98,7 @@ const ShareApplications = () => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -108,7 +108,7 @@ const ShareApplications = () => {
 
   const handleClose = () => {
     setModal(false);
-    // console.log(resultArray);
+    // //console.log(resultArray);
     // setTemplateApplications(resultArray);
     setConfirmBtnLoader(false);
   };
@@ -149,7 +149,7 @@ const ShareApplications = () => {
       setValue([]);
       setTableValues([]);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -276,7 +276,7 @@ const ShareApplications = () => {
   };
 
   const handleSetValue = (values) => {
-    console.log(values);
+    //console.log(values);
     setValue(values);
     values.map((val) => {
       var item = tableValues.find((item) => item.value === val.value);

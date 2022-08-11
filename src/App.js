@@ -1,5 +1,5 @@
 import React from "react";
-import Routing from "./Components/Router/Router";
+import Routing from "./components/Router/Router";
 import './App.css'
 
 function App(props) {

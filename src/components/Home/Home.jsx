@@ -61,7 +61,7 @@ const Home = () => {
     useState(0);
 
   useEffect(() => {
-    console.log("entered");
+    //console.log("entered");
     appLoaderFunction();
     if (userData.lastlogindate == "") {
       setModal(true);
@@ -78,7 +78,7 @@ const Home = () => {
         setPendingApprovals(pendingApprovalResponse.Result.data);
         getPendingAccess();
       } catch (error) {
-        console.log("Error", error);
+        //console.log("Error", error);
       }
       setTimeout(() => {
         setAppLoader(false);
@@ -94,7 +94,7 @@ const Home = () => {
       setPendingAccess(pendingAccessResponse.Result.data);
       getPendingInactiveEmployees();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -109,7 +109,7 @@ const Home = () => {
       setPendingInactiveEmployees(pendingInactiveEmployeeResponse.Result.data);
       getPendingInactiveMangers();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -126,7 +126,7 @@ const Home = () => {
       setPageLoader(false);
       // }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -172,7 +172,7 @@ const Home = () => {
           ProfileUpdateNotification();
         }, 1000);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     } else {
       AddEmployeeRequiredNotification();
@@ -203,7 +203,7 @@ const Home = () => {
 
   const onChangeEndDate = (date, dateString) => {
     setEndDate(dateString);
-    // console.log(date, dateString);
+    // //console.log(date, dateString);
   };
 
   const columns = [
@@ -302,7 +302,7 @@ const Home = () => {
                                 <div className="card bot-tile shadow-sm bot">
                                   <div className="chooseSty mt-4 ">
                                     <div className="mainTitle">
-                                      Inactive Employees with applications
+                                      Defective Access
                                     </div>
                                     <div className="divCenter">
                                       <div

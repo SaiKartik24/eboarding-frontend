@@ -8,7 +8,7 @@ export const ConnectorSelect = (props) => {
     if (props.type === "type") {
       props.field.type = e;
     } else {
-      console.log(e);
+      //console.log(e);
     }
   };
   return (
@@ -30,7 +30,7 @@ export const ConnectorEnvSelect = (props) => {
     if (props.type === "env") {
       props.field.env = e;
     } else {
-      console.log(e);
+      //console.log(e);
     }
   };
   return (

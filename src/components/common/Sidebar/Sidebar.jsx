@@ -98,12 +98,15 @@ const Sidebar = () => {
   };
 
   return (
-    <section
+    <div>
+    {userData.role && userData.role != "Team Member" ? (
+    <>
+      <section
       className="sidebar"
       onMouseEnter={mouseInEventHandler}
       onMouseLeave={mouseOutEventHandler}
-    >
-      <Sider
+      >
+        <Sider
         trigger={null}
         theme="light"
         collapsible
@@ -124,7 +127,7 @@ const Sidebar = () => {
           }
         >
           <div className={collapsed ? "subBlockCollapsed" : "w-100"}>
-            <Link to={"/itaccess"} className="linkSty">
+              <Link to={"/itaccess"} className="linkSty">
               <div
                 className={
                   collapsed
@@ -145,9 +148,7 @@ const Sidebar = () => {
                   </div>
                 )}
               </div>
-            </Link>
-            {userData.role && userData.role != "Team Member" ? (
-              <>
+            </Link> 
                 <div
                   className={
                     collapsed ? "subTitle mt-4 d-flex" : "subTitle mt-3 d-flex"
@@ -265,23 +266,23 @@ const Sidebar = () => {
                         //   navigateToNext("/itaccess/setup/employee")
                         // }
                       >
+                        <Menu.Item
+                          key={"employee"}
+                          className={
+                            collapsed ? "d-none" : "submenu-ItemStyle"
+                          }
+                        >
+                          <Link
+                            to={"/itaccess/setup/employee"}
+                            className="text-decoration-none"
+                          >
+                            Employee
+                          </Link>
+                        </Menu.Item>
                         {userData.role &&
                         (userData.role === "administrator" ||
-                          userData.role === "Administrator") ? (
+                          userData.role === "Administrator" ) ? (
                           <>
-                            <Menu.Item
-                              key={"employee"}
-                              className={
-                                collapsed ? "d-none" : "submenu-ItemStyle"
-                              }
-                            >
-                              <Link
-                                to={"/itaccess/setup/employee"}
-                                className="text-decoration-none"
-                              >
-                                Employee
-                              </Link>
-                            </Menu.Item>
                             <Menu.Item
                               key={"application"}
                               className={
@@ -339,12 +340,12 @@ const Sidebar = () => {
                     </Menu>
                   )}
                 </div>
-              </>
-            ) : null}
           </div>
         </div>
-      </Sider>
+    </Sider>
     </section>
+    </>
+    ) : null}</div>
   );
 };
 

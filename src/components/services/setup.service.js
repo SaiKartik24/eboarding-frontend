@@ -1,15 +1,17 @@
 import { resolveOrigin } from "./configs";
+import { resolveUserMail } from "./configs";
 
 const host = resolveOrigin();
 
 export function GetEmployees() {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/employee", options);
+  return fetch(host + "/employee?manager=" + manager, options);
 }
 
 export function AddEmployee(reqData) {
@@ -46,11 +48,12 @@ export function DeleteEmployee(record, _id) {
 }
 
 export function GetEmployeeByMail(mail) {
+  var manager = resolveUserMail();
   var options = {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   };
-  return fetch(host + "/employee/search/" + mail, options);
+  return fetch(host + "/employee/search/" + mail + "?manager=" + manager, options);
 }

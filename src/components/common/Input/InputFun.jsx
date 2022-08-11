@@ -22,9 +22,9 @@ const InputFun = (props) => {
     } else if (props.type === "managermail") {
       props.field.managermail = e;
     } else {
-      console.log(e);
+      //console.log(e);
     }
-    console.log(props.field);
+    //console.log(props.field);
   };
   return (
     <Input

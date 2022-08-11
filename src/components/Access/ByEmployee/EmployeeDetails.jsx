@@ -86,10 +86,10 @@ const EmployeeDetails = () => {
 
   const searchFilter = (searchText) => {
     if (searchText != "") {
-      console.log(apps);
+      //console.log(apps);
       let filteredApps = apps.filter((val) => {
         if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -103,7 +103,7 @@ const EmployeeDetails = () => {
     if (searchText != "") {
       let filteredApps = employeeGrantedApplications.filter((val) => {
         if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -117,7 +117,7 @@ const EmployeeDetails = () => {
     if (searchText != "") {
       let filteredApps = employeeRequestedApplications.filter((val) => {
         if (val.name.toLowerCase().includes(searchText.toLowerCase())) {
-          console.log(val);
+          //console.log(val);
           return val;
         }
       });
@@ -160,7 +160,7 @@ const EmployeeDetails = () => {
           empResponse = await empResponse.json();
           setEmployeeDetails(empResponse.Result[0]);
         } catch (error) {
-          console.log("Error", error);
+          //console.log("Error", error);
         }
         setEmployeeApplications(response.Result[0].applications);
         response.Result[0].applications.map((app) => {
@@ -176,7 +176,7 @@ const EmployeeDetails = () => {
             employeeApprovedApplications.push(app);
             searchApprovedApps.push(app);
           } else {
-            console.log("app", app);
+            //console.log("app", app);
           }
         });
         employeeRequestedApplications.map((item) => (item.checked = false));
@@ -186,7 +186,7 @@ const EmployeeDetails = () => {
       } else setEmployeeApplications("");
       getAllApps(response.Result[0].applications);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -211,7 +211,7 @@ const EmployeeDetails = () => {
         setPageLoader(false);
       }, 1000);
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -225,7 +225,7 @@ const EmployeeDetails = () => {
       response = await response.json();
       recordUpdateNotification();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -289,7 +289,7 @@ const EmployeeDetails = () => {
       setTableValues([]);
       getEmployeeByMailId();
     } catch (error) {
-      console.log("Error", error);
+      //console.log("Error", error);
     }
   };
 
@@ -362,7 +362,7 @@ const EmployeeDetails = () => {
 
   const onGrantedItemChecked = (item, e, mode) => {
     if (mode == "selectOne") {
-      console.log(item);
+      //console.log(item);
       let res = employeeGrantedApplications.map((appData) => {
         if (appData._id === item._id) {
           appData.checked = e.target.checked;
@@ -458,7 +458,7 @@ const EmployeeDetails = () => {
       setChecked(check);
       resultArray.splice(0, resultArray.length);
       resultArray.push(...result);
-      console.log(resultArray);
+      //console.log(resultArray);
       if (result.length > 0) setDisabled(false);
       else setDisabled(true);
     }
@@ -487,7 +487,7 @@ const EmployeeDetails = () => {
         };
       }),
     };
-    console.log(applicationDetails);
+    //console.log(applicationDetails);
     setModal(false);
     ConfirmHandler(applicationDetails);
     setModal(false);
@@ -514,7 +514,7 @@ const EmployeeDetails = () => {
         };
       }),
     };
-    // console.log("handleSubmitGrantApplications", applicationDetails);
+    // //console.log("handleSubmitGrantApplications", applicationDetails);
     setGrantModal(false);
     ConfirmHandler(applicationDetails);
     setModal(false);
@@ -551,7 +551,7 @@ const EmployeeDetails = () => {
         };
       }),
     };
-    // console.log("handleSubmitApproveApplications", applicationDetails);
+    // //console.log("handleSubmitApproveApplications", applicationDetails);
     setApproveModal(false);
     ConfirmHandler(applicationDetails);
     setModal(false);

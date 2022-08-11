@@ -24,7 +24,7 @@ const UserProfile = (props) => {
   });
   const ProfileImage = () => {
     let profileName = data.fullname && data.fullname.split(" ");
-    // console.log(data)
+    // //console.log(data)
     if (profileName.length > 1) {
       profileName = profileName[0].charAt(0) + profileName[1].charAt(0);
     } else {
@@ -55,14 +55,14 @@ const UserProfile = (props) => {
   };
 
   const logOut = async () => {
-    console.log(props.userData);
+    //console.log(props.userData);
     let currentTimeSatamp = Date(Date.now().toString);
     props.userData.lastlogindate = currentTimeSatamp;
     try {
       let response = await UpdateEmployee(props.userData, props.userData._id);
       response = await response.json();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
