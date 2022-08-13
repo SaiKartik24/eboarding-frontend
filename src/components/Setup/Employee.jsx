@@ -61,6 +61,7 @@ const Employee = (props) => {
   const [submitExcel, setSubmitExcel] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [updateEndDate, setUpdateEndDate] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
   const [exportData, setExportData] = useState([]);
 
   const handleClose = () => {
@@ -144,6 +145,7 @@ const Employee = (props) => {
             format={dateFormatList}
             onChange={(val) => {
               record.enddate = val.format("MM/DD/YYYY");
+              setUpdateStatus(true);
             }}
           />
         )
@@ -264,6 +266,9 @@ const Employee = (props) => {
     if (updateEndDate) {
       const formatDate = moment().format("MM/DD/YYYY");
       record.enddate = formatDate;
+    }
+    if (updateStatus) {
+      record.status = "Inactive";
     }
     try {
       let response = await UpdateEmployee(record, record._id);
