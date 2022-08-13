@@ -53,16 +53,17 @@ const Connectors = () => {
   const [password, setPassword] = useState("");
   const [form] = Form.useForm();
   const [passwordShown, setPasswordShown] = useState(false);
+  const [exportData, setExportData] = useState([]);
 
-  const getAllApplications = async () => {
+  const getAllConnectors = async () => {
     setPageLoader(true);
     items.splice(0, items.length);
     try {
-      let applicationResponse = await GetConnectors();
-      applicationResponse = await applicationResponse.json();
-      if (applicationResponse.Result.length > 0) {
-        //console.log(applicationResponse.Result);
-        setItems(applicationResponse.Result);
+      let connectorResponse = await GetConnectors();
+      connectorResponse = await connectorResponse.json();
+      if (connectorResponse.Result.length > 0) {
+        setItems(connectorResponse.Result);
+        setExportData(connectorResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
@@ -98,7 +99,7 @@ const Connectors = () => {
   }, 500);
 
   useEffect(() => {
-    getAllApplications();
+    getAllConnectors();
   }, []);
 
   const readExcel = (file) => {
@@ -150,7 +151,7 @@ const Connectors = () => {
     try {
       let response = await DeleteConnector(record, record._id);
       response = await response.json();
-      // getAllApplications();
+      // getAllConnectors();
       let idToRemove = record._id;
       let myArr = items.filter(function (item) {
         return item._id != idToRemove;
@@ -396,7 +397,7 @@ const Connectors = () => {
       try {
         let applicationResponse = await AddConnector(applicationDetails);
         applicationResponse = await applicationResponse.json();
-        getAllApplications();
+        getAllConnectors();
         handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
@@ -421,14 +422,14 @@ const Connectors = () => {
       try {
         let applicationResponse = await AddConnector(applicationDetails);
         applicationResponse = await applicationResponse.json();
-        //   getAllApplications();
+        //   getAllConnectors();
       } catch (error) {
         //console.log("Error", error);
       }
       try {
         let response = await AddConnector(excelData);
         response = await response.json();
-        getAllApplications();
+        getAllConnectors();
         handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
@@ -445,7 +446,7 @@ const Connectors = () => {
       try {
         let response = await AddConnector(excelData);
         response = await response.json();
-        getAllApplications();
+        getAllConnectors();
         handleClose();
         setConfirmBtnLoader(false);
         setModal(false);
@@ -461,6 +462,13 @@ const Connectors = () => {
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
   };
+
+    const handleExport = () => {
+      var wb = XLSX.utils.book_new(),
+        ws = XLSX.utils.json_to_sheet(exportData);
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, "ITAccess_Connectors.xlsx");
+    };
 
   return (
     <div>
@@ -490,10 +498,17 @@ const Connectors = () => {
                         />
                         <Button
                           type="primary"
-                          className="buttonStyles"
+                          className="buttonStyles mr-3"
                           onClick={() => setModal(true)}
                         >
                           Add
+                        </Button>
+                        <Button
+                          type="primary"
+                          className="buttonStyles"
+                          onClick={handleExport}
+                        >
+                          Export
                         </Button>
                       </div>
                     </div>

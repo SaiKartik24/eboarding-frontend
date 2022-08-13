@@ -54,6 +54,7 @@ const Application = () => {
   const [submitExcel, setSubmitExcel] = useState(false);
   const [connectorType, setconnectorType] = useState("");
   const [form] = Form.useForm();
+  const [exportData, setExportData] = useState([]);
 
   const getAllApplications = async () => {
     setPageLoader(true);
@@ -62,8 +63,8 @@ const Application = () => {
       let applicationResponse = await GetApplications();
       applicationResponse = await applicationResponse.json();
       if (applicationResponse.Result.length > 0) {
-        //console.log(applicationResponse.Result);
         setItems(applicationResponse.Result);
+        setExportData(applicationResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
@@ -465,6 +466,13 @@ const Application = () => {
     }
   };
 
+    const handleExport = () => {
+      var wb = XLSX.utils.book_new(),
+        ws = XLSX.utils.json_to_sheet(exportData);
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, "ITAccess_Application.xlsx");
+    };
+
   return (
     <div>
       <section className="application h-100">
@@ -482,23 +490,30 @@ const Application = () => {
                     <div className="d-flex mb-4 justify-content-between">
                       <div style={{ fontSize: "1rem", color: "#00aae7" }}>
                         Application
-                        </div>
-                        <div className="d-flex">
-                      <Search
-                        allowClear
-                        // size="large"
-                        onChange={(e) => searchApplication(e)}
-                        placeholder="Search for application"
-                        className="mr-3"
-                      />
-                      <Button
-                        type="primary"
-                        className="buttonStyles"
-                        onClick={() => setModal(true)}
-                      >
-                        Add
-                          </Button>
-                          </div>
+                      </div>
+                      <div className="d-flex">
+                        <Search
+                          allowClear
+                          // size="large"
+                          onChange={(e) => searchApplication(e)}
+                          placeholder="Search for application"
+                          className="mr-3"
+                        />
+                        <Button
+                          type="primary"
+                          className="buttonStyles mr-3"
+                          onClick={() => setModal(true)}
+                        >
+                          Add
+                        </Button>
+                        <Button
+                          type="primary"
+                          className="buttonStyles"
+                          onClick={handleExport}
+                        >
+                          Export
+                        </Button>
+                      </div>
                     </div>
                     <Form form={form} component={false}>
                       <Table

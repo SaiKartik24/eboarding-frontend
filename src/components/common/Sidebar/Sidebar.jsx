@@ -102,7 +102,7 @@ const Sidebar = () => {
     {userData.role && userData.role != "Team Member" ? (
     <>
       <section
-      className="sidebar"
+      className="sidebar h-100"
       onMouseEnter={mouseInEventHandler}
       onMouseLeave={mouseOutEventHandler}
       >

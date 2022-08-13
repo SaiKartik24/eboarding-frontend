@@ -61,6 +61,7 @@ const Employee = (props) => {
   const [submitExcel, setSubmitExcel] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [updateEndDate, setUpdateEndDate] = useState(false);
+  const [exportData, setExportData] = useState([]);
 
   const handleClose = () => {
     setModal(false);
@@ -237,6 +238,7 @@ const Employee = (props) => {
       employeeResponse = await employeeResponse.json();
       if (employeeResponse.Result.length > 0) {
         setItems(employeeResponse.Result);
+        setExportData(employeeResponse.Result);
       } else setItems("");
       setTimeout(() => {
         setPageLoader(false);
@@ -596,6 +598,13 @@ const Employee = (props) => {
     }
   }, 500);
 
+  const handleExport = () => {
+    var wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(exportData);
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, "ITAccess_Employee.xlsx");
+  }
+
   return (
     <section className="setup h-100">
       <div className="h-100">
@@ -610,9 +619,7 @@ const Employee = (props) => {
               <div className="content-tabs">
                 <div className="content  active-content d-flex flex-column">
                   <div className="d-flex mb-4 justify-content-between">
-                    <div
-                      style={{ fontSize: "1rem", color: "#00aae7" }}
-                    >
+                    <div style={{ fontSize: "1rem", color: "#00aae7" }}>
                       Employee
                     </div>
                     <div className="d-flex">
@@ -624,10 +631,17 @@ const Employee = (props) => {
                       />
                       <Button
                         type="primary"
-                        className="buttonStyles"
+                        className="buttonStyles mr-3"
                         onClick={() => setModal(true)}
                       >
                         Add
+                      </Button>
+                      <Button
+                        type="primary"
+                        className="buttonStyles"
+                        onClick={handleExport}
+                      >
+                        Export
                       </Button>
                     </div>
                   </div>
