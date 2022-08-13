@@ -49,4 +49,18 @@
   .profFont {
     font-weight: 900;
   }
+  .pass{
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+  }
+  .passInput{
+    border: none !important;
+  }
+  .form-control:focus{
+    box-shadow: none !important;
+  }
+  .password{
+    cursor: pointer;
+    margin-top: 0.7rem;
+  }
 }

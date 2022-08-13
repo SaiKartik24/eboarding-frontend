@@ -11,6 +11,9 @@ const Profile = (props) => {
   const data = resolveUserData();
   const [profileImag, setProfileImg] = useState("");
   const [userInfoLoader, setUserInfo] = useState(false);
+  const [validPass, setValidPass] = useState(true);
+  const [passwordShown, setPasswordShown] = useState(false);
+  const [password, setPassword] = useState(data.password);
   let values = {
     empType: data.employmenttype,
     enddate: data.enddate,
@@ -55,6 +58,27 @@ const Profile = (props) => {
         </span>
       </div>
     );
+  };
+
+  const togglePassword = () => {
+    setPasswordShown(!passwordShown);
+  };
+
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.code === "Enter") {
+      console.log(password);
+    }
+  };
+
+  const handlePass = (e) => {
+    let val = e.target.value;
+    if (val.length <= 0) {
+      setValidPass(false);
+      setPassword(val);
+    } else {
+      setValidPass(true);
+      setPassword(e.target.value);
+    }
   };
 
   return (
@@ -214,6 +238,54 @@ const Profile = (props) => {
                           <Option value="Active">Active</Option>
                           <Option value="Inactive">Inactive</Option>
                         </Select>
+                      </div>
+                      <div className="form-group col-md-4 d-flex flex-column">
+                        <label
+                          htmlFor="status"
+                          className="font-weight-bold fontsize"
+                        >
+                          Password
+                          {/* <span className="ml-1" style={{ color: "red" }}>
+                  *
+                </span> */}
+                        </label>
+                        <div
+                          className={
+                            validPass
+                              ? "d-flex mcp-light-gray pass"
+                              : "invalid d-flex mcp-light-gray pass"
+                          }
+                        >
+                          <Input
+                            type={passwordShown ? "text" : "password"}
+                            className="form-control form-rm passInput"
+                            id="floatingPassword2"
+                            placeholder="Password"
+                            value={password}
+                            onChange={handlePass}
+                            onKeyDown={keyDownHandler}
+                          />
+                          {passwordShown ? (
+                            <i
+                              className="fas fa-eye-slash password icon-sty mr-2"
+                              onClick={togglePassword}
+                            ></i>
+                          ) : (
+                            <i
+                              className="fas fa-eye icon-sty password mr-2"
+                              onClick={togglePassword}
+                            ></i>
+                          )}
+                        </div>
+                        <div
+                          className={
+                            validPass
+                              ? ""
+                              : "ml-0 mb-0 mcp-white position-absolute error"
+                          }
+                        >
+                          {validPass ? null : "Password is required!"}
+                        </div>
                       </div>
                     </div>
                   </form>
