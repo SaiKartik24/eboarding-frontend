@@ -267,15 +267,17 @@ const EmployeeApplications = () => {
   ];
 
   async function getUsers(email) {
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{3})+$/;
     if (email.match(mailformat)) {
       let userResponse = await GetEmployeeByMail(email);
       userResponse = await userResponse.json();
-      let usersData = userResponse.Result.map((user) => ({
-        label: user.username,
-        value: user.mail,
-      }));
-      return usersData;
+      if (userResponse.Result != null) {
+        let usersData = userResponse.Result.map((user) => ({
+          label: user.username,
+          value: user.mail,
+        }));
+        return usersData;
+      } else return [{ label: userResponse.Result }];
     }
   }
   var userEmails = [];

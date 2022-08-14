@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Select } from "antd";
+import { GetConnectorByName } from "../../services/connectors.service";
 const { Option } = Select;
 
 export const ApplicationSelect = (props) => {
@@ -46,3 +47,56 @@ export const ApplicationEnvSelect = (props) => {
     </Select>
   );
 };
+
+
+export const ApplicationConnectorSelect = (props) => {
+  const [items, setItems] = useState([]);
+  var defaultVal = props.type === "connectorType"
+      ? props.field.connectorType : null;
+
+  const onChange = (value) => {
+    props.field.connectorType = value;
+};
+
+const onSearch = async(value) => {
+  console.log('search:', value);
+  try {
+    if (value !== "") {
+      try {
+        let applicationResponse = await GetConnectorByName(value);
+        applicationResponse = await applicationResponse.json();
+        if (applicationResponse.Result && applicationResponse.Result.length > 0)
+          setItems(applicationResponse.Result);
+        else {
+
+          setItems("");
+        }
+      } catch (error) {
+        //console.log("Error", error);
+      }
+    }
+  } catch (error) {
+    
+  }
+};
+  
+  return (
+    <Select
+      showSearch
+      placeholder="Select a Connector"
+      optionFilterProp="children"
+      value={defaultVal}
+      onChange={onChange}
+      onSearch={onSearch}
+      filterOption={(input, option) =>
+        option.children.toLowerCase().includes(input.toLowerCase())
+      }
+    >
+      {items.length > 0 &&
+        items.map((item) => {
+          return <Option value={item.name}>{item.name}</Option>;
+        })}
+    </Select>
+  );
+};
+

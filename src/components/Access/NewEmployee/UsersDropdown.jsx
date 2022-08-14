@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
+import { NoEmployeeNotifications } from "../../common/Notifications/AlertNotifications";
 const { Option } = Select;
 const UsersDropdown = (props) => {
   let getUsers = props.getUsers;
@@ -15,20 +16,29 @@ const UsersDropdown = (props) => {
         fetchRef.current += 1;
         const fetchId = fetchRef.current;
         setOptions([]);
-        setFetching(true);
+        // setFetching(true);
         fetchOptions(value).then((newOptions) => {
           if (fetchId !== fetchRef.current) {
             // for fetch callback order
             return;
           }
-
-          setOptions(newOptions);
-          setFetching(false);
+          if (newOptions != undefined) {
+            let userNotExists = newOptions.some((user) => user.label == null)
+            if (userNotExists) {
+              NoEmployeeNotifications();
+              setFetching(false);
+            }
+            else {
+              setFetching(false);
+              setOptions(newOptions);  
+            }
+          }
         });
       };
 
-      return debounce(loadOptions, debounceTimeout);
-    }, [fetchOptions, debounceTimeout]);
+      // return debounce(loadOptions, debounceTimeout);
+      return loadOptions;
+    }, [fetchOptions]);
     return (
       <div className="d-flex">
         <Select

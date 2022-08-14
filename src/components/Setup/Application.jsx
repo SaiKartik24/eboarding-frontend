@@ -23,6 +23,7 @@ import {
   UpdateApplication,
 } from "../services/application.service";
 import {
+  ApplicationConnectorSelect,
   ApplicationEnvSelect,
   ApplicationSelect,
 } from "../common/Select/ApplicationSelect";
@@ -195,7 +196,7 @@ const Application = () => {
       ) : inputType === "teamMail" ? (
         <ApplicationInput field={record} type="teamMail" />
       ) : inputType === "connectorType" ? (
-        <ApplicationInput field={record} type="connectorType" />
+        <ApplicationConnectorSelect field={record} type="connectorType" />
       ) : (
         <Input />
       );
