@@ -25,6 +25,7 @@ import {
 import UsersDropdown from "./UsersDropdown";
 import { GetEmployeeByMail } from "../../services/setup.service";
 import { ShareTemplateNotification } from "../../common/Notifications/ShareNotifications";
+import { AddAtleastOneApplicationNotification, AddAtleastOneEmployeeNotification } from "../../common/Notifications/NewEmployeeNotifications";
 
 const { Search } = Input;
 
@@ -127,42 +128,52 @@ const EmployeeApplications = () => {
   const ConfirmHandler = async () => {
     setConfirmBtnLoader(true);
     let currentTimeSatamp = Date(Date.now().toString);
-    let applicationDetails = {
-      empMail: tableData.map((val) => {
-        return val.mail;
-      }),
-      applications: employeeApplications.map((app) => {
-        return {
-          _id: app._id,
-          name: app.name,
-          status: "requested",
-          requestState: true,
-          requestedDate: currentTimeSatamp,
-          approveState: false,
-          approvedDate: "",
-          grantState: false,
-          grantedDate: "",
-          revokeState: false,
-          revokedDate: "",
+    if (tableData.length > 0) {
+      if (employeeApplications.length > 0) {
+        let applicationDetails = {
+          empMail: tableData.map((val) => {
+            return val.mail;
+          }),
+          applications: employeeApplications.map((app) => {
+            return {
+              _id: app._id,
+              name: app.name,
+              status: "requested",
+              requestState: true,
+              requestedDate: currentTimeSatamp,
+              approveState: false,
+              approvedDate: "",
+              grantState: false,
+              grantedDate: "",
+              revokeState: false,
+              revokedDate: "",
+            };
+          }),
         };
-      }),
-    };
-    //console.log(applicationDetails);
-    try {
-      let applicationResponse = await ShareApp(applicationDetails);
-      applicationResponse = await applicationResponse.json();
-      ShareTemplateNotification();
-      setConfirmBtnLoader(false);
-      apps.map((appData) => {
-        return (appData.checked = false);
-      });
-      setChecked(false);
-      setTableData([]);
-      setValue([]);
-      setTableValues([]);
-    } catch (error) {
-      //console.log("Error", error);
+        //console.log(applicationDetails);
+        try {
+          let applicationResponse = await ShareApp(applicationDetails);
+          applicationResponse = await applicationResponse.json();
+          ShareTemplateNotification();
+          setConfirmBtnLoader(false);
+          apps.map((appData) => {
+            return (appData.checked = false);
+          });
+          setChecked(false);
+          setTableData([]);
+          setValue([]);
+          setTableValues([]);
+        } catch (error) {
+          //console.log("Error", error);
+        }
+      }
+      else {
+        AddAtleastOneApplicationNotification();
+      }
+    } else {
+      AddAtleastOneEmployeeNotification();
     }
+    setConfirmBtnLoader(false);
   };
 
   const openModal = async () => {
