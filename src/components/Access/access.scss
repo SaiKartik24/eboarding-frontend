@@ -277,6 +277,12 @@
     display: none;
   }
 }
+.ant-collapse-content-box{
+    display: flow-root !important;
+  }
+  .ant-collapse-content > .ant-collapse-content-box{
+    padding: 20px 0px !important;
+  }
 }
 
 .byEmployeeDetails {
@@ -295,5 +301,8 @@
   }
   .profFont {
     font-weight: 900 !important;
+  }
+    .ant-select-selection-item-remove .anticon {
+    display: none;
   }
 }
