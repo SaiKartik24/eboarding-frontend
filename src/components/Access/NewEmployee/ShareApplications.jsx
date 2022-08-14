@@ -334,11 +334,19 @@ setConfirmBtnLoader(false);
                           </Tooltip>
                         </Link>
                         <div className="ml-3 text-capitalize tname">
-                          {templateName}
+                          Back
+                            {/* {templateName} */}
                         </div>
                       </div>
+
+                        <div className="mt-3 referenceSty mb-4">
+                          <div className="mainTitle">Reference</div>
+                          <div className="d-flex justify-content-center mt-3 mb-4">
+                            Template: <b className="ml-3">{templateName}</b>
+                          </div>
+                        </div>
                       <div className="mt-3 chooseStyEmp mb-4">
-                        <div className="mainTitle">Employee Information</div>
+                        <div className="mainTitle">New Employees</div>
                         <div className="d-flex justify-content-around mb-4 mt-3">
                           <UsersDropdown
                             getUsers={getUsers}
