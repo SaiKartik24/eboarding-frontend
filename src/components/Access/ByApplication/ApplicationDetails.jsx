@@ -12,6 +12,7 @@ import {
   Table,
   Typography,
   DatePicker,
+  Collapse,
 } from "antd";
 import { debounce, indexOf } from "lodash";
 import { SaveTemplateNotification } from "../../common/Notifications/SaveNotifications";
@@ -44,6 +45,7 @@ import { GetApplications } from "../../services/application.service";
 const { Search } = Input;
 const { Content } = Layout;
 const { Option } = Select;
+const { Panel } = Collapse;
 
 const ApplicationDetails = () => {
   const { applicationId } = useParams();
@@ -888,7 +890,7 @@ const ApplicationDetails = () => {
                       <div className="mt-5 empDetailsSty mb-4">
                         <div className="mainTitle">Employees</div>
                         <div className="row flex-column ml-auto mr-auto">
-                          <div className="mr-5 mt-3 mb-1">
+                          <div className="mr-5 mt-3 mb-4">
                             <Button
                               type="primary"
                               className="float-right"
@@ -898,109 +900,121 @@ const ApplicationDetails = () => {
                               Add
                             </Button>
                           </div>
-                          <div className="mt-4">
+
+                          <Collapse accordion>
+                            <Panel header="Requested" key="1">
+                              <div className="float-left mt-4 ml-4">
+                                {employeeRequestedApplications.map((app) => (
+                                  <Select
+                                    className="selectStylesCls"
+                                    mode="tags"
+                                    value={app.username}
+                                    open={false}
+                                    bordered={false}
+                                    onDeselect={(e) =>
+                                      handleCrossDelete(e, app, "requested")
+                                    }
+                                  ></Select>
+                                ))}
+                              </div>
+                              <div className="mr-5">
+                                <Button
+                                  type="primary"
+                                  className="float-right"
+                                  onClick={openRequestModal}
+                                  style={{ width: "7%" }}
+                                >
+                                  Action
+                                </Button>
+                              </div>
+                            </Panel>
+                            <Panel header="Approved" key="2">
+                              <div className="float-left mt-4 ml-4">
+                                {employeeApprovedApplications.map((app) => (
+                                  <Select
+                                    className="selectStylesCls"
+                                    mode="tags"
+                                    value={app.username}
+                                    open={false}
+                                    bordered={false}
+                                    onDeselect={(e) =>
+                                      handleCrossDelete(e, app, "requested")
+                                    }
+                                  ></Select>
+                                ))}
+                              </div>
+                              <div className="mr-5">
+                                <Button
+                                  type="primary"
+                                  className="float-right"
+                                  onClick={openApproveModal}
+                                  style={{ width: "7%" }}
+                                >
+                                  Action
+                                </Button>
+                              </div>
+                            </Panel>
+                            <Panel header="Granted" key="3">
+                              <div className="float-left mt-4 ml-4">
+                                {employeeGrantedApplications.map((app) => (
+                                  <Select
+                                    className="selectStylesCls"
+                                    mode="tags"
+                                    value={app.username}
+                                    open={false}
+                                    bordered={false}
+                                    onDeselect={(e) =>
+                                      handleCrossDelete(e, app, "granted")
+                                    }
+                                  ></Select>
+                                ))}
+                              </div>
+                              <div className="mr-5">
+                                <Button
+                                  type="primary"
+                                  className="float-right"
+                                  onClick={openGrantModal}
+                                  style={{ width: "7%" }}
+                                >
+                                  Revoke
+                                </Button>
+                              </div>
+                            </Panel>
+                            <Panel header="Revoked/Declined" key="4">
+                              <div className="float-left mt-4 ml-4">
+                                {employeeRevokedApplications.map((item) => (
+                                  <Select
+                                    className="selectStylesCls"
+                                    mode="tags"
+                                    value={item.username}
+                                    open={false}
+                                    bordered={false}
+                                    onDeselect={(e) =>
+                                      handleCrossDelete(e, item, "revoked")
+                                    }
+                                  ></Select>
+                                ))}
+                              </div>
+                            </Panel>
+                          </Collapse>
+                          {/* <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Requested</div>
-                            <div className="float-left mt-4 ml-4">
-                              {employeeRequestedApplications.map((app) => (
-                                <Select
-                                  className="selectStylesCls"
-                                  mode="tags"
-                                  value={app.username}
-                                  open={false}
-                                  bordered={false}
-                                  onDeselect={(e) =>
-                                    handleCrossDelete(e, app, "requested")
-                                  }
-                                ></Select>
-                              ))}
-                            </div>
-                            <div className="mr-5">
-                              <Button
-                                type="primary"
-                                className="float-right"
-                                onClick={openRequestModal}
-                                style={{ width: "7%" }}
-                              >
-                                Action
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="mt-4">
+                          </div> */}
+                          {/* <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Approved</div>
-                            <div className="float-left mt-4 ml-4">
-                              {employeeApprovedApplications.map((app) => (
-                                <Select
-                                  className="selectStylesCls"
-                                  mode="tags"
-                                  value={app.username}
-                                  open={false}
-                                  bordered={false}
-                                  onDeselect={(e) =>
-                                    handleCrossDelete(e, app, "requested")
-                                  }
-                                ></Select>
-                              ))}
-                            </div>
-                            <div className="mr-5">
-                              <Button
-                                type="primary"
-                                className="float-right"
-                                onClick={openApproveModal}
-                                style={{ width: "7%" }}
-                              >
-                                Action
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="mt-4">
+                          </div> */}
+                          {/* <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Granted</div>
-                            <div className="float-left mt-4 ml-4">
-                              {employeeGrantedApplications.map((app) => (
-                                <Select
-                                  className="selectStylesCls"
-                                  mode="tags"
-                                  value={app.username}
-                                  open={false}
-                                  bordered={false}
-                                  onDeselect={(e) =>
-                                    handleCrossDelete(e, app, "granted")
-                                  }
-                                ></Select>
-                              ))}
-                            </div>
-                            <div className="mr-5">
-                              <Button
-                                type="primary"
-                                className="float-right"
-                                onClick={openGrantModal}
-                                style={{ width: "7%" }}
-                              >
-                                Revoke
-                              </Button>
-                            </div>
-                          </div>
+                          </div> */}
 
-                          <div className="mt-4">
+                          {/* <div className="mt-4">
                             <hr className="hrStyles" />
                             <div className="mainTitle">Revoked/Declined</div>
-                            <div className="float-left mt-4 ml-4">
-                              {employeeRevokedApplications.map((item) => (
-                                <Select
-                                  className="selectStylesCls"
-                                  mode="tags"
-                                  value={item.username}
-                                  open={false}
-                                  bordered={false}
-                                  onDeselect={(e) =>
-                                    handleCrossDelete(e, item, "revoked")
-                                  }
-                                ></Select>
-                              ))}
-                            </div>
-                          </div>
+                            
+                          </div> */}
                         </div>
                       </div>
                     </div>
